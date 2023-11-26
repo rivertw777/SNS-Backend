@@ -1,36 +1,20 @@
 package backend.spring.service;
 
-
-import backend.spring.domain.User;
-import backend.spring.repository.UserDao;
-import org.springframework.beans.factory.annotation.Autowired;
+import backend.spring.model.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserService {
-    @Autowired
-    UserDao userDao;
+public interface UserService {
 
-    public List<User> getAllUsers() {
-        return userDao.getAllUsers();
-    }
+    public List<User> getAllUsers();
 
-    public User getUserByUserId(String userId) {
-        return userDao.getUserByUserId(userId);
-    }
+    public User getUserByUserId(String userId);
 
-    public User registerUser(User user) {
-        return userDao.insertUser(user);
-    }
+    public User registerUser(User user);
 
-    public void modifyUser(String userId, User user) {
-        userDao.updateUser(userId, user);
-    }
+    public void modifyUser(String userId, User user);
 
-    public void removeUser(String userId) {
-        userDao.deleteUser(userId);
-    }
-
+    public void removeUser(String userId);
 }

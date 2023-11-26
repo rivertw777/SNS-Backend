@@ -1,9 +1,4 @@
-package backend.spring.domain;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+package backend.spring.model;
 
 public class User {
     private int userNo;

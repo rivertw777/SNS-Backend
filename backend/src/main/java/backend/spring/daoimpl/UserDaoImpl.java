@@ -1,14 +1,16 @@
-package backend.spring.repository;
+package backend.spring.daoimpl;
 
-import backend.spring.domain.User;
+import backend.spring.dao.UserDao;
+import backend.spring.model.User;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class UserDao {
+public class UserDaoImpl implements UserDao {
     public static List<User> users;
 
+    //실제 데이터는 DB에서 가져오는게 맞으나 .... 아직 DB가 없으니 임시로 세팅해놓음
     static {
         users = new ArrayList<>();
         users.add(new User(1,"testName1","testId1", "1234"));
@@ -19,11 +21,13 @@ public class UserDao {
     }
 
     // Select all user.
+    @Override
     public List<User> getAllUsers() {
         return users;
     }
 
     // Select one user by userId
+    @Override
     public User getUserByUserId(String userId) {
         return users
                 .stream()
@@ -33,6 +37,7 @@ public class UserDao {
     }
 
     // Insert User
+    @Override
     public User insertUser(User user) {
         users.add(user);
 
@@ -40,6 +45,7 @@ public class UserDao {
     }
 
     // Modify User
+    @Override
     public void updateUser(String userId,User user) {
         users.stream()
                 .filter(curUser -> curUser.getUserId().equals(userId))
@@ -49,9 +55,8 @@ public class UserDao {
     }
 
     // Delete User
+    @Override
     public void deleteUser(String userId) {
         users.removeIf(user -> user.getUserId().equals(userId));
     }
 }
-
-
