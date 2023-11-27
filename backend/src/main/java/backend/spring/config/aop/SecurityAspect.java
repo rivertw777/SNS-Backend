@@ -2,11 +2,13 @@ package backend.spring.config.aop;
 
 import backend.spring.config.annotation.TokenRequired;
 import backend.spring.service.SecurityService;
-import org.aspectj.lang.JoinPoint;
+import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Aspect
 @Component
@@ -19,27 +21,26 @@ public class SecurityAspect {
     }
 
     @Before("@annotation(tokenRequired)")
-    public void authenticateWithToken(JoinPoint joinPoint, TokenRequired tokenRequired) {
-        Object[] args = joinPoint.getArgs();
+    public void authenticateWithToken(TokenRequired tokenRequired) {
+        ServletRequestAttributes requestAttributes =
+                (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request =requestAttributes.getRequest();
 
-        if (args.length < 1) {
-            throw new IllegalArgumentException("Token argument is missing");
-        }
-
-        String token = (String) args[0];
-
+        // request header에 있는 토큰 체크하기
+        String token = request.getHeader("token");
+        System.out.println(token);
         if (StringUtils.isEmpty(token)) {
-            throw new IllegalArgumentException("Token is empty");
+            throw new IllegalArgumentException("token is empty");
         }
 
+        // 토큰 유효성 검사
         String subject = securityService.getSubject(token);
-
+        System.out.println(subject);
         if (StringUtils.isEmpty(subject)) {
             throw new IllegalArgumentException("Token Error!! Claims are null!!");
         }
-
-        System.out.println("토큰의 subject로 자체 인증해주세요.");
-        // 추가적인 인증 로직을 수행할 수 있습니다.
     }
+
 }
+
 

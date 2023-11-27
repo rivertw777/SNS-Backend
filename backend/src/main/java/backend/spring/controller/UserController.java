@@ -1,5 +1,6 @@
 package backend.spring.controller;
 
+import backend.spring.config.annotation.TokenRequired;
 import backend.spring.model.User;
 import backend.spring.service.UserService;
 import java.util.List;
@@ -24,6 +25,7 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @TokenRequired
     @GetMapping("/{userid}")
     public User getUserByUserId(@PathVariable  String userid) {
         return userService.getUserByUserId(userid);

@@ -11,17 +11,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoggingAspect {
 
-    @Before("execution(* com.test.crudPjt.service.*.get*(..))")
+    @Before("execution(* backend.spring.service.*.get*(..))")
     public void loggerBefore() {
         System.out.println("get으로 시작하는 메서드가 시작됩니다.");
     }
 
-    @After("execution(* com.test.crudPjt.service.*.get*(..))")
+    @After("execution(* backend.spring.service.*.get*(..))")
     public void loggerAfter() {
         System.out.println("get으로 시작하는 메서드가 끝났습니다.");
     }
 
-    @Around("execution(* com.test.crudPjt.controller.UserController.*(..))")
+    @Around("execution(* backend.spring.controller.UserController.*(..))")
     public Object loggerAround(ProceedingJoinPoint pjp) throws Throwable {
         long beforeTimeMillis = System.currentTimeMillis();
         System.out.println("[UserController] 실행 시작 : "
