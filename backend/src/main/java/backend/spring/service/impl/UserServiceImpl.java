@@ -1,16 +1,19 @@
-package backend.spring.serviceimpl;
+package backend.spring.service.impl;
 
 import backend.spring.dao.UserDao;
 import backend.spring.model.User;
 import backend.spring.service.UserService;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
     @Autowired
-    UserDao userDao;
+    private final UserDao userDao;
 
     @Override
     public List<User> getAllUsers() {

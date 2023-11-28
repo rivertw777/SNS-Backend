@@ -1,4 +1,4 @@
-package backend.spring.controller;
+package backend.spring.exception;
 
 import java.util.HashMap;
 import java.util.Map;

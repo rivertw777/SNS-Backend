@@ -1,42 +1,45 @@
-package backend.spring.serviceimpl;
+package backend.spring.service.impl;
 
 import backend.spring.service.SecurityService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import java.security.Key;
 import java.util.Date;
-import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SecurityServiceImpl implements SecurityService {
-    private static final String SECRET_KEY = "aasjjkjaskjdl1k2naskjkdakj34c8sa";
+    private final Key secretKey;
+
+    public SecurityServiceImpl(@Value("${security.jwt.secretKey}") String secretKey) {
+        this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes());
+    }
 
     @Override
     public String createToken(String subject, long ttlMillis) {
         if (ttlMillis <= 0) {
-            throw new RuntimeException("Expiry time must be greater than Zero: [" + ttlMillis + "]");
+            throw new IllegalArgumentException("Expiry time must be greater than Zero: [" + ttlMillis + "]");
         }
-        // 알고리즘 선택
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-
-        SecretKey secretKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
         return Jwts.builder()
                 .setSubject(subject)
-                .signWith(secretKey, signatureAlgorithm)
+                .signWith(secretKey)
                 .setExpiration(new Date(System.currentTimeMillis() + ttlMillis))
                 .compact();
     }
 
     @Override
     public String getSubject(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY.getBytes())
+        Jws<Claims> claimsJws = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseClaimsJws(token);
+
+        Claims claims = claimsJws.getBody();
         return claims.getSubject();
     }
+
 }

@@ -1,4 +1,4 @@
-package backend.spring.daoimpl;
+package backend.spring.dao.impl;
 
 import backend.spring.dao.UserDao;
 import backend.spring.model.User;

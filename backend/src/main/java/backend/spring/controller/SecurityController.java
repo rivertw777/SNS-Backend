@@ -3,31 +3,34 @@ package backend.spring.controller;
 import backend.spring.service.SecurityService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/security")
+@RequestMapping("/api/security")
 public class SecurityController {
     @Autowired
     private SecurityService securityService;
 
-    @GetMapping("/gen/token")
-    public Map<String, Object> genToken(@RequestParam(value="subject") String subject) {
+    @GetMapping("/tokens")
+    public Map<String, Object> generateToken(@RequestParam("subject") String subject) {
         String token = securityService.createToken(subject, (2 * 1000 * 60));
-        Map<String, Object> map = new LinkedHashMap<>();
-        map.put("result", token);
-        return map;
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        return response;
     }
 
-    @ResponseBody
-    @GetMapping("/get/subject")
-    public Map<String, Object> getSubject(@RequestParam("token") String token) {
+    @GetMapping("/subjects")
+    public Map<String, Object> getSubjectFromToken(@RequestParam("token") String token) {
         String subject = securityService.getSubject(token);
-        Map<String, Object> map = new LinkedHashMap<>();
-        map.put("result", subject);
-        return map;
+        Map<String, Object> response = new HashMap<>();
+        response.put("subject", subject);
+        return response;
     }
+
 }
