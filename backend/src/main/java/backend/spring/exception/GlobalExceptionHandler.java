@@ -12,7 +12,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public Map<String, String> handleException(Exception e) {
         Map<String, String> map = new HashMap<>();
-        map.put("errorMessage", e.getMessage());
+        map.put("errMessage", e.getMessage());
         return map;
     }
 }

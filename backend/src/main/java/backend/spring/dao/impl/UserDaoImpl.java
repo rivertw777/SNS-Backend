@@ -1,62 +1,52 @@
 package backend.spring.dao.impl;
 
 import backend.spring.dao.UserDao;
+import backend.spring.dao.dto.UserUpdateDto;
 import backend.spring.model.User;
-import java.util.ArrayList;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+@Transactional
+@RequiredArgsConstructor
 @Repository
 public class UserDaoImpl implements UserDao {
-    public static List<User> users;
 
-    //실제 데이터는 DB에서 가져오는게 맞으나 .... 아직 DB가 없으니 임시로 세팅해놓음
-    static {
-        users = new ArrayList<>();
-        users.add(new User(1,"testName1","testId1", "1234"));
-        users.add(new User(2,"testName2","testId2", "1234"));
-        users.add(new User(3,"testName3","testId3", "1234"));
-        users.add(new User(4,"testName4","testId4", "1234"));
-        users.add(new User(5,"testName5","testId5", "1234"));
-    }
+    private final EntityManager em;
 
-    // Select all user.
     @Override
-    public List<User> getAllUsers() {
-        return users;
+    public void save(User user) {
+        em.persist(user);
     }
 
-    // Select one user by userId
     @Override
-    public User getUserByUserId(String userId) {
-        return users
-                .stream()
-                .filter(user -> user.getUserId().equals(userId))
-                .findAny()
-                .orElse(new User(-1, "", "", ""));
+    public void update(Long userId, UserUpdateDto updateParam) {
+        User findUser = em.find(User.class, userId);
+        findUser.setUserName(updateParam.userName());
+        findUser.setUserPassword(updateParam.userPassword());
     }
 
-    // Insert User
     @Override
-    public User insertUser(User user) {
-        users.add(user);
-
-        return user;
+    public Optional<User> findById(Long userId) {
+        User user = em.find(User.class, userId);
+        return Optional.ofNullable(user);
     }
 
-    // Modify User
     @Override
-    public void updateUser(String userId,User user) {
-        users.stream()
-                .filter(curUser -> curUser.getUserId().equals(userId))
-                .findAny()
-                .orElse(new User(-1, "", "", ""))
-                .setUserName(user.getUserName());
+    public List<User> findAll() {
+        String jpql = "select i from User i";
+        TypedQuery<User> query = em.createQuery(jpql, User.class);
+        return query.getResultList();
     }
 
-    // Delete User
     @Override
-    public void deleteUser(String userId) {
-        users.removeIf(user -> user.getUserId().equals(userId));
+    public void delete(Long userId) {
+        User user = em.find(User.class, userId);
+        em.remove(user);
     }
+
 }

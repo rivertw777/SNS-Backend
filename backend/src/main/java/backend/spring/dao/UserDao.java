@@ -1,21 +1,23 @@
 package backend.spring.dao;
 
+import backend.spring.dao.dto.UserUpdateDto;
 import backend.spring.model.User;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserDao {
 
-    public List<User> getAllUsers();
+    public void save(User user);
 
-    public User getUserByUserId(String userId);
+    public void update(Long userId, UserUpdateDto userUpdateDto);
 
-    public User insertUser(User user);
+    public Optional<User> findById(Long userId);
 
-    public void updateUser(String userId,User user);
+    public List<User> findAll();
 
-    public void deleteUser(String userId);
+    public void delete(Long userId);
 }
 
 

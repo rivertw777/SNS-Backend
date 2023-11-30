@@ -1,10 +1,14 @@
 package backend.spring.controller;
 
 import backend.spring.config.annotation.TokenRequired;
+import backend.spring.dao.dto.UserUpdateDto;
 import backend.spring.model.User;
 import backend.spring.service.UserService;
 import java.util.List;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,36 +19,42 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
     @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 
-    @TokenRequired
-    @GetMapping("/{userid}")
-    public User getUserByUserId(@PathVariable  String userid) {
-        return userService.getUserByUserId(userid);
+    //@TokenRequired
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUserById(@PathVariable Long userId) {
+        Optional<User> user = userService.getUserById(userId);
+        return user.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("")
-    public User registerUser(@RequestBody User user) {
-
-        return userService.registerUser(user);
+    public ResponseEntity<Void> registerUser(@RequestBody User user) {
+        userService.registerUser(user);
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{userid}")
-    public void modifyUser(@PathVariable String userid, @RequestBody User user) {
-
-        userService.modifyUser(userid, user);
+    //@TokenRequired
+    @PutMapping("/{userId}")
+    public ResponseEntity<Void> modifyUser(@PathVariable Long userId, @RequestBody UserUpdateDto updateParam) {
+        userService.modifyUser(userId, updateParam);
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{userid}")
-    public void removeUser(@PathVariable String userid) {
-        userService.removeUser(userid);
+    //@TokenRequired
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> removeUser(@PathVariable Long userId) {
+        userService.removeUser(userId);
+        return ResponseEntity.noContent().build();
     }
 }
