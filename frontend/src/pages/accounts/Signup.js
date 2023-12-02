@@ -11,13 +11,13 @@ export default function Signup() {
 
   const onFinish = values => {
     async function fn() {
-      const { username, password } = values;
+      const { userName, userPassword } = values;
 
       setFieldErrors({});
 
-      const data = { username, password };
+      const data = { userName, userPassword };
       try {
-        await axiosInstance.post("/accounts/signup/", data);
+        await axiosInstance.post("/users/signup", data);
 
         notification.open({
           message: "회원가입 성공",
@@ -25,7 +25,7 @@ export default function Signup() {
           icon: <SmileOutlined style={{ color: "#108ee9" }} />
         });
 
-        history.push("/accounts/login");
+        history.push("/users/login");
       } catch (error) {
         if (error.response) {
           notification.open({
@@ -64,7 +64,7 @@ export default function Signup() {
       >
         <Form.Item
           label="Username"
-          name="username"
+          name="userName"
           rules={[
             { required: true, message: "Please input your username!" },
             { min: 5, message: "5글자 입력해주세요." }
@@ -77,7 +77,7 @@ export default function Signup() {
 
         <Form.Item
           label="Password"
-          name="password"
+          name="userPassword"
           rules={[{ required: true, message: "Please input your password!" }]}
           {...fieldErrors.password}
         >

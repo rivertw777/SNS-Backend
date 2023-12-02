@@ -24,7 +24,7 @@ export default function LoginRequiredRoute({
           return (
             <Redirect
               to={{
-                pathname: "/accounts/login",
+                pathname: "/users/login",
                 state: { from: props.location }
               }}
             />

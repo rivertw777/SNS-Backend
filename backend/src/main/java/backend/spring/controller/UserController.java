@@ -4,11 +4,16 @@ import backend.spring.config.annotation.TokenRequired;
 import backend.spring.dao.dto.UserUpdateDto;
 import backend.spring.model.User;
 import backend.spring.service.UserService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,11 +43,28 @@ public class UserController {
         return user.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("")
-    public ResponseEntity<Void> registerUser(@RequestBody User user) {
-        userService.registerUser(user);
-        return ResponseEntity.noContent().build();
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping("/signup")
+    public ResponseEntity<String> signUp(@Valid @RequestBody User userDto, BindingResult bindingResult) {
+        System.out.println(userDto);
+        if (bindingResult.hasErrors()) {
+            // 필드 에러 메시지를 추출하여 문자열로 반환
+            String errors = bindingResult.getFieldErrors()
+                    .stream()
+                    .map(error -> error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        try {
+            userService.registerUser(userDto);
+            return ResponseEntity.ok("회원가입이 완료되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 중 오류가 발생했습니다.");
+        }
     }
+
+
 
     //@TokenRequired
     @PutMapping("/{userId}")
