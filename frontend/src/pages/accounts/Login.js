@@ -98,7 +98,7 @@ export default function Login() {
 
         <Form.Item {...tailLayout}>
           <Button type="primary">
-            <a href="signup">Signup</a>
+            <a href="/users/signup">Signup</a>
           </Button>
         </Form.Item>     
       </Form>

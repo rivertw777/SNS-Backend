@@ -17,7 +17,7 @@ export default function Signup() {
 
       const data = { userName, userPassword };
       try {
-        await axiosInstance.post("/users/signup", data);
+        await axiosInstance.post("/users", data);
 
         notification.open({
           message: "회원가입 성공",

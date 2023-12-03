@@ -10,14 +10,14 @@ import java.util.List;
 @Service
 public interface UserService {
 
-    public List<User> getAllUsers();
+    void registerUser(User user);
 
-    public Optional<User> getUserById(Long userId);
+    List<User> getAllUsers();
 
-    public void registerUser(User user);
+    Optional<User> getUserById(Long userId);
 
-    public void modifyUser(Long userId, UserUpdateDto updateParam);
+    void modifyUser(Long userId, UserUpdateDto updateParam);
 
-    public void removeUser(Long userId);
+    void removeUser(Long userId);
 
 }

@@ -20,6 +20,11 @@ public class UserServiceImpl implements UserService {
     private final UserDao userDao;
 
     @Override
+    public void registerUser(User user) {
+        userDao.save(user);
+    }
+
+    @Override
     public List<User> getAllUsers() {
         return userDao.findAll();
     }
@@ -30,19 +35,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void registerUser(User user) {
-        userDao.save(user);
-    }
-
-    @Override
     public void modifyUser(Long userId, UserUpdateDto updateParam) {
-        User findUser = userDao.findById(userId).orElseThrow();
-        findUser.setUserName(updateParam.userName());
-        findUser.setUserPassword(updateParam.userPassword());
+        userDao.update(userId, updateParam);
     }
 
     @Override
     public void removeUser(Long userId) {
         userDao.delete(userId);
     }
+
 }

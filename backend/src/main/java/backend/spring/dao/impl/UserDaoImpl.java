@@ -24,10 +24,10 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void update(Long userId, UserUpdateDto updateParam) {
-        User findUser = em.find(User.class, userId);
-        findUser.setUserName(updateParam.userName());
-        findUser.setUserPassword(updateParam.userPassword());
+    public List<User> findAll() {
+        String jpql = "select i from User i";
+        TypedQuery<User> query = em.createQuery(jpql, User.class);
+        return query.getResultList();
     }
 
     @Override
@@ -37,10 +37,10 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> findAll() {
-        String jpql = "select i from User i";
-        TypedQuery<User> query = em.createQuery(jpql, User.class);
-        return query.getResultList();
+    public void update(Long userId, UserUpdateDto updateParam) {
+        User findUser = em.find(User.class, userId);
+        findUser.setUserName(updateParam.userName());
+        findUser.setUserPassword(updateParam.userPassword());
     }
 
     @Override

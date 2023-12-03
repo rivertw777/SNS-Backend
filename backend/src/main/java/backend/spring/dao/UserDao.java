@@ -9,15 +9,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserDao {
 
-    public void save(User user);
+    void save(User user);
 
-    public void update(Long userId, UserUpdateDto userUpdateDto);
+    List<User> findAll();
 
-    public Optional<User> findById(Long userId);
+    Optional<User> findById(Long userId);
 
-    public List<User> findAll();
+    void update(Long userId, UserUpdateDto updateParam);
 
-    public void delete(Long userId);
+    void delete(Long userId);
+
 }
 
 
