@@ -3,6 +3,7 @@ package backend.spring.service;
 import backend.spring.model.dto.UserUpdateDto;
 import backend.spring.model.entity.User;
 import java.util.Optional;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +21,7 @@ public interface UserService extends UserDetailsService {
     void modifyUser(Long userId, UserUpdateDto updateParam);
 
     void removeUser(Long userId);
+
+    Authentication authenticate(String name, String password);
 
 }

@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -49,8 +52,17 @@ public class UserServiceImpl implements UserService {
     // 이름으로 사용자 불러오기
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        User user = userDao.findByUserName(userName)
+        return userDao.findByUserName(userName)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + userName));
-        return user;
     }
+
+    // 비밀번호 일치 여부 확인
+    public Authentication authenticate(String username, String password) {
+        User user = (User) loadUserByUsername(username);
+        if (!user.isCredentialsValid(username, password)) {
+            throw new BadCredentialsException("Invalid password");
+        }
+        return new UsernamePasswordAuthenticationToken(user, password, user.getAuthorities());
+    }
+
 }

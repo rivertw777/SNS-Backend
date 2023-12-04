@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.util.Collection;
 import java.util.Collections;
 import lombok.Data;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Data
+@Table(name = "users")
 public class User implements UserDetails {
 
     @Id
@@ -45,24 +47,30 @@ public class User implements UserDetails {
     // 사용자 계정의 만료 여부
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     // 사용자 계정의 잠김 여부
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     // 사용자 인증 정보의 만료 여부
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     // 사용자 계정의 활성화 여부
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
+
+    // 입력값과 사용자 정보 비교
+    public boolean isCredentialsValid(String name, String password) {
+        return this.userName.equals(name) && this.userPassword.equals(password);
+    }
+
 }
