@@ -1,7 +1,7 @@
 package backend.spring.service;
 
-import backend.spring.dao.dto.PostUpdateDto;
-import backend.spring.model.Post;
+import backend.spring.model.dto.PostUpdateDto;
+import backend.spring.model.entity.Post;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;

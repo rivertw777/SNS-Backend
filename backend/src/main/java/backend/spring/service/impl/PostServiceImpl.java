@@ -1,8 +1,8 @@
 package backend.spring.service.impl;
 
-import backend.spring.dao.PostDao;
-import backend.spring.dao.dto.PostUpdateDto;
-import backend.spring.model.Post;
+import backend.spring.repository.PostDao;
+import backend.spring.model.dto.PostUpdateDto;
+import backend.spring.model.entity.Post;
 import backend.spring.service.PostService;
 import java.util.List;
 import java.util.Optional;

@@ -1,8 +1,8 @@
-package backend.spring.dao.impl;
+package backend.spring.repository.impl;
 
-import backend.spring.dao.UserDao;
-import backend.spring.dao.dto.UserUpdateDto;
-import backend.spring.model.User;
+import backend.spring.repository.UserDao;
+import backend.spring.model.dto.UserUpdateDto;
+import backend.spring.model.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 @Transactional
 @RequiredArgsConstructor
 @Repository
-public class UserDaoImpl implements UserDao {
+public class UserRepository implements UserDao {
 
     private final EntityManager em;
 
@@ -34,6 +34,15 @@ public class UserDaoImpl implements UserDao {
     public Optional<User> findById(Long userId) {
         User user = em.find(User.class, userId);
         return Optional.ofNullable(user);
+    }
+
+    @Override
+    public Optional<User> findByUserName(String userName) {
+        String jpql = "select u from User u where u.userName = :userName";
+        TypedQuery<User> query = em.createQuery(jpql, User.class);
+        query.setParameter("userName", userName);
+        List<User> resultList = query.getResultList();
+        return resultList.stream().findFirst();
     }
 
     @Override

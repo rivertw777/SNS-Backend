@@ -1,14 +1,15 @@
 package backend.spring.service;
 
-import backend.spring.dao.dto.UserUpdateDto;
-import backend.spring.model.User;
+import backend.spring.model.dto.UserUpdateDto;
+import backend.spring.model.entity.User;
 import java.util.Optional;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     void registerUser(User user);
 

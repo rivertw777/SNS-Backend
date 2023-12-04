@@ -1,7 +1,7 @@
 package backend.spring.controller;
 
-import backend.spring.dao.dto.UserUpdateDto;
-import backend.spring.model.User;
+import backend.spring.model.dto.UserUpdateDto;
+import backend.spring.model.entity.User;
 import backend.spring.service.UserService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +29,6 @@ public class UserController {
     @Autowired
     private final UserService userService;
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("")
     public ResponseEntity<String> signUp(@Valid @RequestBody User userDto, BindingResult bindingResult) {
         System.out.println(userDto);

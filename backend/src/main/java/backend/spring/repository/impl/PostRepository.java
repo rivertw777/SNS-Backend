@@ -1,8 +1,8 @@
-package backend.spring.dao.impl;
+package backend.spring.repository.impl;
 
-import backend.spring.dao.PostDao;
-import backend.spring.dao.dto.PostUpdateDto;
-import backend.spring.model.Post;
+import backend.spring.repository.PostDao;
+import backend.spring.model.dto.PostUpdateDto;
+import backend.spring.model.entity.Post;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 @Transactional
 @RequiredArgsConstructor
 @Repository
-public class PostDaoImpl implements PostDao {
+public class PostRepository implements PostDao {
 
     private final EntityManager em;
 
