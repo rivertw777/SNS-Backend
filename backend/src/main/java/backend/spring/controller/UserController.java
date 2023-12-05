@@ -1,15 +1,14 @@
 package backend.spring.controller;
 
+import backend.spring.model.dto.UserSignupDto;
 import backend.spring.model.dto.UserUpdateDto;
 import backend.spring.model.entity.User;
 import backend.spring.service.UserService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,23 +28,18 @@ public class UserController {
     @Autowired
     private final UserService userService;
 
+    // 회원 가입
     @PostMapping("")
-    public ResponseEntity<String> signUp(@Valid @RequestBody User userDto, BindingResult bindingResult) {
-        System.out.println(userDto);
+    public ResponseEntity<?> signUp(@Valid @RequestBody UserSignupDto signupParam, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            // 필드 에러 메시지를 추출하여 문자열로 반환
-            String errors = bindingResult.getFieldErrors()
-                    .stream()
-                    .map(error -> error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().build();
         }
 
         try {
-            userService.registerUser(userDto);
-            return ResponseEntity.ok("회원가입이 완료되었습니다.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 중 오류가 발생했습니다.");
+            userService.registerUser(signupParam);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -62,7 +56,11 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<Void> modifyUser(@PathVariable Long userId, @RequestBody UserUpdateDto updateParam) {
+    public ResponseEntity<Void> modifyUser(@PathVariable Long userId, @Valid @RequestBody UserUpdateDto updateParam, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().build();
+        }
+
         userService.modifyUser(userId, updateParam);
         return ResponseEntity.noContent().build();
     }
@@ -72,5 +70,5 @@ public class UserController {
         userService.removeUser(userId);
         return ResponseEntity.noContent().build();
     }
-
 }
+

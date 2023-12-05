@@ -1,5 +1,6 @@
 package backend.spring.service;
 
+import backend.spring.model.dto.UserSignupDto;
 import backend.spring.model.dto.UserUpdateDto;
 import backend.spring.model.entity.User;
 import java.util.Optional;
@@ -12,7 +13,7 @@ import java.util.List;
 @Service
 public interface UserService extends UserDetailsService {
 
-    void registerUser(User user);
+    void registerUser(UserSignupDto signupParam);
 
     List<User> getAllUsers();
 

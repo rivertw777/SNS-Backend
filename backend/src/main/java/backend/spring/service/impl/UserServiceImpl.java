@@ -1,5 +1,6 @@
 package backend.spring.service.impl;
 
+import backend.spring.model.dto.UserSignupDto;
 import backend.spring.repository.UserDao;
 import backend.spring.model.dto.UserUpdateDto;
 import backend.spring.model.entity.User;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +25,20 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private final UserDao userDao;
+    @Autowired
+    private final PasswordEncoder passwordEncoder;
 
+    // 회원 가입
     @Override
-    public void registerUser(User user) {
+    public void registerUser(UserSignupDto signupParam) {
+        // 이미 존재하는 사용자 이름이라면 예외 발생
+        Optional<User> findUser = userDao.findByUserName(signupParam.userName());
+        if (findUser.isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 사용자 이름입니다: " + signupParam.userName());
+        }
+
+        String encodedPassword = passwordEncoder.encode(signupParam.userPassword());
+        User user = User.create(signupParam.userName(), encodedPassword);
         userDao.save(user);
     }
 
@@ -58,8 +71,12 @@ public class UserServiceImpl implements UserService {
 
     // 비밀번호 일치 여부 확인
     public Authentication authenticate(String username, String password) {
+
+        // 해당 이름을 가진 유저가 있는지 확인
         User user = (User) loadUserByUsername(username);
-        if (!user.isCredentialsValid(username, password)) {
+
+        // 비밀번호가 일치하는지 확인
+        if (!user.isPasswordMatch(username, password)) {
             throw new BadCredentialsException("Invalid password");
         }
         return new UsernamePasswordAuthenticationToken(user, password, user.getAuthorities());

@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import java.util.Collection;
 import java.util.Collections;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,17 +17,27 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Data
 @Table(name = "users")
+@NoArgsConstructor
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(name = "user_name", length = 10)
+    @Column(unique = true, name = "user_name", length = 10)
     private String userName;
 
     @Column(name = "user_password", length = 20)
     private String userPassword;
+
+    private User(String userName, String userPassword) {
+        this.userName = userName;
+        this.userPassword = userPassword;
+    }
+
+    public static User create(String userName, String userPassword){
+        return new User(userName, userPassword);
+    }
 
     @Override
     public String getPassword() {
@@ -69,7 +80,7 @@ public class User implements UserDetails {
     }
 
     // 입력값과 사용자 정보 비교
-    public boolean isCredentialsValid(String name, String password) {
+    public boolean isPasswordMatch(String name, String password) {
         return this.userName.equals(name) && this.userPassword.equals(password);
     }
 

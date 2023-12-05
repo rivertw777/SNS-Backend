@@ -1,7 +1,7 @@
 package backend.spring.controller;
 
 import backend.spring.config.jwt.TokenProvider;
-import backend.spring.model.dto.TokenResponse;
+import backend.spring.config.jwt.dto.TokenResponse;
 import backend.spring.model.dto.UserLoginDto;
 
 import backend.spring.service.UserService;
@@ -35,7 +35,9 @@ public class SecurityController {
             // 인증 권한 받기
             Authentication authentication = userService.authenticate(loginRequest.userName(),
                     loginRequest.userPassword());
-            //authenticationManager.authenticate(authentication);
+            System.out.println(1);
+            authenticationManager.authenticate(authentication);
+            System.out.println(2);
 
             // 토큰 발급
             String token = tokenProvider.generateToken(authentication);
