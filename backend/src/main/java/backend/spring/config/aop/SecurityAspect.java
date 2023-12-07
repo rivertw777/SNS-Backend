@@ -18,7 +18,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @RequiredArgsConstructor
 public class SecurityAspect {
 
-    private final TokenProvider tokenProvider;
+    //private final TokenProvider tokenProvider;
 
     private final AuthenticationManager authenticationManager;
 
@@ -32,9 +32,9 @@ public class SecurityAspect {
         // request header에 있는 토큰 체크하기
         String token = request.getHeader("token");
         System.out.println(token);
-        if(!tokenProvider.validateToken(token)){
-            throw new IllegalArgumentException("invalid token!");
-        }
+        //if(!tokenProvider.validateToken(token)){
+        //    throw new IllegalArgumentException("invalid token!");
+        //}
 
         // 인증 권한 받기
         Authentication authentication = authenticateWithToken(token);

@@ -53,7 +53,7 @@ export default function PostNewForm() {
 
     const headers = { Authorization: `JWT ${jwtToken}` };
     try {
-      const response = await axiosInstance.post("/api/posts/", formData, {
+      const response = await axiosInstance.post("/api/posts", formData, {
         headers
       });
       console.log("success response :", response);

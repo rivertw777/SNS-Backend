@@ -37,7 +37,7 @@ public class SecurityController {
             Authentication authentication = userService.authenticate(loginRequest.username(),
                     loginRequest.password());
             authenticationManager.authenticate(authentication);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            System.out.println(authentication);
 
             // 토큰 발급
             String token = tokenProvider.generateToken(authentication);

@@ -53,7 +53,7 @@ function PostList() {
       )}
       {postList &&
         postList.map(post => (
-          <Post post={post} key={post.id} handleLike={handleLike} />
+          <Post post={post} key={post.id}/>
         ))}
     </div>
   );
