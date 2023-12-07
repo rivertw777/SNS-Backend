@@ -1,8 +1,8 @@
 package backend.spring.controller;
 
-import backend.spring.model.dto.UserSignupDto;
-import backend.spring.model.dto.UserUpdateDto;
-import backend.spring.model.entity.User;
+import backend.spring.model.user.dto.UserSignupDto;
+import backend.spring.model.user.dto.UserUpdateDto;
+import backend.spring.model.user.entity.User;
 import backend.spring.service.UserService;
 import jakarta.validation.Valid;
 import java.util.List;

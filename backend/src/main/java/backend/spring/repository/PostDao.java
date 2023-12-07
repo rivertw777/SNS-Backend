@@ -1,7 +1,7 @@
 package backend.spring.repository;
 
-import backend.spring.model.dto.PostUpdateDto;
-import backend.spring.model.entity.Post;
+import backend.spring.model.post.dto.PostUpdateDto;
+import backend.spring.model.post.entity.Post;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;

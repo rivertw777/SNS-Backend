@@ -1,13 +1,19 @@
-package backend.spring.model.entity;
+package backend.spring.model.user.entity;
 
+import backend.spring.model.post.entity.Post;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,29 +30,36 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(unique = true, name = "user_name", length = 10)
-    private String userName;
+    @Column(unique = true, name = "username", length = 10)
+    private String username;
 
-    @Column(name = "user_password", length = 20)
-    private String userPassword;
+    @Column(name = "password", length = 60)
+    private String password;
 
-    private User(String userName, String userPassword) {
-        this.userName = userName;
-        this.userPassword = userPassword;
+    @OneToMany(mappedBy = "author", cascade= CascadeType.ALL)
+    private List<Post> posts = new ArrayList<>();
+
+    @Builder
+    private User(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
-    public static User create(String userName, String userPassword){
-        return new User(userName, userPassword);
+    public static User create(String username, String password){
+        return builder()
+                .username(username)
+                .password(password)
+                .build();
     }
 
     @Override
     public String getPassword() {
-        return userPassword;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return userName;
+        return username;
     }
 
     // 사용자의 권한 목록을 반환
@@ -77,11 +90,6 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    // 입력값과 사용자 정보 비교
-    public boolean isPasswordMatch(String name, String password) {
-        return this.userName.equals(name) && this.userPassword.equals(password);
     }
 
 }

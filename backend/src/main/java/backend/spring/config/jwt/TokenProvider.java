@@ -17,8 +17,7 @@ public class TokenProvider {
     private final Key jwtSecretKey;
     private final long jwtExpirationInMs;
 
-    public TokenProvider(@Value("${jwt.secret}") String jwtSecret,
-                         @Value("${jwt.expiration}") long jwtExpirationInMs) {
+    public TokenProvider(@Value("${jwt.expiration}") long jwtExpirationInMs) {
         this.jwtSecretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
         this.jwtExpirationInMs = jwtExpirationInMs;
     }

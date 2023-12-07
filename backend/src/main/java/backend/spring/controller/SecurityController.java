@@ -2,7 +2,7 @@ package backend.spring.controller;
 
 import backend.spring.config.jwt.TokenProvider;
 import backend.spring.config.jwt.dto.TokenResponse;
-import backend.spring.model.dto.UserLoginDto;
+import backend.spring.model.user.dto.UserLoginDto;
 
 import backend.spring.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,16 +34,14 @@ public class SecurityController {
     public ResponseEntity<TokenResponse> createToken(@RequestBody UserLoginDto loginRequest) {
         try {
             // 인증 권한 받기
-            Authentication authentication = userService.authenticate(loginRequest.userName(),
-                    loginRequest.userPassword());
-            System.out.println(1);
+            Authentication authentication = userService.authenticate(loginRequest.username(),
+                    loginRequest.password());
             authenticationManager.authenticate(authentication);
-            System.out.println(2);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
             // 토큰 발급
             String token = tokenProvider.generateToken(authentication);
             TokenResponse tokenResponse = new TokenResponse(token);
-            System.out.println(tokenResponse);
 
             return ResponseEntity.ok(tokenResponse);
 

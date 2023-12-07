@@ -1,8 +1,8 @@
 package backend.spring.repository.impl;
 
 import backend.spring.repository.PostDao;
-import backend.spring.model.dto.PostUpdateDto;
-import backend.spring.model.entity.Post;
+import backend.spring.model.post.dto.PostUpdateDto;
+import backend.spring.model.post.entity.Post;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
@@ -39,7 +39,6 @@ public class PostRepository implements PostDao {
     @Override
     public void update(Long postId, PostUpdateDto updateParam) {
         Post findPost = em.find(Post.class, postId);
-        findPost.setAuthor(updateParam.author());
         findPost.setLocation(updateParam.location());
         findPost.setCaption(updateParam.caption());
     }

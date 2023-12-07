@@ -1,7 +1,7 @@
 package backend.spring.repository;
 
-import backend.spring.model.dto.UserUpdateDto;
-import backend.spring.model.entity.User;
+import backend.spring.model.user.dto.UserUpdateDto;
+import backend.spring.model.user.entity.User;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
@@ -15,7 +15,7 @@ public interface UserDao {
 
     Optional<User> findById(Long userId);
 
-    Optional<User> findByUserName(String userName);
+    Optional<User> findByUserName(String username);
 
     void update(Long userId, UserUpdateDto updateParam);
 

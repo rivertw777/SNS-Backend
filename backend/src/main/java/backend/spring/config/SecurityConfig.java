@@ -38,7 +38,7 @@ public class SecurityConfig {
     // 특정 주소 무시
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/users", "/api/security/tokens");
+        return (web) -> web.ignoring().requestMatchers("/users", "/api/security/tokens", "/**");
     }
 
     @Bean

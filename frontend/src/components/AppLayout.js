@@ -18,10 +18,10 @@ function AppLayout({ children, sidebar }) {
         <div className="topnav">
           <Menu mode="horizontal">
             <Menu.Item>
-              <a href="accounts/profile">profile</a>
+              <a href="users/profile">profile</a>
             </Menu.Item>
             <Menu.Item>
-              <a href="accounts/logout">logout</a>
+              <a href="users/logout">logout</a>
             </Menu.Item>
           </Menu>
         </div>

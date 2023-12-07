@@ -21,11 +21,11 @@ export default function Login() {
 
   const onFinish = values => {
     async function fn() {
-      const { userName, userPassword } = values;
+      const { username, password } = values;
 
       setFieldErrors({});
 
-      const data = { userName, userPassword };
+      const data = { username, password };
       try {
         const response = await axiosInstance.post("api/security/tokens", data);
         const {
@@ -69,7 +69,7 @@ export default function Login() {
       >
         <Form.Item
           label="Username"
-          name="userName"
+          name="username"
           rules={[
             { required: true, message: "Please input your username!" },
             { min: 5, message: "5글자 입력해주세요." }
@@ -83,7 +83,7 @@ export default function Login() {
 
         <Form.Item
           label="Password"
-          name="userPassword"
+          name="password"
           rules={[{ required: true, message: "Please input your password!" }]}
           {...fieldErrors.password}
         >

@@ -1,8 +1,8 @@
 package backend.spring.service;
 
-import backend.spring.model.dto.UserSignupDto;
-import backend.spring.model.dto.UserUpdateDto;
-import backend.spring.model.entity.User;
+import backend.spring.model.user.dto.UserSignupDto;
+import backend.spring.model.user.dto.UserUpdateDto;
+import backend.spring.model.user.entity.User;
 import java.util.Optional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +23,6 @@ public interface UserService extends UserDetailsService {
 
     void removeUser(Long userId);
 
-    Authentication authenticate(String name, String password);
+    Authentication authenticate(String username, String password);
 
 }
