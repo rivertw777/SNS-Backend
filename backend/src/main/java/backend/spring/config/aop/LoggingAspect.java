@@ -16,7 +16,8 @@ public class LoggingAspect {
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
     // 예외 발생 시 로깅
-    @AfterThrowing(pointcut = "execution(* backend.spring.service.*.*(..)) || execution(* backend.spring.controller.*.*(..))", throwing = "ex")
+    @AfterThrowing(pointcut = "execution(* backend.spring.*.service.*.*(..)) || " +
+            "execution(* backend.spring.*.controller.*.*(..))", throwing = "ex")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable ex) {
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getSignature().getDeclaringTypeName();
@@ -25,7 +26,8 @@ public class LoggingAspect {
     }
 
     // 메서드 실행 이전 로깅
-    @Before("execution(* backend.spring.service.*.*(..)) || execution(* backend.spring.controller.*.*(..))")
+    @Before("execution(* backend.spring.*.service.*.*(..)) || " +
+            "execution(* backend.spring.*.controller.*.*(..))")
     public void logBefore(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getSignature().getDeclaringTypeName();
@@ -34,7 +36,8 @@ public class LoggingAspect {
     }
 
     // 메서드 실행 이후 로깅
-    @After("execution(* backend.spring.service.*.*(..)) || execution(* backend.spring.controller.*.*(..))")
+    @After("execution(* backend.spring.*.service.*.*(..)) || " +
+            "execution(* backend.spring.*.controller.*.*(..))")
     public void logAfter(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getSignature().getDeclaringTypeName();

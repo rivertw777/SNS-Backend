@@ -1,14 +1,17 @@
 package backend.spring.config.jwt;
 
-import backend.spring.service.impl.UserServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -19,50 +22,55 @@ import java.util.Date;
 @Component
 public class TokenProvider {
 
-    private UserServiceImpl userService;
-
-
     private final Key jwtSecretKey;
     private final long jwtExpirationInMs;
 
-    public TokenProvider(UserServiceImpl userService, @Value("${jwt.expiration}") long jwtExpirationInMs) {
-        this.userService = userService;
-        this.jwtSecretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    public TokenProvider(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration}") long jwtExpirationInMs) {
+        this.jwtSecretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         this.jwtExpirationInMs = jwtExpirationInMs;
     }
 
     public String generateToken(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        // 권한 가져오기
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
 
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
-
+        long now = (new Date()).getTime();
+        // Access Token 생성
+        Date accessTokenExpiresIn = new Date(now + 86400000);
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(jwtSecretKey, SignatureAlgorithm.HS512)
+                .setSubject(authentication.getName())
+                .claim("auth", authorities)
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(jwtSecretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public Authentication extractAuthenticationFromToken(String token) {
+    public Authentication extractAuthentication(String accessToken) {
+        // 토큰 복호화
+        Claims claims = parseClaims(accessToken);
+
+        if (claims.get("auth") == null) {
+            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+        }
+
+        // 클레임에서 권한 정보 가져오기
+        Collection<? extends GrantedAuthority> authorities =
+                Arrays.stream(claims.get("auth").toString().split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+
+        // UserDetails 객체를 만들어서 Authentication 리턴
+        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+    }
+
+    private Claims parseClaims(String accessToken) {
         try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(jwtSecretKey)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-
-            String username = claims.getSubject();
-            System.out.println(username);
-            UserDetails user = userService.loadUserByUsername(username);
-
-            List<GrantedAuthority> authorities = new ArrayList<>(); // 필요한 경우 권한 정보도 추출하여 설정할 수 있습니다.
-            Authentication authentication = new UsernamePasswordAuthenticationToken(user, "1234", user.getAuthorities());
-            return authentication;
-        } catch (JwtException e) {
-            // 토큰이 유효하지 않은 경우 null을 반환하거나 예외를 처리할 수 있습니다.
-            return null;
+            return Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(accessToken).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
         }
     }
 
