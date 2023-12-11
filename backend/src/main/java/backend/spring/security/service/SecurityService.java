@@ -1,25 +1,19 @@
 package backend.spring.security.service;
 
-import backend.spring.config.jwt.TokenProvider;
-import backend.spring.config.jwt.dto.TokenResponse;
+import backend.spring.security.utils.TokenProvider;
 import backend.spring.member.repository.MemberRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class SecurityService implements UserDetailsService {
@@ -48,9 +42,9 @@ public class SecurityService implements UserDetailsService {
 
     // 요청으로 부터 토큰 데이터 가져오기
     public String resolveToken(HttpServletRequest request) {
-        String tokenData = request.getHeader("Authorization");
-        if (StringUtils.hasText(tokenData) && tokenData.startsWith("JWT")) {
-            return tokenData.substring(4);
+        String token = request.getHeader("Authorization");
+        if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
+            return token.substring(7);
         }
         return null;
     }

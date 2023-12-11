@@ -2,10 +2,9 @@ package backend.spring.post.service.impl;
 
 import backend.spring.post.model.dto.PostUploadDto;
 import backend.spring.member.model.entity.Member;
-import backend.spring.post.model.dto.PostUpdateDto;
 import backend.spring.post.model.entity.Post;
-import backend.spring.post.repository.PostDao;
 import backend.spring.member.repository.MemberRepository;
+import backend.spring.post.repository.PostRepository;
 import backend.spring.post.service.PostService;
 import java.io.File;
 import java.io.IOException;
@@ -27,9 +26,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostServiceImpl implements PostService {
 
     @Autowired
-    private final PostDao postDao;
+    private final PostRepository postRepository;
     @Autowired
-    private final MemberRepository userDao;
+    private final MemberRepository memberRepository;
 
     @Value("${file.dir}")
     private String uploadPath;
@@ -40,11 +39,11 @@ public class PostServiceImpl implements PostService {
         List<String> photoPaths = savePhotos(uploadParam.photos());
 
         // 작성자 반환
-        Member user = userDao.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        Member user = memberRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
         // 게시물 모델 생성
         Post post = Post.create(user, photoPaths, uploadParam);
-        postDao.save(post);
+        postRepository.save(post);
     }
 
     private List<String> savePhotos(MultipartFile[] photos) throws IOException{
@@ -61,22 +60,22 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> getAllPosts() {
-        return postDao.findAll();
+        return postRepository.findAll();
     }
 
     @Override
     public Optional<Post> getPostById(Long postId) {
-        return postDao.findById(postId);
+        return postRepository.findById(postId);
     }
 
-    @Override
-    public void modifyPost(Long postId, PostUpdateDto updateParam) {
-        postDao.update(postId, updateParam);
-    }
+    //@Override
+    //public void modifyPost(Long postId, PostUpdateDto updateParam) {
+    //    postRepository.update(postId, updateParam);
+    //}
 
     @Override
     public void removePost(Long postId) {
-        postDao.delete(postId);
+        postRepository.deleteById(postId);
     }
 
 }

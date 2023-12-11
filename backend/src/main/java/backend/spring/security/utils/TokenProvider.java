@@ -1,4 +1,4 @@
-package backend.spring.config.jwt;
+package backend.spring.security.utils;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

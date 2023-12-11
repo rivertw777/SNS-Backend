@@ -8,7 +8,6 @@ import { setToken } from "store";
 import { parseErrorMessages } from "utils/forms";
 import "./Login.scss";
 
-
 export default function Login() {
   const { dispatch } = useAppContext();
   const location = useLocation();
@@ -27,13 +26,15 @@ export default function Login() {
 
       const data = { username, password };
       try {
-        const response = await axiosInstance.post("api/security/tokens", data);
+        const response = await axiosInstance.post("api/security/login", data);
         const {
           data: { token: jwtToken }
         } = response;
+        
+        console.log(response.headers['authorization']);
 
         dispatch(setToken(jwtToken));
-
+    
         notification.open({
           message: "로그인 성공",
           icon: <SmileOutlined style={{ color: "#108ee9" }} />

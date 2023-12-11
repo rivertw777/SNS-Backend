@@ -1,9 +1,7 @@
 package backend.spring.config;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
-import backend.spring.config.jwt.JwtAuthenticationFilter;
-import backend.spring.config.jwt.TokenProvider;
+import backend.spring.security.filter.JwtAuthenticationFilter;
+import backend.spring.security.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,7 +48,7 @@ public class SecurityConfig {
     // 특정 주소 무시
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/users", "/api/security/tokens");
+        return (web) -> web.ignoring().requestMatchers("/api/users", "/api/security/login","/**");
     }
 
     @Bean

@@ -5,33 +5,16 @@ import "./Post.scss";
 import { useAppContext } from "store";
 import CommentList from "./CommentList";
 
-function Post({ post, handleLike }) {
-  const { author, caption, location, photo, tag_set, is_like } = post;
-  const { username, name, avatar_url } = author;
+function Post({ post }) {
+  const { caption, location, photoPaths } = post;
 
   return (
     <div className="post">
       <Card
         hoverable
-        cover={<img src={photo} alt={caption} />}
-        actions={[
-          is_like ? (
-            <HeartTwoTone
-              twoToneColor="#eb2f96"
-              onClick={() => handleLike({ post, isLike: false })}
-            />
-          ) : (
-            <HeartOutlined onClick={() => handleLike({ post, isLike: true })} />
-          )
-        ]}
+        cover={<img src={photoPaths} alt={caption} />}
       >
         <Card.Meta
-          avatar={
-            <Avatar
-              size="large"
-              icon={<img src={avatar_url} alt={username} />}
-            />
-          }
           title={location}
           description={caption}
           style={{ marginBottom: "0.5em" }}

@@ -1,6 +1,5 @@
 package backend.spring.post.service;
 
-import backend.spring.post.model.dto.PostUpdateDto;
 import backend.spring.post.model.dto.PostUploadDto;
 import backend.spring.post.model.entity.Post;
 import java.io.IOException;
@@ -17,7 +16,7 @@ public interface PostService {
 
     Optional<Post> getPostById(Long postId);
 
-    void modifyPost(Long postId, PostUpdateDto updateParam);
+    //void modifyPost(Long postId, PostUpdateDto updateParam);
 
     void removePost(Long postId);
 

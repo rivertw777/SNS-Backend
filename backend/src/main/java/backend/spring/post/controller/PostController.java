@@ -1,7 +1,6 @@
 package backend.spring.post.controller;
 
-import backend.spring.config.SecurityConfig;
-import backend.spring.config.jwt.TokenProvider;
+import backend.spring.security.utils.SecurityUtil;
 import backend.spring.post.model.dto.PostUpdateDto;
 import backend.spring.post.model.dto.PostUploadDto;
 import backend.spring.post.model.entity.Post;
@@ -14,8 +13,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,9 +31,10 @@ public class PostController {
 
     @Autowired
     private final PostService postService;
-
+    @Autowired
     private final SecurityService securityService;
-
+    @Autowired
+    private final SecurityUtil securityUtil;
 
     //@TokenRequired
     @PostMapping("")
@@ -44,6 +42,8 @@ public class PostController {
                                            @RequestParam("photo") MultipartFile[] photos,
                                            @RequestParam("caption") String caption,
                                            @RequestParam("location") String location) {
+
+        //System.out.println(securityUtil.getCurrentMemberId());
 
         String token = securityService.resolveToken(request);
         String username = securityService.getUsernameFromToken(token);
@@ -71,7 +71,7 @@ public class PostController {
 
     @PutMapping("/{postId}")
     public ResponseEntity<Void> modifyPost(@PathVariable Long postId, @RequestBody PostUpdateDto updateParam) {
-        postService.modifyPost(postId, updateParam);
+        //postService.modifyPost(postId, updateParam);
         return ResponseEntity.noContent().build();
     }
 
