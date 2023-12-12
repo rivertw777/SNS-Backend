@@ -23,8 +23,7 @@ function PostList() {
   }, [originPostList]);
 
   return (
-    <div>
- 
+    <div> 
       {postList &&
         postList.map(post => (
           <Post post={post} key={post.id} />

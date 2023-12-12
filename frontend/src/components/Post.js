@@ -6,15 +6,26 @@ import { useAppContext } from "store";
 import CommentList from "./CommentList";
 
 function Post({ post }) {
-  const { caption, location, photoPaths } = post;
+
+  const { author, caption, location, photo_url } = post;
+  const { username, avatar_url } = author;
 
   return (
     <div className="post">
       <Card
         hoverable
-        cover={<img src={photoPaths} alt={caption} />}
+        cover={<img src={photo_url} alt={caption} />}
+        actions={[
+
+        ]}
       >
         <Card.Meta
+          avatar={
+            <Avatar
+              size="large"
+              icon={<img src={avatar_url} alt={username} />}
+            />
+          }
           title={location}
           description={caption}
           style={{ marginBottom: "0.5em" }}
@@ -22,9 +33,6 @@ function Post({ post }) {
 
         <CommentList post={post} />
       </Card>
-
-      {/* <img src={photo} alt={caption} style={{ width: "100px" }} />
-      {caption}, {location} */}
     </div>
   );
 }

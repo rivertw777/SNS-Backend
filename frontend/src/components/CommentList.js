@@ -10,7 +10,7 @@ export default function CommentList({ post }){
     
     const [commentContent, setCommentContent] = useState("");
 
-    const headers = { Authorization: `JWT ${jwtToken}` };
+    const headers = { Authorization: `Bearer ${jwtToken}` };
   
     const [{ data: commentList, loading, error }, refetch] = useAxios({
       url : `/api/posts/${post.id}/comments/`,

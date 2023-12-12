@@ -1,10 +1,10 @@
-package backend.spring.post.controller;
+package backend.spring.instagram.controller;
 
 import backend.spring.security.utils.SecurityUtil;
-import backend.spring.post.model.dto.PostUpdateDto;
-import backend.spring.post.model.dto.PostUploadDto;
-import backend.spring.post.model.entity.Post;
-import backend.spring.post.service.PostService;
+import backend.spring.instagram.model.dto.PostUpdateDto;
+import backend.spring.instagram.model.dto.PostUploadDto;
+import backend.spring.instagram.model.entity.Post;
+import backend.spring.instagram.service.PostService;
 import backend.spring.security.service.SecurityService;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -36,7 +36,6 @@ public class PostController {
     @Autowired
     private final SecurityUtil securityUtil;
 
-    //@TokenRequired
     @PostMapping("")
     public ResponseEntity<Void> uploadPost(HttpServletRequest request,
                                            @RequestParam("photo") MultipartFile[] photos,
@@ -48,9 +47,9 @@ public class PostController {
         String token = securityService.resolveToken(request);
         String username = securityService.getUsernameFromToken(token);
 
-        PostUploadDto uploadParam = new PostUploadDto(photos, caption, location);
+        PostUploadDto uploadParam = new PostUploadDto(username, photos, caption, location);
         try {
-            postService.registerPost(uploadParam, username);
+            postService.registerPost(uploadParam);
         } catch (IOException | IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
@@ -78,6 +77,18 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> removePost(@PathVariable Long postId) {
         postService.removePost(postId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<?> likePost(@PathVariable Long postId) {
+        postService.likePost(postId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{postId}/like")
+    public ResponseEntity<?> unlikePost(@PathVariable Long postId) {
+        postService.unlikePost(postId);
         return ResponseEntity.noContent().build();
     }
 

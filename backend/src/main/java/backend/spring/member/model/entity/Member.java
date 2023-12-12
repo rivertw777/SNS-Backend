@@ -1,32 +1,42 @@
 package backend.spring.member.model.entity;
 
-import backend.spring.post.model.entity.Post;
+import backend.spring.instagram.model.entity.Post;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.apache.commons.codec.digest.DigestUtils;
+
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "members")
+@Table(name = "users")
 public class Member implements UserDetails {
 
     @Id
@@ -39,8 +49,12 @@ public class Member implements UserDetails {
     @Column(name = "password", length = 60)
     private String password;
 
-    @OneToMany(mappedBy = "author", cascade= CascadeType.ALL)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Post> posts = new ArrayList<>();
+
+    @Column(name = "avatar_url")
+    private String avatarUrl;
 
     @Builder
     private Member(String username, String password) {
@@ -53,6 +67,11 @@ public class Member implements UserDetails {
                 .username(username)
                 .password(password)
                 .build();
+    }
+
+    public void generateAvatarUrl() {
+        String serverUrl = "http://localhost:8080/users/avatars/";
+        avatarUrl = serverUrl + String.valueOf(userId);
     }
 
     @Override
@@ -94,5 +113,6 @@ public class Member implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 
 }

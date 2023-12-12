@@ -1,8 +1,9 @@
-package backend.spring.post.model.entity;
+package backend.spring.instagram.model.entity;
 
-import backend.spring.post.model.dto.PostUploadDto;
+import backend.spring.instagram.model.dto.PostUploadDto;
 import backend.spring.member.model.entity.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.List;
@@ -27,43 +29,31 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
-    @JsonIgnore
     private Member author;
 
-    @Column(name = "photo_paths")
-    private List<String> photoPaths;
+    @Column(name = "photo_url")
+    private String photoUrl;
 
     @Column(name = "caption", length = 500)
     private String caption;
 
-    //@ManyToMany
-    //@JoinTable(
-    //        name = "post_tag",
-    //        joinColumns = @JoinColumn(name = "post_id"),
-    //        inverseJoinColumns = @JoinColumn(name = "tag_id")
-    //)
-    //private List<Tag> tagSet;
-
     @Column(name = "location", length = 100)
     private String location;
 
-    //@ManyToMany(mappedBy = "likePostSet")
-    //prvate Set<User> likeUserSet;i
-
     @Builder
-    private Post(Member author, List<String> photoPaths, String caption, String location) {
+    private Post(Member author, String photoUrl, String caption, String location) {
         this.author = author;
-        this.photoPaths = photoPaths;
+        this.photoUrl = photoUrl;
         this.caption = caption;
         this.location = location;
     }
 
-    public static Post create(Member user, List<String> photoPaths, PostUploadDto uploadParam){
+    public static Post create(Member user, String photoUrl, PostUploadDto uploadParam){
         return Post.builder()
                 .author(user)
-                .photoPaths(photoPaths)
+                .photoUrl(photoUrl)
                 .caption(uploadParam.caption())
                 .location(uploadParam.location())
                 .build();

@@ -31,7 +31,9 @@ public class MemberServiceImpl implements MemberService {
         // 비밀번호 인코딩
         String encodedPassword = passwordEncoder.encode(signupParam.password());
         Member user = Member.create(signupParam.username(), encodedPassword);
+        user.generateAvatarUrl();
         memberRepository.save(user);
+        user.generateAvatarUrl();
     }
 
     private void validateDuplicateUser(String username){

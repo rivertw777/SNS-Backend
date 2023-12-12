@@ -31,8 +31,6 @@ export default function Login() {
           data: { token: jwtToken }
         } = response;
         
-        console.log(response.headers['authorization']);
-
         dispatch(setToken(jwtToken));
     
         notification.open({

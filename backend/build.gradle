@@ -44,6 +44,8 @@ dependencies {
 
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
 
+	implementation 'commons-codec:commons-codec:1.15'
+
 	// 테스트에서 Lombok 사용
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'

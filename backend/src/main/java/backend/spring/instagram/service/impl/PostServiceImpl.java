@@ -1,11 +1,11 @@
-package backend.spring.post.service.impl;
+package backend.spring.instagram.service.impl;
 
-import backend.spring.post.model.dto.PostUploadDto;
+import backend.spring.instagram.model.dto.PostUploadDto;
 import backend.spring.member.model.entity.Member;
-import backend.spring.post.model.entity.Post;
+import backend.spring.instagram.model.entity.Post;
 import backend.spring.member.repository.MemberRepository;
-import backend.spring.post.repository.PostRepository;
-import backend.spring.post.service.PostService;
+import backend.spring.instagram.repository.PostRepository;
+import backend.spring.instagram.service.PostService;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,32 +31,37 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private final MemberRepository memberRepository;
 
-    @Value("${file.dir}")
+    @Value("${photo.dir}")
     private String uploadPath;
+    @Value("${photo.url}")
+    private String serverUrl;
 
     @Override
-    public void registerPost(PostUploadDto uploadParam, String username) throws IOException {
+    public void registerPost(PostUploadDto uploadParam) throws IOException {
         // 사진 경로 반환
-        List<String> photoPaths = savePhotos(uploadParam.photos());
+        List<String> photoUrls = savePhotos(uploadParam.photos());
 
         // 작성자 반환
-        Member user = memberRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        Member user = memberRepository.findByUsername(uploadParam.username()).orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + uploadParam.username()));
 
         // 게시물 모델 생성
-        Post post = Post.create(user, photoPaths, uploadParam);
+        Post post = Post.create(user, photoUrls.get(0), uploadParam);
         postRepository.save(post);
     }
 
     private List<String> savePhotos(MultipartFile[] photos) throws IOException{
-        List<String> fileUrls = new ArrayList<>();
+        List<String> photoUrls = new ArrayList<>();
+        String projectPath = System.getProperty("user.dir") + uploadPath;
         for (MultipartFile photo : photos) {
-            String projectPath = System.getProperty("user.dir") + uploadPath;
             String fileName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
             File saveFile = new File(projectPath, fileName);
             photo.transferTo(saveFile);
-            fileUrls.add(saveFile.getPath());
+
+            // post 모델에 담길 경로
+            String photoPath = serverUrl + fileName;
+            photoUrls.add(photoPath);
         }
-        return fileUrls;
+        return photoUrls;
     }
 
     @Override
@@ -76,6 +82,16 @@ public class PostServiceImpl implements PostService {
     @Override
     public void removePost(Long postId) {
         postRepository.deleteById(postId);
+    }
+
+    @Override
+    public void likePost(Long postId) {
+
+    }
+
+    @Override
+    public void unlikePost(Long postId) {
+
     }
 
 }
