@@ -20,8 +20,10 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/instagram/photos/**") // 접근할 URL 패턴
-                .addResourceLocations("classpath:/instagram/photos/", "file:/instagram/photos"); // 모든 리소스 위치
+        registry.addResourceHandler("/users/avatars/**", "/instagram/photos/**")
+                .addResourceLocations(
+                        "file:C:/2023project/spring-with-react/backend/src/main/resources/static/instagram/photos/",
+                        "file:C:/2023project/spring-with-react/backend/src/main/resources/static/users/avatars/");
     }
 
 }

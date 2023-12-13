@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
+
+    @Value("${avatar.url}")
+    private String serverUrl;
 
     @Autowired
     private final MemberRepository memberRepository;
@@ -31,9 +35,13 @@ public class MemberServiceImpl implements MemberService {
         // 비밀번호 인코딩
         String encodedPassword = passwordEncoder.encode(signupParam.password());
         Member user = Member.create(signupParam.username(), encodedPassword);
-        user.generateAvatarUrl();
+
+        // DB 저장
         memberRepository.save(user);
-        user.generateAvatarUrl();
+
+        // 아바타 이미지 경로 저장
+        String avatarUrl = generateAvatarUrl(user.getUserId());
+        user.setAvatarUrl(avatarUrl);
     }
 
     private void validateDuplicateUser(String username){
@@ -41,6 +49,11 @@ public class MemberServiceImpl implements MemberService {
         if (findUser.isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 사용자 이름입니다: " + username);
         }
+    }
+
+    private String generateAvatarUrl(Long userId) {
+        String avatarUrl = serverUrl + userId + ".png";
+        return avatarUrl;
     }
 
     @Override
