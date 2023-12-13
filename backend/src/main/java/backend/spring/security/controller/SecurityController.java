@@ -27,9 +27,8 @@ public class SecurityController {
     private final SecurityService securityService;
     private final AuthenticationManager authenticationManager;
 
-
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@Valid @RequestBody MemberLoginDto loginRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody MemberLoginDto loginRequest) {
         try {
             // 인증 권한 받기
             Authentication authentication = securityService.createAuthentication(loginRequest.username(),
@@ -43,7 +42,7 @@ public class SecurityController {
             return ResponseEntity.ok().body(tokenResponse);
 
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 실패");
         }
     }
 

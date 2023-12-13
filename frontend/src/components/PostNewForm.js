@@ -45,11 +45,11 @@ export default function PostNewForm() {
     } = fieldValues;
 
     const formData = new FormData();
-    formData.append("caption", caption);
-    formData.append("location", location);
     fileList.forEach(file => {
       formData.append("photo", file.originFileObj);
     });
+    formData.append("caption", caption);
+    formData.append("location", location);
 
     const headers = { Authorization: `Bearer ${jwtToken}` };
     try {
@@ -84,27 +84,6 @@ export default function PostNewForm() {
   return (
     <Form {...layout} onFinish={handleFinish} autoComplete={"false"}>
       <Form.Item
-        label="Caption"
-        name="caption"
-        rules={[{ required: true, message: "Caption을 입력해주세요." }]}
-        hasFeedback
-        {...fieldErrors.caption}
-        {...fieldErrors.non_field_errors}
-      >
-        <Input.TextArea />
-      </Form.Item>
-
-      <Form.Item
-        label="Location"
-        name="location"
-        rules={[{ required: true, message: "Location을 입력해주세요." }]}
-        hasFeedback
-        {...fieldErrors.location}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
         label="Photo"
         name="photo"
         rules={[{ required: true, message: "사진을 입력해주세요." }]}
@@ -127,6 +106,27 @@ export default function PostNewForm() {
             </div>
           )}
         </Upload>
+      </Form.Item>
+
+      <Form.Item
+        label="Location"
+        name="location"
+        rules={[{ required: true, message: "Location을 입력해주세요." }]}
+        hasFeedback
+        {...fieldErrors.location}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        label="Caption"
+        name="caption"
+        rules={[{ required: true, message: "Caption을 입력해주세요." }]}
+        hasFeedback
+        {...fieldErrors.caption}
+        {...fieldErrors.non_field_errors}
+      >
+        <Input.TextArea />
       </Form.Item>
 
       <Form.Item {...tailLayout}>

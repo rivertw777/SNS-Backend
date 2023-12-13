@@ -24,8 +24,11 @@ function PostList() {
 
   return (
     <div> 
+      {postList && postList.length === 0 && (
+        <Alert type="warning" message="포스팅이 없습니다. :-(" />
+      )}
       {postList &&
-        postList.map(post => (
+        postList.reverse().map(post => (
           <Post post={post} key={post.id} />
         ))}
     </div>

@@ -32,43 +32,48 @@ public class MemberController {
     @PostMapping("")
     public ResponseEntity<?> signUp(@Valid @RequestBody MemberSignupDto signupParam, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("입력한 정보가 올바르지 않습니다.");
         }
 
         try {
             userService.registerUser(signupParam);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().body("회원 가입 성공");
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("회원 가입 실패");
         }
     }
 
+    // 회원 단일 조회
     @GetMapping("/{userId}")
     public ResponseEntity<Member> getUserById(@PathVariable Long userId) {
         Optional<Member> user = userService.getUserById(userId);
         return user.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
+    // 회원 전체 조회
     @GetMapping("")
     public ResponseEntity<List<Member>> getAllUsers() {
         List<Member> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
+    // 회원 정보 수정
     @PutMapping("/{userId}")
-    public ResponseEntity<Void> modifyUser(@PathVariable Long userId, @Valid @RequestBody MemberUpdateDto updateParam, BindingResult bindingResult) {
+    public ResponseEntity<?> modifyUser(@PathVariable Long userId, @Valid @RequestBody MemberUpdateDto updateParam, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("입력한 정보가 올바르지 않습니다.");
         }
 
         //userService.modifyUser(userId, updateParam);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("회원 수정 성공");
     }
 
+    // 회원 삭제
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> removeUser(@PathVariable Long userId) {
+    public ResponseEntity<?> removeUser(@PathVariable Long userId) {
         userService.removeUser(userId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("회원 삭제 성공");
     }
+
 }
 

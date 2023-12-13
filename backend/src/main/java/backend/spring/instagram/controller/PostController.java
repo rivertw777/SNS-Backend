@@ -36,6 +36,7 @@ public class PostController {
     @Autowired
     private final SecurityUtil securityUtil;
 
+    // 게시물 업로드
     @PostMapping("")
     public ResponseEntity<Void> uploadPost(HttpServletRequest request,
                                            @RequestParam("photo") MultipartFile[] photos,
@@ -56,40 +57,44 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
+    // 게시물 단일 조회
     @GetMapping("/{postId}")
     public ResponseEntity<Post> getPostById(@PathVariable Long postId) {
         Optional<Post> post = postService.getPostById(postId);
         return post.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
+    // 게시물 전체 조회
     @GetMapping("")
     public ResponseEntity<List<Post>> getAllPosts() {
         List<Post> posts = postService.getAllPosts();
         return ResponseEntity.ok(posts);
     }
 
+    // 게시물 정보 수정
     @PutMapping("/{postId}")
-    public ResponseEntity<Void> modifyPost(@PathVariable Long postId, @RequestBody PostUpdateDto updateParam) {
+    public ResponseEntity<?> modifyPost(@PathVariable Long postId, @RequestBody PostUpdateDto updateParam) {
         //postService.modifyPost(postId, updateParam);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("게시물 수정 완료");
     }
 
+    // 게시물 삭제
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> removePost(@PathVariable Long postId) {
+    public ResponseEntity<?> removePost(@PathVariable Long postId) {
         postService.removePost(postId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("게시물 삭제 성공");
     }
 
     @PostMapping("/{postId}/like")
     public ResponseEntity<?> likePost(@PathVariable Long postId) {
         postService.likePost(postId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("좋아요 성공");
     }
 
     @DeleteMapping("/{postId}/like")
     public ResponseEntity<?> unlikePost(@PathVariable Long postId) {
         postService.unlikePost(postId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("좋아요 취소 성공");
     }
 
 }

@@ -7,14 +7,20 @@ import CommentList from "./CommentList";
 
 function Post({ post }) {
 
-  const { author, caption, location, photo_url } = post;
-  const { username, avatar_url } = author;
+  const { author, caption, location, photoUrl } = post;
+  const { username, avatarUrl } = author;
+
+  console.log(post);
 
   return (
     <div className="post">
       <Card
         hoverable
-        cover={<img src={photo_url} alt={caption} />}
+        cover={
+          < div style={{ padding: "29px" , paddingBottom: "10px"}}>
+            <img src={photoUrl} alt="사진" style={{ width: "620px", height: "440px" }}/>
+          </div>
+        }
         actions={[
 
         ]}
@@ -23,7 +29,7 @@ function Post({ post }) {
           avatar={
             <Avatar
               size="large"
-              icon={<img src={avatar_url} alt={username} />}
+              icon={<img src={avatarUrl} alt={username} />}
             />
           }
           title={location}
