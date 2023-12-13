@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface PostService {
 
-    void registerPost(PostUploadDto uploadParam) throws IOException;
+    void registerPost(String username, PostUploadDto uploadParam) throws IOException;
 
     List<Post> getAllPosts();
 

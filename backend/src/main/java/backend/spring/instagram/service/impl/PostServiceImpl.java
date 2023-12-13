@@ -15,7 +15,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,25 +35,31 @@ public class PostServiceImpl implements PostService {
     @Value("${photo.url}")
     private String serverUrl;
 
+    // 게시물 등록
     @Override
-    public void registerPost(PostUploadDto uploadParam) throws IOException {
+    public void registerPost(String username, PostUploadDto uploadParam) throws IOException {
         // 사진 경로 반환
         List<String> photoUrls = savePhotos(uploadParam.photos());
 
         // 작성자 반환
-        Member user = memberRepository.findByUsername(uploadParam.username()).orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + uploadParam.username()));
+        Member user = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        // 게시물 모델 생성
+        // 게시물 모델 생성, 저장
         Post post = Post.create(user, photoUrls.get(0), uploadParam);
         postRepository.save(post);
     }
 
-    private List<String> savePhotos(MultipartFile[] photos) throws IOException{
+
+    // 사진 저장 및 경로 반환
+    private List<String> savePhotos(MultipartFile[] photos) throws IOException {
         List<String> photoUrls = new ArrayList<>();
         String projectPath = System.getProperty("user.dir") + uploadPath;
+
         for (MultipartFile photo : photos) {
             String fileName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
             File saveFile = new File(projectPath, fileName);
+            // 사진 파일 저장
             photo.transferTo(saveFile);
 
             // post 모델에 담길 경로

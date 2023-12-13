@@ -36,25 +36,25 @@ public class PostController {
     @Autowired
     private final SecurityUtil securityUtil;
 
+    //System.out.println(securityUtil.getCurrentMemberId()
+
     // 게시물 업로드
     @PostMapping("")
-    public ResponseEntity<Void> uploadPost(HttpServletRequest request,
+    public ResponseEntity<?> uploadPost(HttpServletRequest request,
                                            @RequestParam("photo") MultipartFile[] photos,
                                            @RequestParam("caption") String caption,
                                            @RequestParam("location") String location) {
 
-        //System.out.println(securityUtil.getCurrentMemberId());
-
         String token = securityService.resolveToken(request);
         String username = securityService.getUsernameFromToken(token);
 
-        PostUploadDto uploadParam = new PostUploadDto(username, photos, caption, location);
+        PostUploadDto uploadParam = new PostUploadDto(photos, caption, location);
         try {
-            postService.registerPost(uploadParam);
+            postService.registerPost(username, uploadParam);
         } catch (IOException | IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("게시물 업로드 성공");
     }
 
     // 게시물 단일 조회
@@ -75,7 +75,7 @@ public class PostController {
     @PutMapping("/{postId}")
     public ResponseEntity<?> modifyPost(@PathVariable Long postId, @RequestBody PostUpdateDto updateParam) {
         //postService.modifyPost(postId, updateParam);
-        return ResponseEntity.ok().body("게시물 수정 완료");
+        return ResponseEntity.ok().body("게시물 수정 성공");
     }
 
     // 게시물 삭제

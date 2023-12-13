@@ -1,6 +1,5 @@
 package backend.spring.instagram.model.entity;
 
-import backend.spring.instagram.model.dto.PostUploadDto;
 import backend.spring.member.model.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,41 +16,37 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@Table(name = "posts")
+@Table(name = "comments")
 @NoArgsConstructor
-public class Post {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postId;
+    private Long commentId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
     private Member author;
 
-    @Column(name = "photo_url")
-    private String photoUrl;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "post_id")
+    private Post post;
 
-    @Column(name = "caption", length = 500)
-    private String caption;
-
-    @Column(name = "location", length = 100)
-    private String location;
+    @Column(name = "location", length = 200)
+    private String message;
 
     @Builder
-    private Post(Member author, String photoUrl, String caption, String location) {
+    private Comment(Member author, Post post, String message) {
         this.author = author;
-        this.photoUrl = photoUrl;
-        this.caption = caption;
-        this.location = location;
+        this.post = post;
+        this.message = message;
     }
 
-    public static Post create(Member author, String photoUrl, PostUploadDto uploadParam){
-        return Post.builder()
+    public static Comment create(Member author, Post post, String message){
+        return Comment.builder()
                 .author(author)
-                .photoUrl(photoUrl)
-                .caption(uploadParam.caption())
-                .location(uploadParam.location())
+                .post(post)
+                .message(message)
                 .build();
     }
 }

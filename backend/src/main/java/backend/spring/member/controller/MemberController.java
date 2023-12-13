@@ -39,7 +39,7 @@ public class MemberController {
             userService.registerUser(signupParam);
             return ResponseEntity.ok().body("회원 가입 성공");
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("회원 가입 실패");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
