@@ -13,12 +13,12 @@ export default function CommentList({ post }){
     const headers = { Authorization: `Bearer ${jwtToken}` };
   
     const [{ data: commentList, loading, error }, refetch] = useAxios({
-      url : `/api/posts/${post.id}/comments/`,
+      url : `/api/posts/${post.id}/comments`,
       headers
     });
 
     const handleCommentSave = async () => {
-        const apiUrl = `/api/posts/${post.id}/comments/`;
+        const apiUrl = `/api/posts/${post.id}/comments`;
 
         console.group("handleCommentSave");
         try {

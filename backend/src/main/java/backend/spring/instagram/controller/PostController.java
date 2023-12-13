@@ -1,17 +1,21 @@
 package backend.spring.instagram.controller;
 
-import backend.spring.security.utils.SecurityUtil;
+import backend.spring.instagram.model.dto.CommentWriteDto;
+import backend.spring.instagram.model.entity.Comment;
+import backend.spring.instagram.service.CommentService;
 import backend.spring.instagram.model.dto.PostUpdateDto;
 import backend.spring.instagram.model.dto.PostUploadDto;
 import backend.spring.instagram.model.entity.Post;
 import backend.spring.instagram.service.PostService;
 import backend.spring.security.service.SecurityService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,10 +36,12 @@ public class PostController {
     @Autowired
     private final PostService postService;
     @Autowired
-    private final SecurityService securityService;
+    private final CommentService commentService;
     @Autowired
-    private final SecurityUtil securityUtil;
+    private final SecurityService securityService;
 
+    //@Autowired
+    //private final SecurityUtil securityUtil;
     //System.out.println(securityUtil.getCurrentMemberId()
 
     // 게시물 업로드
@@ -57,6 +63,29 @@ public class PostController {
         return ResponseEntity.ok().body("게시물 업로드 성공");
     }
 
+    // 댓글 작성
+    @PostMapping("/{postId}/comments")
+    public ResponseEntity<?> writeComment(@PathVariable Long postId, @Valid @RequestBody CommentWriteDto writeParam) {
+        try {
+            commentService.writeComment(postId, writeParam);
+        } catch(IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("댓글 작성 성공");
+    }
+
+    // 댓글 조회
+    @GetMapping("/{postId}/comments")
+    public ResponseEntity<?> getComments(@PathVariable Long postId) {
+        try {
+            // postId를 사용하여 해당 게시물의 댓글 목록을 조회합니다.
+            List<Comment> commentList = commentService.getComments(postId);
+            return ResponseEntity.ok(commentList);
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     // 게시물 단일 조회
     @GetMapping("/{postId}")
     public ResponseEntity<Post> getPostById(@PathVariable Long postId) {
@@ -66,7 +95,7 @@ public class PostController {
 
     // 게시물 전체 조회
     @GetMapping("")
-    public ResponseEntity<List<Post>> getAllPosts() {
+    public ResponseEntity<?> getAllPosts() {
         List<Post> posts = postService.getAllPosts();
         return ResponseEntity.ok(posts);
     }

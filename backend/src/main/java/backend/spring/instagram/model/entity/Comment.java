@@ -1,5 +1,6 @@
 package backend.spring.instagram.model.entity;
 
+import backend.spring.instagram.model.dto.CommentWriteDto;
 import backend.spring.member.model.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,11 +12,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @Table(name = "comments")
 @NoArgsConstructor
 public class Comment {
@@ -32,7 +31,7 @@ public class Comment {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @Column(name = "location", length = 200)
+    @Column(name = "message", length = 200)
     private String message;
 
     @Builder
@@ -42,11 +41,11 @@ public class Comment {
         this.message = message;
     }
 
-    public static Comment create(Member author, Post post, String message){
+    public static Comment create(Member author, Post post, CommentWriteDto writeParam){
         return Comment.builder()
                 .author(author)
                 .post(post)
-                .message(message)
+                .message(writeParam.message())
                 .build();
     }
 }
