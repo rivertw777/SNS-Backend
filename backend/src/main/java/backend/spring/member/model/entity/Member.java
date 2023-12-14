@@ -39,6 +39,7 @@ public class Member implements UserDetails {
     private String username;
 
     @Column(name = "password", length = 60)
+    @JsonIgnore
     private String password;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -63,30 +64,35 @@ public class Member implements UserDetails {
 
     // 사용자의 권한 목록을 반환
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     // 사용자 계정의 만료 여부
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     // 사용자 계정의 잠김 여부
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     // 사용자 인증 정보의 만료 여부
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     // 사용자 계정의 활성화 여부
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }

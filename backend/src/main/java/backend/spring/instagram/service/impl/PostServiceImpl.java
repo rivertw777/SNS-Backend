@@ -43,7 +43,7 @@ public class PostServiceImpl implements PostService {
 
         // 작성자 반환
         Member user = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("해당하는 이름을 가진 회원이 없습니다."));
 
         // 게시물 모델 생성, 저장
         Post post = Post.create(user, photoUrls.get(0), uploadParam);

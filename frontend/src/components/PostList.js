@@ -22,15 +22,39 @@ function PostList() {
     setPostList(originPostList);
   }, [originPostList]);
 
+  const handleLike = async ({ post, isLike }) => {
+    const apiUrl = `/api/posts/${post.postId}/like/`;
+    const method = isLike ? "POST" : "DELETE";
+
+    try {
+      const response = await axiosInstance({
+        url: apiUrl,
+        method,
+        headers
+      });
+      console.log("response :", response);
+
+      setPostList(prevList => {
+        return prevList.map(currentPost =>
+          currentPost === post
+            ? { ...currentPost, is_like: isLike }
+            : currentPost
+        );
+      });
+    } catch (error) {
+      console.log("error :", error);
+    }
+  };
+
   return (
-    <div> 
+    <div>
       {postList && postList.length === 0 && (
         <Alert type="warning" message="포스팅이 없습니다. :-(" />
       )}
       {postList &&
         postList.reverse().map(post => (
-          <Post post={post} key={post.id} />
-        ))}
+          <Post post={post} key={post.postId} handleLike={handleLike} />
+      ))}
     </div>
   );
 }

@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Table(name = "posts")
 @NoArgsConstructor
-public class Post {
+public class Post extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -14,8 +14,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,20 +57,24 @@ public class PostController {
         try {
             postService.registerPost(username, uploadParam);
         } catch (IOException | IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().body("게시물 업로드 성공");
+        return ResponseEntity.ok().build();
     }
 
     // 댓글 작성
     @PostMapping("/{postId}/comments")
-    public ResponseEntity<?> writeComment(@PathVariable Long postId, @Valid @RequestBody CommentWriteDto writeParam) {
+    public ResponseEntity<?> writeComment(HttpServletRequest request, @PathVariable Long postId,
+                                          @Valid @RequestBody CommentWriteDto writeParam) {
+        String token = securityService.resolveToken(request);
+        String username = securityService.getUsernameFromToken(token);
+
         try {
-            commentService.writeComment(postId, writeParam);
-        } catch(IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            Comment comment = commentService.writeComment( username, postId, writeParam);
+            return ResponseEntity.ok(comment);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body("댓글 작성 성공");
     }
 
     // 댓글 조회
@@ -82,7 +85,7 @@ public class PostController {
             List<Comment> commentList = commentService.getComments(postId);
             return ResponseEntity.ok(commentList);
         } catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -104,26 +107,26 @@ public class PostController {
     @PutMapping("/{postId}")
     public ResponseEntity<?> modifyPost(@PathVariable Long postId, @RequestBody PostUpdateDto updateParam) {
         //postService.modifyPost(postId, updateParam);
-        return ResponseEntity.ok().body("게시물 수정 성공");
+        return ResponseEntity.ok().build();
     }
 
     // 게시물 삭제
     @DeleteMapping("/{postId}")
     public ResponseEntity<?> removePost(@PathVariable Long postId) {
         postService.removePost(postId);
-        return ResponseEntity.ok().body("게시물 삭제 성공");
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{postId}/like")
     public ResponseEntity<?> likePost(@PathVariable Long postId) {
         postService.likePost(postId);
-        return ResponseEntity.ok().body("좋아요 성공");
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{postId}/like")
     public ResponseEntity<?> unlikePost(@PathVariable Long postId) {
         postService.unlikePost(postId);
-        return ResponseEntity.ok().body("좋아요 취소 성공");
+        return ResponseEntity.ok().build();
     }
 
 }

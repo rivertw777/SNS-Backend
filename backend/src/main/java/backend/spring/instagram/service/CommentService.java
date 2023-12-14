@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface CommentService {
-    void writeComment(Long PostId, CommentWriteDto wirteParam);
+    Comment writeComment(String username, Long PostId, CommentWriteDto wirteParam);
     List<Comment> getComments(Long postId);
 
 }

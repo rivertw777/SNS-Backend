@@ -32,14 +32,14 @@ public class MemberController {
     @PostMapping("")
     public ResponseEntity<?> signUp(@Valid @RequestBody MemberSignupDto signupParam, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body("입력한 정보가 올바르지 않습니다.");
+            return ResponseEntity.badRequest().build();
         }
 
         try {
             userService.registerUser(signupParam);
-            return ResponseEntity.ok().body("회원 가입 성공");
+            return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -61,18 +61,18 @@ public class MemberController {
     @PutMapping("/{userId}")
     public ResponseEntity<?> modifyUser(@PathVariable Long userId, @Valid @RequestBody MemberUpdateDto updateParam, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body("입력한 정보가 올바르지 않습니다.");
+            return ResponseEntity.badRequest().build();
         }
 
         //userService.modifyUser(userId, updateParam);
-        return ResponseEntity.ok().body("회원 수정 성공");
+        return ResponseEntity.ok().build();
     }
 
     // 회원 삭제
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> removeUser(@PathVariable Long userId) {
         userService.removeUser(userId);
-        return ResponseEntity.ok().body("회원 삭제 성공");
+        return ResponseEntity.ok().build();
     }
 
 }

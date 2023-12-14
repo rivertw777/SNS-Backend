@@ -7,9 +7,11 @@ import backend.spring.instagram.repository.CommentRepository;
 import backend.spring.instagram.repository.PostRepository;
 import backend.spring.instagram.service.CommentService;
 import backend.spring.member.model.entity.Member;
+import backend.spring.member.repository.MemberRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,15 +24,20 @@ public class CommentServiceimpl implements CommentService {
     CommentRepository commentRepository;
     @Autowired
     PostRepository postRepository;
+    @Autowired
+    MemberRepository memberRepository;
+
     @Override
-    public void writeComment(Long postId, CommentWriteDto wirteParam) {
+    public Comment writeComment(String username, Long postId, CommentWriteDto wirteParam) {
         // 게시물과 작성자 반환
         Post post = postRepository.findByPostId(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 게시물이 없습니다."));
-        Member member = post.getAuthor();
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("해당하는 이름을 가진 회원이 없습니다."));
 
         Comment comment = Comment.create(member, post, wirteParam);
         commentRepository.save(comment);
+        return comment;
     }
 
     @Override

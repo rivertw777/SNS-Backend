@@ -10,7 +10,6 @@ function Post({ post }) {
   const { author, caption, location, photoUrl } = post;
   const { username, avatarUrl } = author;
 
-  console.log(post);
 
   return (
     <div className="post">

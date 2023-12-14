@@ -42,7 +42,7 @@ public class SecurityController {
             return ResponseEntity.ok().body(tokenResponse);
 
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
