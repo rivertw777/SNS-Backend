@@ -5,11 +5,12 @@ import "./Post.scss";
 import { useAppContext } from "store";
 import CommentList from "./CommentList";
 
-function Post({ post }) {
+function Post({ post, handleLike }) {
 
-  const { author, caption, location, photoUrl } = post;
+  const { author, caption, location, photoUrl, isLike } = post;
   const { username, avatarUrl } = author;
 
+  console.log(post);
 
   return (
     <div className="post">
@@ -21,7 +22,14 @@ function Post({ post }) {
           </div>
         }
         actions={[
-
+          isLike ? (
+            <HeartTwoTone
+              twoToneColor="#eb2f96"
+              onClick={() => handleLike({ post, isLike: false })}
+            />
+          ) : (
+            <HeartOutlined onClick={() => handleLike({ post, isLike: true })} />
+          )
         ]}
       >
         <Card.Meta

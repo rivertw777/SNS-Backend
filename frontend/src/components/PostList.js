@@ -19,11 +19,16 @@ function PostList() {
   });
 
   useEffect(() => {
-    setPostList(originPostList);
+    if (originPostList && originPostList.length > 0) {
+      const sortedPostList = originPostList.sort(
+        (a, b) => b.postId - a.postId
+      );
+      setPostList(sortedPostList);
+    }
   }, [originPostList]);
 
   const handleLike = async ({ post, isLike }) => {
-    const apiUrl = `/api/posts/${post.postId}/like/`;
+    const apiUrl = `/api/posts/${post.postId}/like`;
     const method = isLike ? "POST" : "DELETE";
 
     try {
@@ -37,7 +42,7 @@ function PostList() {
       setPostList(prevList => {
         return prevList.map(currentPost =>
           currentPost === post
-            ? { ...currentPost, is_like: isLike }
+            ? { ...currentPost, isLike : isLike }
             : currentPost
         );
       });
@@ -52,9 +57,9 @@ function PostList() {
         <Alert type="warning" message="포스팅이 없습니다. :-(" />
       )}
       {postList &&
-        postList.reverse().map(post => (
+        postList.map(post => (
           <Post post={post} key={post.postId} handleLike={handleLike} />
-      ))}
+        ))}
     </div>
   );
 }

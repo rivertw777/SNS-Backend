@@ -1,7 +1,7 @@
 package backend.spring.security.controller;
 
 import backend.spring.security.model.dto.TokenResponse;
-import backend.spring.member.model.dto.MemberLoginDto;
+import backend.spring.member.model.dto.MemberLoginRequest;
 
 import backend.spring.security.service.SecurityService;
 import jakarta.validation.Valid;
@@ -28,7 +28,7 @@ public class SecurityController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody MemberLoginDto loginRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody MemberLoginRequest loginRequest) {
         try {
             // 인증 권한 받기
             Authentication authentication = securityService.createAuthentication(loginRequest.username(),

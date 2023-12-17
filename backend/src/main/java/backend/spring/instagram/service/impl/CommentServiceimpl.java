@@ -1,6 +1,6 @@
 package backend.spring.instagram.service.impl;
 
-import backend.spring.instagram.model.dto.CommentWriteDto;
+import backend.spring.instagram.model.dto.request.CommentWriteRequest;
 import backend.spring.instagram.model.entity.Comment;
 import backend.spring.instagram.model.entity.Post;
 import backend.spring.instagram.repository.CommentRepository;
@@ -28,7 +28,7 @@ public class CommentServiceimpl implements CommentService {
     MemberRepository memberRepository;
 
     @Override
-    public Comment writeComment(String username, Long postId, CommentWriteDto wirteParam) {
+    public void writeComment(String username, Long postId, CommentWriteRequest wirteParam) {
         // 게시물과 작성자 반환
         Post post = postRepository.findByPostId(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 게시물이 없습니다."));
@@ -37,7 +37,6 @@ public class CommentServiceimpl implements CommentService {
 
         Comment comment = Comment.create(member, post, wirteParam);
         commentRepository.save(comment);
-        return comment;
     }
 
     @Override

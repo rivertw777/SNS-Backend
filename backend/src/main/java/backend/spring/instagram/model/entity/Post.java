@@ -1,6 +1,6 @@
 package backend.spring.instagram.model.entity;
 
-import backend.spring.instagram.model.dto.PostUploadDto;
+import backend.spring.instagram.model.dto.request.PostUploadRequest;
 import backend.spring.member.model.entity.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
@@ -11,11 +11,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -47,6 +51,14 @@ public class Post extends BaseTimeEntity {
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "post_like_user",
+            joinColumns = @JoinColumn(name = "postId"),
+            inverseJoinColumns = @JoinColumn(name = "userId")
+    )
+    private Set<Member> likeUserSet = new HashSet<>();
+
     @Builder
     private Post(Member author, String photoUrl, String caption, String location) {
         this.author = author;
@@ -55,7 +67,7 @@ public class Post extends BaseTimeEntity {
         this.location = location;
     }
 
-    public static Post create(Member author, String photoUrl, PostUploadDto uploadParam){
+    public static Post create(Member author, String photoUrl, PostUploadRequest uploadParam){
         return Post.builder()
                 .author(author)
                 .photoUrl(photoUrl)

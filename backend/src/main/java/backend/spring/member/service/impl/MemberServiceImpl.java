@@ -1,6 +1,6 @@
 package backend.spring.member.service.impl;
 
-import backend.spring.member.model.dto.MemberSignupDto;
+import backend.spring.member.model.dto.MemberSignupRequest;
 import backend.spring.member.model.entity.Member;
 import backend.spring.member.repository.MemberRepository;
 import backend.spring.member.service.MemberService;
@@ -28,7 +28,7 @@ public class MemberServiceImpl implements MemberService {
 
     // 회원 가입
     @Override
-    public void registerUser(MemberSignupDto signupParam) {
+    public void registerUser(MemberSignupRequest signupParam) {
         // 이미 존재하는 사용자 이름이라면 예외 발생
         validateDuplicateUser(signupParam.username());
 

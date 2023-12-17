@@ -4,8 +4,6 @@ import moment from "moment";
 
 export default function Comment({ comment }) {
 
-  console.log(comment);
-
   const {
     author: { username, avatarUrl },
     message,

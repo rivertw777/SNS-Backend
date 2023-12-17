@@ -1,7 +1,7 @@
 package backend.spring.member.controller;
 
-import backend.spring.member.model.dto.MemberSignupDto;
-import backend.spring.member.model.dto.MemberUpdateDto;
+import backend.spring.member.model.dto.MemberSignupRequest;
+import backend.spring.member.model.dto.MemberUpdateRequest;
 import backend.spring.member.model.entity.Member;
 import backend.spring.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -30,7 +30,7 @@ public class MemberController {
 
     // 회원 가입
     @PostMapping("")
-    public ResponseEntity<?> signUp(@Valid @RequestBody MemberSignupDto signupParam, BindingResult bindingResult) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody MemberSignupRequest signupParam, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().build();
         }
@@ -59,7 +59,7 @@ public class MemberController {
 
     // 회원 정보 수정
     @PutMapping("/{userId}")
-    public ResponseEntity<?> modifyUser(@PathVariable Long userId, @Valid @RequestBody MemberUpdateDto updateParam, BindingResult bindingResult) {
+    public ResponseEntity<?> modifyUser(@PathVariable Long userId, @Valid @RequestBody MemberUpdateRequest updateParam, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().build();
         }

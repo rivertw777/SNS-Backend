@@ -1,20 +1,25 @@
 package backend.spring.instagram.controller;
 
-import backend.spring.instagram.model.dto.CommentWriteDto;
+import backend.spring.instagram.model.dto.mapper.PostResponseMapper;
+import backend.spring.instagram.model.dto.response.PostResponse;
+import backend.spring.instagram.model.dto.request.CommentWriteRequest;
+import backend.spring.instagram.model.dto.response.PostLikeResponse;
+import backend.spring.instagram.model.dto.request.PostUpdateRequest;
 import backend.spring.instagram.model.entity.Comment;
 import backend.spring.instagram.service.CommentService;
-import backend.spring.instagram.model.dto.PostUpdateDto;
-import backend.spring.instagram.model.dto.PostUploadDto;
+import backend.spring.instagram.model.dto.request.PostUploadRequest;
 import backend.spring.instagram.model.entity.Post;
 import backend.spring.instagram.service.PostService;
+import backend.spring.member.model.entity.Member;
 import backend.spring.security.service.SecurityService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +43,8 @@ public class PostController {
     private final CommentService commentService;
     @Autowired
     private final SecurityService securityService;
+    @Autowired
+    private final PostResponseMapper postResponseMapper;
 
     //@Autowired
     //private final SecurityUtil securityUtil;
@@ -53,7 +60,7 @@ public class PostController {
         String token = securityService.resolveToken(request);
         String username = securityService.getUsernameFromToken(token);
 
-        PostUploadDto uploadParam = new PostUploadDto(photos, caption, location);
+        PostUploadRequest uploadParam = new PostUploadRequest(photos, caption, location);
         try {
             postService.registerPost(username, uploadParam);
         } catch (IOException | IllegalArgumentException e) {
@@ -62,16 +69,39 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
+    // 게시물 전체 조회
+    @GetMapping("")
+    public ResponseEntity<?> getAllPosts(HttpServletRequest request) {
+
+        String token = securityService.resolveToken(request);
+        String username = securityService.getUsernameFromToken(token);
+
+        // 모든 Post 조회
+        List<Post> posts = postService.getAllPosts();
+
+        List<PostResponse> postResponses = getPostResponses(posts, username);
+        return ResponseEntity.ok(postResponses);
+    }
+
+    private List<PostResponse> getPostResponses(List<Post> posts, String username) {
+        Member member = (Member) securityService.loadUserByUsername(username);
+        Long userId = member.getUserId();
+
+        return posts.stream()
+                .map(post -> postResponseMapper.toPostResponse(post, userId))
+                .collect(Collectors.toList());
+    }
+
     // 댓글 작성
     @PostMapping("/{postId}/comments")
     public ResponseEntity<?> writeComment(HttpServletRequest request, @PathVariable Long postId,
-                                          @Valid @RequestBody CommentWriteDto writeParam) {
+                                          @Valid @RequestBody CommentWriteRequest writeParam) {
         String token = securityService.resolveToken(request);
         String username = securityService.getUsernameFromToken(token);
 
         try {
-            Comment comment = commentService.writeComment( username, postId, writeParam);
-            return ResponseEntity.ok(comment);
+            commentService.writeComment( username, postId, writeParam);
+            return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
@@ -89,6 +119,30 @@ public class PostController {
         }
     }
 
+    // 게시물 좋아요
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<?> likePost(HttpServletRequest request, @PathVariable Long postId) {
+
+        String token = securityService.resolveToken(request);
+        String username = securityService.getUsernameFromToken(token);
+
+        postService.likePost(username, postId);
+
+        return ResponseEntity.ok(new PostLikeResponse(true));
+    }
+
+    // 게시물 좋아요 취소
+    @DeleteMapping("/{postId}/like")
+    public ResponseEntity<?> unlikePost(HttpServletRequest request, @PathVariable Long postId) {
+
+        String token = securityService.resolveToken(request);
+        String username = securityService.getUsernameFromToken(token);
+
+        postService.unlikePost(username, postId);
+        
+        return ResponseEntity.ok(new PostLikeResponse(false));
+    }
+
     // 게시물 단일 조회
     @GetMapping("/{postId}")
     public ResponseEntity<Post> getPostById(@PathVariable Long postId) {
@@ -96,16 +150,9 @@ public class PostController {
         return post.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    // 게시물 전체 조회
-    @GetMapping("")
-    public ResponseEntity<?> getAllPosts() {
-        List<Post> posts = postService.getAllPosts();
-        return ResponseEntity.ok(posts);
-    }
-
     // 게시물 정보 수정
     @PutMapping("/{postId}")
-    public ResponseEntity<?> modifyPost(@PathVariable Long postId, @RequestBody PostUpdateDto updateParam) {
+    public ResponseEntity<?> modifyPost(@PathVariable Long postId, @RequestBody PostUpdateRequest updateParam) {
         //postService.modifyPost(postId, updateParam);
         return ResponseEntity.ok().build();
     }
@@ -117,16 +164,5 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{postId}/like")
-    public ResponseEntity<?> likePost(@PathVariable Long postId) {
-        postService.likePost(postId);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{postId}/like")
-    public ResponseEntity<?> unlikePost(@PathVariable Long postId) {
-        postService.unlikePost(postId);
-        return ResponseEntity.ok().build();
-    }
 
 }

@@ -1,5 +1,6 @@
 package backend.spring.member.model.entity;
 
+import backend.spring.instagram.model.entity.Comment;
 import backend.spring.instagram.model.entity.Post;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
@@ -39,12 +40,15 @@ public class Member implements UserDetails {
     private String username;
 
     @Column(name = "password", length = 60)
-    @JsonIgnore
     private String password;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Comment> comments = new ArrayList<>();
 
     @Column(name = "avatar_url")
     private String avatarUrl;
