@@ -1,7 +1,7 @@
 package backend.spring.security.controller;
 
 import backend.spring.security.model.dto.TokenResponse;
-import backend.spring.member.model.dto.MemberLoginRequest;
+import backend.spring.member.model.dto.request.MemberLoginRequest;
 
 import backend.spring.security.service.SecurityService;
 import jakarta.validation.Valid;

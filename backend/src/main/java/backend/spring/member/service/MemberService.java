@@ -1,6 +1,6 @@
 package backend.spring.member.service;
 
-import backend.spring.member.model.dto.MemberSignupRequest;
+import backend.spring.member.model.dto.request.MemberSignupRequest;
 import backend.spring.member.model.entity.Member;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -12,6 +12,8 @@ public interface MemberService {
 
     void registerUser(MemberSignupRequest signupParam);
 
+    List<Member> getSuggestions(String username);
+
     List<Member> getAllUsers();
 
     Optional<Member> getUserById(Long userId);
@@ -19,5 +21,4 @@ public interface MemberService {
     //void modifyUser(Long userId, UserUpdateDto updateParam);
 
     void removeUser(Long userId);
-
 }

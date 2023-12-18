@@ -61,18 +61,22 @@ public class Member implements UserDetails {
     @ManyToMany
     @JoinTable(
             name = "follower_set",
-            joinColumns = @JoinColumn(name = "from_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "to_user_id")
+            inverseJoinColumns = @JoinColumn(name = "from_user_id"),
+            joinColumns = @JoinColumn(name = "to_user_id")
     )
     private Set<Member> followerSet = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
             name = "following_set",
-            joinColumns = @JoinColumn(name = "to_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "from_user_id")
-    )
+            joinColumns = @JoinColumn(name = "from_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "to_user_id"))
     private Set<Member> followingSet = new HashSet<>();
+
+    // 해당 유저를 팔로잉중인지
+    public boolean isFollowingUser(Long suggestionId) {
+        return followingSet.stream().anyMatch(member -> member.getUserId().equals(suggestionId));
+    }
 
     @Builder
     private Member(String username, String password) {

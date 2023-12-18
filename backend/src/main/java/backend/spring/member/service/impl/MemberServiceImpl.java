@@ -1,14 +1,16 @@
 package backend.spring.member.service.impl;
 
-import backend.spring.member.model.dto.MemberSignupRequest;
+import backend.spring.member.model.dto.request.MemberSignupRequest;
 import backend.spring.member.model.entity.Member;
 import backend.spring.member.repository.MemberRepository;
 import backend.spring.member.service.MemberService;
+import backend.spring.member.service.MemberFilter;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,8 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     @Autowired
     private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private final MemberFilter memberFilter;
 
     // 회원 가입
     @Override
@@ -42,6 +46,20 @@ public class MemberServiceImpl implements MemberService {
         // 아바타 이미지 경로 저장
         String avatarUrl = generateAvatarUrl(user.getUserId());
         user.setAvatarUrl(avatarUrl);
+    }
+
+    // 추천 회원 리스트 반환
+    @Override
+    public List<Member> getSuggestions(String username) {
+        // 현재 이용자 반환
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("해당하는 이름을 가진 회원이 없습니다."));
+        // 모든 회원 반환
+        List<Member> members = memberRepository.findAll();
+
+        // 필터링 거쳐서 추천 이용자 리스트 반환
+        List<Member> suggestions = memberFilter.toSuggestions(members, member);
+        return suggestions;
     }
 
     private void validateDuplicateUser(String username){

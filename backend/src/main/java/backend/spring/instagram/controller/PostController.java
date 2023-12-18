@@ -3,7 +3,6 @@ package backend.spring.instagram.controller;
 import backend.spring.instagram.model.dto.response.mapper.PostResponseMapper;
 import backend.spring.instagram.model.dto.response.PostResponse;
 import backend.spring.instagram.model.dto.request.CommentWriteRequest;
-import backend.spring.instagram.model.dto.response.PostLikeResponse;
 import backend.spring.instagram.model.dto.request.PostUpdateRequest;
 import backend.spring.instagram.model.entity.Comment;
 import backend.spring.instagram.service.CommentService;
@@ -128,7 +127,7 @@ public class PostController {
 
         try {
             postService.likePost(username, postId);
-            return ResponseEntity.ok(new PostLikeResponse(true));
+            return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().build();
         }
@@ -143,7 +142,7 @@ public class PostController {
 
         try {
             postService.unlikePost(username, postId);
-            return ResponseEntity.ok(new PostLikeResponse(false));
+            return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().build();
         }

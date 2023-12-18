@@ -12,26 +12,26 @@ export default function SuggestionList({ style }) {
 
   const [userList, setUserList] = useState();
 
-  const headers = { Authorization: `JWT ${jwtToken}` };
+  const headers = { Authorization: `Bearer ${jwtToken}` };
 
   const [{ data: origUserList, loading, error }, refetch] = useAxios({
-    url: "/accounts/suggestions/",
+    url: "api/users/suggestions",
     headers
   });
 
   useEffect(() => {
     if (!origUserList) setUserList([]);
-    else setUserList(origUserList.map(user => ({...user, is_follow: false })));
+    else setUserList(origUserList.map(user => ({...user, isFollow: false })));
   }, [origUserList]); 
 
   const onFollowUser = username => {
     const data = { username };
     const config = { headers };
-    axiosInstance.post("/accounts/follow/", data, config)
+    axiosInstance.post("api/users/follow", data, config)
       .then(response => {
         setUserList(prevUserList =>
           prevUserList.map(user =>
-            user.username !== username ? user : { ...user, is_follow: true }
+            user.username !== username ? user : { ...user, isFollow: true }
           )
         );
       })
