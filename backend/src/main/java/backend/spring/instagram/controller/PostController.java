@@ -1,6 +1,6 @@
 package backend.spring.instagram.controller;
 
-import backend.spring.instagram.model.dto.mapper.PostResponseMapper;
+import backend.spring.instagram.model.dto.response.mapper.PostResponseMapper;
 import backend.spring.instagram.model.dto.response.PostResponse;
 import backend.spring.instagram.model.dto.request.CommentWriteRequest;
 import backend.spring.instagram.model.dto.response.PostLikeResponse;
@@ -126,9 +126,12 @@ public class PostController {
         String token = securityService.resolveToken(request);
         String username = securityService.getUsernameFromToken(token);
 
-        postService.likePost(username, postId);
-
-        return ResponseEntity.ok(new PostLikeResponse(true));
+        try {
+            postService.likePost(username, postId);
+            return ResponseEntity.ok(new PostLikeResponse(true));
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     // 게시물 좋아요 취소
@@ -138,9 +141,12 @@ public class PostController {
         String token = securityService.resolveToken(request);
         String username = securityService.getUsernameFromToken(token);
 
-        postService.unlikePost(username, postId);
-        
-        return ResponseEntity.ok(new PostLikeResponse(false));
+        try {
+            postService.unlikePost(username, postId);
+            return ResponseEntity.ok(new PostLikeResponse(false));
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     // 게시물 단일 조회
@@ -163,6 +169,5 @@ public class PostController {
         postService.removePost(postId);
         return ResponseEntity.ok().build();
     }
-
 
 }

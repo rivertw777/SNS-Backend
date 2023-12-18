@@ -1,4 +1,4 @@
-package backend.spring.instagram.model.dto.mapper;
+package backend.spring.instagram.model.dto.response.mapper;
 
 import backend.spring.instagram.model.dto.response.PostResponse;
 import backend.spring.instagram.model.entity.Post;
