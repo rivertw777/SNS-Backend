@@ -75,4 +75,10 @@ public class Post extends BaseTimeEntity {
                 .location(uploadParam.location())
                 .build();
     }
+
+    public boolean isLikeUser(Long userId) {
+        return likeUserSet.stream()
+                .anyMatch(member -> member.getUserId().equals(userId));
+    }
+
 }
