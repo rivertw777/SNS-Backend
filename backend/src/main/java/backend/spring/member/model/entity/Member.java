@@ -60,17 +60,10 @@ public class Member implements UserDetails {
 
     @ManyToMany
     @JoinTable(
-            name = "follower_set",
-            inverseJoinColumns = @JoinColumn(name = "from_user_id"),
-            joinColumns = @JoinColumn(name = "to_user_id")
-    )
-    private Set<Member> followerSet = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(
             name = "following_set",
-            joinColumns = @JoinColumn(name = "from_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "to_user_id"))
+            joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "following_id")
+    )
     private Set<Member> followingSet = new HashSet<>();
 
     // 해당 유저를 팔로잉중인지

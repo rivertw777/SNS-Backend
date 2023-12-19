@@ -18,7 +18,7 @@ public interface MemberService {
 
     Optional<Member> getUserById(Long userId);
 
-    //void modifyUser(Long userId, UserUpdateDto updateParam);
-
     void removeUser(Long userId);
+
+    void followMember(String username, String username1);
 }

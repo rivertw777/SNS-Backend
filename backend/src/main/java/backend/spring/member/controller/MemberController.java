@@ -1,7 +1,7 @@
 package backend.spring.member.controller;
 
 import backend.spring.member.model.dto.request.MemberSignupRequest;
-import backend.spring.member.model.dto.request.MemberUpdateRequest;
+import backend.spring.member.model.dto.request.SuggestionRequest;
 import backend.spring.member.model.dto.response.SuggestionResponse;
 import backend.spring.member.model.dto.response.mapper.SuggestionResponseMapper;
 import backend.spring.member.model.entity.Member;
@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -58,31 +57,31 @@ public class MemberController {
         String token = securityService.resolveToken(request);
         String username = securityService.getUsernameFromToken(token);
 
-        // 추천 이용자 반환
+        // 추천 회원 반환
         List<Member> suggestions = memberService.getSuggestions(username);
 
-        List<SuggestionResponse> SuggestionResponses = getSuggestionResponses(suggestions);
+        // 추천 회원 응답 반환
+        List<SuggestionResponse> SuggestionResponses = suggestionResponseMapper.toSuggestionResponses(suggestions);
         return ResponseEntity.ok(SuggestionResponses);
-    }
-
-    private List<SuggestionResponse> getSuggestionResponses(List<Member> members) {
-        return members.stream()
-                .map(member -> SuggestionResponseMapper.toMemberResponse(member, 100L))
-                .collect(Collectors.toList());
     }
 
 
     // 유저 팔로우
     @PostMapping("/follow")
-    public ResponseEntity<Void> followUser(HttpServletRequest request) {
+    public ResponseEntity<?> followUser(HttpServletRequest request, @Valid @RequestBody SuggestionRequest memberParam
+                                        ) {
         String token = securityService.resolveToken(request);
         String username = securityService.getUsernameFromToken(token);
 
         // 유저 팔로우
-        //userService.followUser(username, followRequest.getUsername());
+        memberService.followMember(username, memberParam.username());
 
         return ResponseEntity.ok().build();
     }
+
+    // 유저 언팔로우
+    //@DeleteMapping("/follow")
+
 
     // 회원 전체 조회
     @GetMapping("")
@@ -96,18 +95,6 @@ public class MemberController {
     public ResponseEntity<Member> getUserById(@PathVariable Long userId) {
         Optional<Member> user = memberService.getUserById(userId);
         return user.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
-    }
-
-
-    // 회원 정보 수정
-    @PutMapping("/{userId}")
-    public ResponseEntity<?> modifyUser(@PathVariable Long userId, @Valid @RequestBody MemberUpdateRequest updateParam, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        //userService.modifyUser(userId, updateParam);
-        return ResponseEntity.ok().build();
     }
 
     // 회원 삭제

@@ -2,14 +2,22 @@ package backend.spring.member.model.dto.response.mapper;
 
 import backend.spring.member.model.dto.response.SuggestionResponse;
 import backend.spring.member.model.entity.Member;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SuggestionResponseMapper {
-    public static SuggestionResponse toMemberResponse(Member member, Long suggestionUserId) {
+    public static List<SuggestionResponse> toSuggestionResponses(List<Member> suggestions) {
+        return suggestions.stream()
+                .map(suggestion -> SuggestionResponseMapper.toSuggestionResponse(suggestion))
+                .collect(Collectors.toList());
+    }
+
+    public static SuggestionResponse toSuggestionResponse(Member suggestion) {
         return new SuggestionResponse(
-                member.getUsername(),
-                member.getAvatarUrl(),
+                suggestion.getUsername(),
+                suggestion.getAvatarUrl(),
                 false
         );
     }

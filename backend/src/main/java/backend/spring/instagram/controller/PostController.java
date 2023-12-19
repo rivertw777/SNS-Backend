@@ -74,22 +74,17 @@ public class PostController {
 
         String token = securityService.resolveToken(request);
         String username = securityService.getUsernameFromToken(token);
+        Member member = (Member) securityService.loadUserByUsername(username);
+        Long userId = member.getUserId();
 
         // 모든 Post 조회
         List<Post> posts = postService.getAllPosts();
 
-        List<PostResponse> postResponses = getPostResponses(posts, username);
+        // 게시물 dto 반환
+        List<PostResponse> postResponses = postResponseMapper.toPostResponses(posts, userId);
         return ResponseEntity.ok(postResponses);
     }
 
-    private List<PostResponse> getPostResponses(List<Post> posts, String username) {
-        Member member = (Member) securityService.loadUserByUsername(username);
-        Long userId = member.getUserId();
-
-        return posts.stream()
-                .map(post -> postResponseMapper.toPostResponse(post, userId))
-                .collect(Collectors.toList());
-    }
 
     // 댓글 작성
     @PostMapping("/{postId}/comments")

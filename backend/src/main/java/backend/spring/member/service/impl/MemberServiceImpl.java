@@ -84,14 +84,20 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findById(userId);
     }
 
-    //@Override
-    //public void modifyUser(Long userId, UserUpdateDto updateParam) {
-    //    userRepository.update(userId, updateParam);
-    //}
-
     @Override
     public void removeUser(Long userId) {
         memberRepository.deleteById(userId);
+    }
+
+    @Override
+    public void followMember(String username, String suggestionMemberName) {
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("해당하는 이름을 가진 회원이 없습니다."));
+        Member suggestionMember = memberRepository.findByUsername(suggestionMemberName)
+                .orElseThrow(() -> new UsernameNotFoundException("해당하는 이름을 가진 회원이 없습니다."));
+
+        member.getFollowingSet().add(suggestionMember);
+        memberRepository.save(member);
     }
 
 }
