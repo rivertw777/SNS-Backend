@@ -1,5 +1,7 @@
 package backend.spring.security.service;
 
+import backend.spring.member.model.entity.Member;
+import backend.spring.security.model.entity.CustomUserDetails;
 import backend.spring.security.utils.TokenProvider;
 import backend.spring.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,16 +25,15 @@ public class SecurityService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return memberRepository.findByUsername(username)
+        Member member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 이름을 가진 회원이 없습니다."));
+
+        return new CustomUserDetails(member);
     }
 
     // 인증 생성
     public Authentication createAuthentication(String username, String password){
-        // 해당 이름을 가진 유저가 있는지 확인
-        UserDetails user = loadUserByUsername(username);
-
-        return new UsernamePasswordAuthenticationToken(user, password, user.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(username, password);
     }
 
     // jwt 토큰 생성

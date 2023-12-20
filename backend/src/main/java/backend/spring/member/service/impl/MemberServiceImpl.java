@@ -2,6 +2,7 @@ package backend.spring.member.service.impl;
 
 import backend.spring.member.model.dto.request.MemberSignupRequest;
 import backend.spring.member.model.entity.Member;
+import backend.spring.member.model.entity.Role;
 import backend.spring.member.repository.MemberRepository;
 import backend.spring.member.service.MemberService;
 import backend.spring.member.service.MemberFilter;
@@ -38,7 +39,7 @@ public class MemberServiceImpl implements MemberService {
 
         // 비밀번호 인코딩
         String encodedPassword = passwordEncoder.encode(signupParam.password());
-        Member user = Member.create(signupParam.username(), encodedPassword);
+        Member user = new Member(signupParam.username(), encodedPassword, Role.USER);
 
         // DB 저장
         memberRepository.save(user);

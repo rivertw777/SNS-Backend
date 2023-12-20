@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -48,7 +48,7 @@ public class SecurityConfig {
     // 특정 주소 무시
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/api/users", "/api/security/login","/**");
+        return (web) -> web.ignoring().requestMatchers("/api/users", "/api/security/login");
     }
 
     @Bean

@@ -7,6 +7,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Enumeration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,7 +29,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         if (token != null) {
             // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext 에 저장
             Authentication authentication = jwtTokenProvider.extractAuthentication(token);
-            System.out.println(authentication);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         chain.doFilter(request, response);
@@ -36,7 +36,15 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
     // Request Header 에서 토큰 정보 추출
     private String resolveToken(HttpServletRequest request) {
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            String headerValue = request.getHeader(headerName);
+            System.out.println(headerName + ": " + headerValue);
+        }
         String token = request.getHeader("Authorization");
+        System.out.println(token);
+        System.out.println(4);
         if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
             return token.substring(7);
         }

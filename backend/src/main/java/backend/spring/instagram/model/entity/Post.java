@@ -21,11 +21,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
+@Getter
 @Table(name = "posts")
 @NoArgsConstructor
 public class Post extends BaseTimeEntity {

@@ -16,7 +16,6 @@ import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -51,13 +50,12 @@ public class PostController {
 
     // 게시물 업로드
     @PostMapping("")
-    public ResponseEntity<?> uploadPost(HttpServletRequest request,
+    public ResponseEntity<?> uploadPost(
                                            @RequestParam("photo") MultipartFile[] photos,
                                            @RequestParam("caption") String caption,
                                            @RequestParam("location") String location) {
 
-        String token = securityService.resolveToken(request);
-        String username = securityService.getUsernameFromToken(token);
+        String username = "taewon";
 
         PostUploadRequest uploadParam = new PostUploadRequest(photos, caption, location);
         try {
@@ -73,7 +71,9 @@ public class PostController {
     public ResponseEntity<?> getAllPosts(HttpServletRequest request) {
 
         String token = securityService.resolveToken(request);
-        String username = securityService.getUsernameFromToken(token);
+        System.out.println(token);
+
+        String username = "taewon";
         Member member = (Member) securityService.loadUserByUsername(username);
         Long userId = member.getUserId();
 
@@ -88,10 +88,9 @@ public class PostController {
 
     // 댓글 작성
     @PostMapping("/{postId}/comments")
-    public ResponseEntity<?> writeComment(HttpServletRequest request, @PathVariable Long postId,
+    public ResponseEntity<?> writeComment(@PathVariable Long postId,
                                           @Valid @RequestBody CommentWriteRequest writeParam) {
-        String token = securityService.resolveToken(request);
-        String username = securityService.getUsernameFromToken(token);
+        String username = "taewon";
 
         try {
             commentService.writeComment( username, postId, writeParam);
@@ -115,11 +114,9 @@ public class PostController {
 
     // 게시물 좋아요
     @PostMapping("/{postId}/like")
-    public ResponseEntity<?> likePost(HttpServletRequest request, @PathVariable Long postId) {
+    public ResponseEntity<?> likePost(@PathVariable Long postId) {
 
-        String token = securityService.resolveToken(request);
-        String username = securityService.getUsernameFromToken(token);
-
+        String username = "taewon";
         try {
             postService.likePost(username, postId);
             return ResponseEntity.ok().build();
@@ -130,10 +127,9 @@ public class PostController {
 
     // 게시물 좋아요 취소
     @DeleteMapping("/{postId}/like")
-    public ResponseEntity<?> unlikePost(HttpServletRequest request, @PathVariable Long postId) {
+    public ResponseEntity<?> unlikePost(@PathVariable Long postId) {
 
-        String token = securityService.resolveToken(request);
-        String username = securityService.getUsernameFromToken(token);
+        String username = "taewon";
 
         try {
             postService.unlikePost(username, postId);

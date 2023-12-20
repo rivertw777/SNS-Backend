@@ -16,8 +16,6 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,17 +23,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "users")
-public class Member implements UserDetails {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,6 +41,10 @@ public class Member implements UserDetails {
 
     @Column(name = "password", length = 60)
     private String password;
+
+    @Column(name = "roles")
+    @JsonIgnore
+    private List<Role> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
@@ -66,57 +65,17 @@ public class Member implements UserDetails {
     )
     private Set<Member> followingSet = new HashSet<>();
 
+    @Builder
+    public Member(String username, String password, Role role) {
+        this.username = username;
+        this.password = password;
+        this.roles = new ArrayList<>();
+        this.roles.add(role);
+    }
+
     // 해당 유저를 팔로잉중인지
     public boolean isFollowingUser(Long suggestionId) {
         return followingSet.stream().anyMatch(member -> member.getUserId().equals(suggestionId));
-    }
-
-    @Builder
-    private Member(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    public static Member create(String username, String password){
-        return builder()
-                .username(username)
-                .password(password)
-                .build();
-    }
-
-    // 사용자의 권한 목록을 반환
-    @Override
-    @JsonIgnore
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
-    }
-
-    // 사용자 계정의 만료 여부
-    @Override
-    @JsonIgnore
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    // 사용자 계정의 잠김 여부
-    @Override
-    @JsonIgnore
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    // 사용자 인증 정보의 만료 여부
-    @Override
-    @JsonIgnore
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    // 사용자 계정의 활성화 여부
-    @Override
-    @JsonIgnore
-    public boolean isEnabled() {
-        return true;
     }
 
 }
