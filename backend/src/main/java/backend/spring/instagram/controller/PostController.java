@@ -70,9 +70,6 @@ public class PostController {
     @GetMapping("")
     public ResponseEntity<?> getAllPosts(HttpServletRequest request) {
 
-        String token = securityService.resolveToken(request);
-        System.out.println(token);
-
         String username = "taewon";
         Member member = (Member) securityService.loadUserByUsername(username);
         Long userId = member.getUserId();

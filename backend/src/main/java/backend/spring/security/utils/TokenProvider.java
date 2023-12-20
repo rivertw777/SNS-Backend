@@ -30,20 +30,13 @@ public class TokenProvider {
         this.jwtExpirationInMs = jwtExpirationInMs;
     }
 
-    public String generateToken(Authentication authentication) {
-        // 권한 가져오기
-        System.out.println(authentication);
-
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-
+    public String generateToken(UserDetails userDetails) {
         long now = (new Date()).getTime();
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + 86400000);
         return Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim("auth", authorities)
+                .setSubject(userDetails.getUsername())
+                .claim("auth", userDetails.getAuthorities())
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(jwtSecretKey, SignatureAlgorithm.HS256)
                 .compact();

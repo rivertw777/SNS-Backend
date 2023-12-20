@@ -1,53 +1,58 @@
 package backend.spring.security.filter;
 
+import backend.spring.member.model.dto.request.MemberLoginRequest;
+import backend.spring.security.model.dto.TokenResponse;
+import backend.spring.security.model.entity.CustomUserDetails;
 import backend.spring.security.utils.TokenProvider;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Enumeration;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+// 인증 필터
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends GenericFilterBean {
+public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final TokenProvider jwtTokenProvider;
+    private final AuthenticationManager authenticationManager;
+    private final TokenProvider tokenProvider;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
-        // 1. Request Header 에서 JWT 토큰 추출
-        String token = resolveToken((HttpServletRequest) request);
+        try {
+            ObjectMapper om = new ObjectMapper();
+            MemberLoginRequest loginParam = om.readValue(request.getInputStream(), MemberLoginRequest.class);
 
-        // 2. validateToken 으로 토큰 유효성 검사
-        if (token != null) {
-            // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext 에 저장
-            Authentication authentication = jwtTokenProvider.extractAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(loginParam.username(), loginParam.password());
+
+            return authenticationManager.authenticate(authenticationToken);
+        } catch (IOException | AuthenticationException e) {
+            e.printStackTrace();
+            return null;
         }
-        chain.doFilter(request, response);
     }
 
-    // Request Header 에서 토큰 정보 추출
-    private String resolveToken(HttpServletRequest request) {
-        Enumeration<String> headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String headerName = headerNames.nextElement();
-            String headerValue = request.getHeader(headerName);
-            System.out.println(headerName + ": " + headerValue);
-        }
-        String token = request.getHeader("Authorization");
-        System.out.println(token);
-        System.out.println(4);
-        if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
-            return token.substring(7);
-        }
-        return null;
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
+        String jwt = tokenProvider.generateToken(userDetails);
+        TokenResponse tokenResponse = new TokenResponse(jwt);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String responseBody = objectMapper.writeValueAsString(tokenResponse);
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(responseBody);
     }
+
 }
