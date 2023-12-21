@@ -6,7 +6,7 @@ import backend.spring.member.model.dto.response.SuggestionResponse;
 import backend.spring.member.model.dto.response.mapper.SuggestionResponseMapper;
 import backend.spring.member.model.entity.Member;
 import backend.spring.member.service.MemberService;
-import backend.spring.security.service.SecurityService;
+import backend.spring.security.utils.SecurityUtil;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -28,9 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     @Autowired
-    private final MemberService memberService;
+    private final SecurityUtil securityUtil;
     @Autowired
-    private final SecurityService securityService;
+    private final MemberService memberService;
     @Autowired
     private final SuggestionResponseMapper suggestionResponseMapper;
 
@@ -52,10 +52,10 @@ public class MemberController {
     // 추천 이용자 리스트 반환
     @GetMapping("/suggestions")
     public ResponseEntity<?> getSuggestions() {
-        String username = "taewon";
+        Member member = securityUtil.getCurrentMember();
 
         // 추천 회원 반환
-        List<Member> suggestions = memberService.getSuggestions(username);
+        List<Member> suggestions = memberService.getSuggestions(member);
 
         // 추천 회원 응답 반환
         List<SuggestionResponse> SuggestionResponses = suggestionResponseMapper.toSuggestionResponses(suggestions);
@@ -66,10 +66,10 @@ public class MemberController {
     // 유저 팔로우
     @PostMapping("/follow")
     public ResponseEntity<?> followUser(@Valid @RequestBody SuggestionRequest memberParam) {
-        String username = "taewon";
+        Member member = securityUtil.getCurrentMember();
 
         // 유저 팔로우
-        memberService.followMember(username, memberParam.username());
+        memberService.followMember(member, memberParam.username());
 
         return ResponseEntity.ok().build();
     }

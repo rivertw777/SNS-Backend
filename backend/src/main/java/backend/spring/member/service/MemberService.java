@@ -12,7 +12,7 @@ public interface MemberService {
 
     void registerUser(MemberSignupRequest signupParam);
 
-    List<Member> getSuggestions(String username);
+    List<Member> getSuggestions(Member member);
 
     List<Member> getAllUsers();
 
@@ -20,5 +20,7 @@ public interface MemberService {
 
     void removeUser(Long userId);
 
-    void followMember(String username, String username1);
+    void followMember(Member member, String suggestionName);
+
+    void unfollowMemver();
 }

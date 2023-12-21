@@ -1,8 +1,8 @@
 package backend.spring.security.filter;
 
 import backend.spring.member.model.dto.request.MemberLoginRequest;
-import backend.spring.security.model.dto.TokenResponse;
-import backend.spring.security.model.entity.CustomUserDetails;
+import backend.spring.security.dto.TokenResponse;
+import backend.spring.security.CustomUserDetails;
 import backend.spring.security.utils.TokenProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -35,8 +35,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     new UsernamePasswordAuthenticationToken(loginParam.username(), loginParam.password());
 
             return authenticationManager.authenticate(authenticationToken);
-        } catch (IOException | AuthenticationException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         }
     }

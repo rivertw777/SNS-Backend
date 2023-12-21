@@ -2,6 +2,7 @@ package backend.spring.instagram.service;
 
 import backend.spring.instagram.model.dto.request.PostUploadRequest;
 import backend.spring.instagram.model.entity.Post;
+import backend.spring.member.model.entity.Member;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -10,13 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 public interface PostService {
 
-    void registerPost(String username, PostUploadRequest uploadParam) throws IOException;
+    void registerPost(Member member, PostUploadRequest uploadParam) throws IOException;
 
     List<Post> getAllPosts();
 
-    void likePost(String username, Long postId);
+    void likePost(Member member, Long postId);
 
-    void unlikePost(String username, Long postId);
+    void unlikePost(Member member, Long postId);
 
     Optional<Post> getPostById(Long postId);
 

@@ -1,4 +1,4 @@
-package backend.spring.member.service;
+package backend.spring.member.service.filter;
 
 import backend.spring.member.model.entity.Member;
 import java.util.List;

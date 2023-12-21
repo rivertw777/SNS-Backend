@@ -1,8 +1,11 @@
 package backend.spring.security.config;
 
 import backend.spring.security.filter.JwtAuthenticationFilter;
+import backend.spring.security.filter.JwtAuthorizationFilter;
+import backend.spring.security.service.SecurityService;
 import backend.spring.security.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,11 +19,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    @Autowired
+    private SecurityService securityService;
 
     private final TokenProvider tokenProvider;
 
@@ -52,7 +56,7 @@ public class SecurityConfig {
     // 특정 주소 무시
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/api/users", "/api/security/login");
+        return (web) -> web.ignoring().requestMatchers("/api/users");
     }
 
     @Bean
@@ -65,7 +69,8 @@ public class SecurityConfig {
         public void configure(HttpSecurity http) throws Exception {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager, tokenProvider));
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager, tokenProvider))
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager, tokenProvider));
 
         }
     }

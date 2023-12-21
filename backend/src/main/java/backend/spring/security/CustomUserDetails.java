@@ -1,4 +1,4 @@
-package backend.spring.security.model.entity;
+package backend.spring.security;
 
 import backend.spring.member.model.entity.Member;
 import backend.spring.member.model.entity.Role;

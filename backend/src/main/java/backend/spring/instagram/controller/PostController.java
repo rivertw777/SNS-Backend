@@ -10,7 +10,7 @@ import backend.spring.instagram.model.dto.request.PostUploadRequest;
 import backend.spring.instagram.model.entity.Post;
 import backend.spring.instagram.service.PostService;
 import backend.spring.member.model.entity.Member;
-import backend.spring.security.service.SecurityService;
+import backend.spring.security.utils.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -36,30 +36,25 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostController {
 
     @Autowired
+    private final SecurityUtil securityUtil;
+    @Autowired
     private final PostService postService;
     @Autowired
     private final CommentService commentService;
     @Autowired
-    private final SecurityService securityService;
-    @Autowired
     private final PostResponseMapper postResponseMapper;
-
-    //@Autowired
-    //private final SecurityUtil securityUtil;
-    //System.out.println(securityUtil.getCurrentMemberId()
 
     // 게시물 업로드
     @PostMapping("")
-    public ResponseEntity<?> uploadPost(
-                                           @RequestParam("photo") MultipartFile[] photos,
-                                           @RequestParam("caption") String caption,
-                                           @RequestParam("location") String location) {
+    public ResponseEntity<?> uploadPost(@RequestParam("photo") MultipartFile[] photos,
+                                        @RequestParam("caption") String caption,
+                                        @RequestParam("location") String location) {
 
-        String username = "taewon";
+        Member member = securityUtil.getCurrentMember();
 
         PostUploadRequest uploadParam = new PostUploadRequest(photos, caption, location);
         try {
-            postService.registerPost(username, uploadParam);
+            postService.registerPost(member, uploadParam);
         } catch (IOException | IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
@@ -70,15 +65,13 @@ public class PostController {
     @GetMapping("")
     public ResponseEntity<?> getAllPosts(HttpServletRequest request) {
 
-        String username = "taewon";
-        Member member = (Member) securityService.loadUserByUsername(username);
-        Long userId = member.getUserId();
+        Member member = securityUtil.getCurrentMember();
 
         // 모든 Post 조회
         List<Post> posts = postService.getAllPosts();
 
         // 게시물 dto 반환
-        List<PostResponse> postResponses = postResponseMapper.toPostResponses(posts, userId);
+        List<PostResponse> postResponses = postResponseMapper.toPostResponses(member.getUserId(), posts );
         return ResponseEntity.ok(postResponses);
     }
 
@@ -87,10 +80,11 @@ public class PostController {
     @PostMapping("/{postId}/comments")
     public ResponseEntity<?> writeComment(@PathVariable Long postId,
                                           @Valid @RequestBody CommentWriteRequest writeParam) {
-        String username = "taewon";
+
+        Member member = securityUtil.getCurrentMember();
 
         try {
-            commentService.writeComment( username, postId, writeParam);
+            commentService.writeComment( member, postId, writeParam);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
@@ -113,9 +107,10 @@ public class PostController {
     @PostMapping("/{postId}/like")
     public ResponseEntity<?> likePost(@PathVariable Long postId) {
 
-        String username = "taewon";
+        Member member = securityUtil.getCurrentMember();
+
         try {
-            postService.likePost(username, postId);
+            postService.likePost(member, postId);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().build();
@@ -126,10 +121,10 @@ public class PostController {
     @DeleteMapping("/{postId}/like")
     public ResponseEntity<?> unlikePost(@PathVariable Long postId) {
 
-        String username = "taewon";
+        Member member = securityUtil.getCurrentMember();
 
         try {
-            postService.unlikePost(username, postId);
+            postService.unlikePost(member, postId);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().build();

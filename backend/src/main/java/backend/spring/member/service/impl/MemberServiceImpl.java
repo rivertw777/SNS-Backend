@@ -5,7 +5,7 @@ import backend.spring.member.model.entity.Member;
 import backend.spring.member.model.entity.Role;
 import backend.spring.member.repository.MemberRepository;
 import backend.spring.member.service.MemberService;
-import backend.spring.member.service.MemberFilter;
+import backend.spring.member.service.filter.MemberFilter;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -49,12 +49,16 @@ public class MemberServiceImpl implements MemberService {
         user.setAvatarUrl(avatarUrl);
     }
 
+    private void validateDuplicateUser(String username){
+        Optional<Member> findUser = memberRepository.findByUsername(username);
+        if (findUser.isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 사용자 이름입니다: " + username);
+        }
+    }
+
     // 추천 회원 리스트 반환
     @Override
-    public List<Member> getSuggestions(String username) {
-        // 현재 이용자 반환
-        Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("해당하는 이름을 가진 회원이 없습니다."));
+    public List<Member> getSuggestions(Member member) {
         // 모든 회원 반환
         List<Member> members = memberRepository.findAll();
 
@@ -63,16 +67,22 @@ public class MemberServiceImpl implements MemberService {
         return suggestions;
     }
 
-    private void validateDuplicateUser(String username){
-        Optional<Member> findUser = memberRepository.findByUsername(username);
-        if (findUser.isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 사용자 이름입니다: " + username);
-        }
-    }
-
     private String generateAvatarUrl(Long userId) {
         String avatarUrl = serverUrl + userId + ".png";
         return avatarUrl;
+    }
+
+    @Override
+    public void followMember(Member member, String suggestionMemberName) {
+        Member suggestionMember = memberRepository.findByUsername(suggestionMemberName)
+                .orElseThrow(() -> new UsernameNotFoundException("해당하는 이름을 가진 회원이 없습니다."));
+
+        member.getFollowingSet().add(suggestionMember);
+        memberRepository.save(member);
+    }
+
+    @Override
+    public void unfollowMemver() {
     }
 
     @Override
@@ -88,17 +98,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void removeUser(Long userId) {
         memberRepository.deleteById(userId);
-    }
-
-    @Override
-    public void followMember(String username, String suggestionMemberName) {
-        Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("해당하는 이름을 가진 회원이 없습니다."));
-        Member suggestionMember = memberRepository.findByUsername(suggestionMemberName)
-                .orElseThrow(() -> new UsernameNotFoundException("해당하는 이름을 가진 회원이 없습니다."));
-
-        member.getFollowingSet().add(suggestionMember);
-        memberRepository.save(member);
     }
 
 }

@@ -1,11 +1,9 @@
 package backend.spring.security.service;
 
 import backend.spring.member.model.entity.Member;
-import backend.spring.security.model.entity.CustomUserDetails;
-import backend.spring.security.utils.TokenProvider;
+import backend.spring.security.CustomUserDetails;
 import backend.spring.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -17,10 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class SecurityService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
-    private final TokenProvider tokenProvider;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 이름을 가진 회원이 없습니다."));
 

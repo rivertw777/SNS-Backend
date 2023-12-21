@@ -57,7 +57,7 @@ public class Member {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "following_set",
             joinColumns = @JoinColumn(name = "follower_id"),
