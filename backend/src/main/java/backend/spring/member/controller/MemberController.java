@@ -65,7 +65,7 @@ public class MemberController {
 
     // 유저 팔로우
     @PostMapping("/follow")
-    public ResponseEntity<?> followUser(@Valid @RequestBody SuggestionRequest memberParam) {
+    public ResponseEntity<?> followMember(@Valid @RequestBody SuggestionRequest memberParam) {
         Member member = securityUtil.getCurrentMember();
 
         // 유저 팔로우
@@ -75,8 +75,15 @@ public class MemberController {
     }
 
     // 유저 언팔로우
-    //@DeleteMapping("/follow")
+    @DeleteMapping("/follow")
+    public ResponseEntity<?> unfollowMember(@Valid @RequestBody SuggestionRequest memberParam) {
+        Member member = securityUtil.getCurrentMember();
 
+        // 유저 팔로우
+        memberService.unfollowMember(member, memberParam.username());
+
+        return ResponseEntity.ok().build();
+    }
 
     // 회원 전체 조회
     @GetMapping("")

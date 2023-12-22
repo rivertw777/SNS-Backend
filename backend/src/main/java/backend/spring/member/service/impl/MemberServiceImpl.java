@@ -6,6 +6,7 @@ import backend.spring.member.model.entity.Role;
 import backend.spring.member.repository.MemberRepository;
 import backend.spring.member.service.MemberService;
 import backend.spring.member.service.filter.MemberFilter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -39,14 +40,21 @@ public class MemberServiceImpl implements MemberService {
 
         // 비밀번호 인코딩
         String encodedPassword = passwordEncoder.encode(signupParam.password());
-        Member user = new Member(signupParam.username(), encodedPassword, Role.USER);
+        // 일반 권한
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.USER);
 
-        // DB 저장
-        memberRepository.save(user);
+        // 회원 저장
+        Member member = Member.builder()
+                .username(signupParam.username())
+                .password(encodedPassword)
+                .roles(roles)
+                .build();
+        memberRepository.save(member);
 
         // 아바타 이미지 경로 저장
-        String avatarUrl = generateAvatarUrl(user.getUserId());
-        user.setAvatarUrl(avatarUrl);
+        String avatarUrl = generateAvatarUrl(member.getUserId());
+        member.setAvatarUrl(avatarUrl);
     }
 
     private void validateDuplicateUser(String username){
@@ -82,7 +90,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void unfollowMemver() {
+    public void unfollowMember(Member member, String suggestionMemberName) {
+        Member suggestionMember = memberRepository.findByUsername(suggestionMemberName)
+                .orElseThrow(() -> new UsernameNotFoundException("해당하는 이름을 가진 회원이 없습니다."));
+
+        member.getFollowingSet().remove(suggestionMember);
+        memberRepository.save(member);
     }
 
     @Override

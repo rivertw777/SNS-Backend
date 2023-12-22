@@ -22,5 +22,5 @@ public interface MemberService {
 
     void followMember(Member member, String suggestionName);
 
-    void unfollowMemver();
+    void unfollowMember(Member member, String suggestionName);
 }

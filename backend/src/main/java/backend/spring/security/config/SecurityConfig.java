@@ -56,7 +56,7 @@ public class SecurityConfig {
     // 특정 주소 무시
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/api/users");
+        return (web) -> web.ignoring().requestMatchers("/api/users", "/users/avatars/**","/instagram/photos/**");
     }
 
     @Bean

@@ -1,6 +1,5 @@
 package backend.spring.instagram.model.entity;
 
-import backend.spring.instagram.model.dto.request.CommentWriteRequest;
 import backend.spring.member.model.entity.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
@@ -39,17 +38,10 @@ public class Comment extends BaseTimeEntity {
     private String message;
 
     @Builder
-    private Comment(Member author, Post post, String message) {
+    public Comment(Member author, Post post, String message) {
         this.author = author;
         this.post = post;
         this.message = message;
     }
 
-    public static Comment create(Member author, Post post, CommentWriteRequest writeParam){
-        return Comment.builder()
-                .author(author)
-                .post(post)
-                .message(writeParam.message())
-                .build();
-    }
 }

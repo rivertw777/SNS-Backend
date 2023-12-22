@@ -60,20 +60,11 @@ public class Post extends BaseTimeEntity {
     private Set<Member> likeUserSet = new HashSet<>();
 
     @Builder
-    private Post(Member author, String photoUrl, String caption, String location) {
+    public Post(Member author, String photoUrl, String caption, String location) {
         this.author = author;
         this.photoUrl = photoUrl;
         this.caption = caption;
         this.location = location;
-    }
-
-    public static Post create(Member author, String photoUrl, PostUploadRequest uploadParam){
-        return Post.builder()
-                .author(author)
-                .photoUrl(photoUrl)
-                .caption(uploadParam.caption())
-                .location(uploadParam.location())
-                .build();
     }
 
     public boolean isLikeUser(Long userId) {

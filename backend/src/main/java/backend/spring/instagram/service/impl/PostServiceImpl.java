@@ -38,8 +38,13 @@ public class PostServiceImpl implements PostService {
         // 사진 경로 반환
         List<String> photoUrls = savePhotos(uploadParam.photos());
 
-        // 게시물 모델 생성, 저장
-        Post post = Post.create(member, photoUrls.get(0), uploadParam);
+        // 게시물 저장
+        Post post = Post.builder()
+                .author(member)
+                .photoUrl(photoUrls.get(0))
+                .caption(uploadParam.caption())
+                .location(uploadParam.location())
+                .build();
         postRepository.save(post);
     }
 

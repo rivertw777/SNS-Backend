@@ -29,7 +29,12 @@ public class CommentServiceimpl implements CommentService {
         Post post = postRepository.findByPostId(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 게시물이 없습니다."));
 
-        Comment comment = Comment.create(member, post, wirteParam);
+        // 댓글 저장
+        Comment comment = Comment.builder()
+                .author(member)
+                .post(post)
+                .message(wirteParam.message())
+                .build();
         commentRepository.save(comment);
     }
 
