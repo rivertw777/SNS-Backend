@@ -21,11 +21,13 @@ import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Builder
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
@@ -34,13 +36,16 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long memberId;
 
     @Column(unique = true, name = "username", length = 10)
-    private String username;
+    private String name;
 
     @Column(name = "password", length = 60)
     private String password;
+
+    @Column(name = "avatar_url")
+    private String avatarUrl;
 
     @Column(name = "roles")
     @JsonIgnore
@@ -54,10 +59,8 @@ public class Member {
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
-    @Column(name = "avatar_url")
-    private String avatarUrl;
-
     @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinTable(
             name = "following_set",
             joinColumns = @JoinColumn(name = "follower_id"),
@@ -66,8 +69,8 @@ public class Member {
     private Set<Member> followingSet = new HashSet<>();
 
     @Builder
-    public Member(String username, String password, Role role) {
-        this.username = username;
+    public Member(String name, String password, Role role) {
+        this.name = name;
         this.password = password;
         this.roles = new ArrayList<>();
         this.roles.add(role);
@@ -75,7 +78,7 @@ public class Member {
 
     // 해당 유저를 팔로잉중인지
     public boolean isFollowingUser(Long suggestionId) {
-        return followingSet.stream().anyMatch(member -> member.getUserId().equals(suggestionId));
+        return followingSet.stream().anyMatch(member -> member.getMemberId().equals(suggestionId));
     }
 
 }

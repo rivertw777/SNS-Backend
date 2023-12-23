@@ -1,6 +1,5 @@
 package backend.spring.instagram.model.entity;
 
-import backend.spring.instagram.model.dto.request.PostUploadRequest;
 import backend.spring.member.model.entity.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
@@ -23,9 +22,11 @@ import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "posts")
 @NoArgsConstructor
 public class Post extends BaseTimeEntity {
@@ -69,7 +70,7 @@ public class Post extends BaseTimeEntity {
 
     public boolean isLikeUser(Long userId) {
         return likeUserSet.stream()
-                .anyMatch(member -> member.getUserId().equals(userId));
+                .anyMatch(member -> member.getMemberId().equals(userId));
     }
 
 }

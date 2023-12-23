@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 public class MemberFilter {
     public static List<Member> toSuggestions(List<Member> members, Member currentMember) {
         return members.stream()
-                .filter(suggestion -> !suggestion.getUserId().equals(currentMember.getUserId())
-                        && !currentMember.isFollowingUser(suggestion.getUserId()))
+                .filter(suggestion -> !suggestion.getMemberId().equals(currentMember.getMemberId())
+                        && !currentMember.isFollowingUser(suggestion.getMemberId()))
                 .collect(Collectors.toList());
     }
 }

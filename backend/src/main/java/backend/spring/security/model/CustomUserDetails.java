@@ -1,4 +1,4 @@
-package backend.spring.security;
+package backend.spring.security.model;
 
 import backend.spring.member.model.entity.Member;
 import backend.spring.member.model.entity.Role;
@@ -31,7 +31,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return member.getUsername();
+        return member.getName();
     }
 
     @Override

@@ -16,7 +16,7 @@ public class SuggestionResponseMapper {
 
     public static SuggestionResponse toSuggestionResponse(Member suggestion) {
         return new SuggestionResponse(
-                suggestion.getUsername(),
+                suggestion.getName(),
                 suggestion.getAvatarUrl(),
                 false
         );

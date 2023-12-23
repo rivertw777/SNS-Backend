@@ -1,5 +1,6 @@
 package backend.spring.instagram.service.impl;
 
+import backend.spring.instagram.model.dto.request.PostUpdateRequest;
 import backend.spring.instagram.model.dto.request.PostUploadRequest;
 import backend.spring.member.model.entity.Member;
 import backend.spring.instagram.model.entity.Post;
@@ -9,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -56,10 +56,9 @@ public class PostServiceImpl implements PostService {
 
         for (MultipartFile photo : photos) {
             String fileName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
-            File saveFile = new File(projectPath, fileName);
             // 사진 파일 저장
+            File saveFile = new File(projectPath, fileName);
             photo.transferTo(saveFile);
-
             // post 모델에 담길 경로
             String photoPath = serverUrl + fileName;
             photoUrls.add(photoPath);
@@ -72,10 +71,10 @@ public class PostServiceImpl implements PostService {
         return postRepository.findAll();
     }
 
+    @Override
     public void likePost(Member member, Long postId) {
-        // 게시물 반환
-        Post post = postRepository.findByPostId(postId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 게시물이 없습니다."));
+        // 게시물 조회
+        Post post = findPost(postId);
 
         // 이미 좋아요한 경우
         Set<Member> likeUserSet = post.getLikeUserSet();
@@ -88,10 +87,10 @@ public class PostServiceImpl implements PostService {
         postRepository.save(post);
     }
 
+    @Override
     public void unlikePost(Member member, Long postId) {
-        // 게시물 반환
-        Post post = postRepository.findByPostId(postId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 게시물이 없습니다."));
+        // 게시물 조회
+        Post post = findPost(postId);
 
         // 이미 좋아요 취소한 경우
         Set<Member> likeUserSet = post.getLikeUserSet();
@@ -104,19 +103,42 @@ public class PostServiceImpl implements PostService {
         postRepository.save(post);
     }
 
+    // 게시물 단일 조회
     @Override
-    public Optional<Post> getPostById(Long postId) {
-        return postRepository.findById(postId);
+    public Post getPostById(Long postId) {
+        // 게시물 조회
+        Post post = findPost(postId);
+        return post;
     }
 
-    //@Override
-    //public void modifyPost(Long postId, PostUpdateDto updateParam) {
-    //    postRepository.update(postId, updateParam);
-    //}
+    // 게시물 수정
+    @Override
+    public void modifyPost(Long postId, PostUpdateRequest updateParam) {
+        // 게시물 조회
+        Post post = findPost(postId);
 
+        // 게시물 수정
+        post.setPhotoUrl(updateParam.photoUrl());
+        post.setCaption(updateParam.caption());
+        post.setLocation(updateParam.location());
+        postRepository.save(post);
+    }
+
+    // 게시물 삭제
     @Override
     public void removePost(Long postId) {
+        // 게시물 조회
+        Post post = findPost(postId);
+
+        // 게시물 삭제
         postRepository.deleteById(postId);
+    }
+
+    // 게시물 반환
+    private Post findPost(Long postId){
+        Post post = postRepository.findByPostId(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 게시물이 없습니다."));
+        return post;
     }
 
 }

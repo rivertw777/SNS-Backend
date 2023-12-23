@@ -11,11 +11,9 @@ import backend.spring.instagram.model.entity.Post;
 import backend.spring.instagram.service.PostService;
 import backend.spring.member.model.entity.Member;
 import backend.spring.security.utils.SecurityUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -49,11 +47,12 @@ public class PostController {
     public ResponseEntity<?> uploadPost(@RequestParam("photo") MultipartFile[] photos,
                                         @RequestParam("caption") String caption,
                                         @RequestParam("location") String location) {
-
+        // 로그인중인 회원 조회
         Member member = securityUtil.getCurrentMember();
 
         PostUploadRequest uploadParam = new PostUploadRequest(photos, caption, location);
         try {
+            // 게시물 등록
             postService.registerPost(member, uploadParam);
         } catch (IOException | IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
@@ -63,27 +62,26 @@ public class PostController {
 
     // 게시물 전체 조회
     @GetMapping("")
-    public ResponseEntity<?> getAllPosts(HttpServletRequest request) {
-
+    public ResponseEntity<?> getAllPosts() {
+        // 로그인중인 회원 조회
         Member member = securityUtil.getCurrentMember();
-
         // 모든 Post 조회
         List<Post> posts = postService.getAllPosts();
 
         // 게시물 dto 반환
-        List<PostResponse> postResponses = postResponseMapper.toPostResponses(member.getUserId(), posts );
+        List<PostResponse> postResponses = postResponseMapper.toPostResponses(member.getMemberId(), posts );
         return ResponseEntity.ok(postResponses);
     }
-
 
     // 댓글 작성
     @PostMapping("/{postId}/comments")
     public ResponseEntity<?> writeComment(@PathVariable Long postId,
                                           @Valid @RequestBody CommentWriteRequest writeParam) {
-
+        // 로그인중인 회원 조회
         Member member = securityUtil.getCurrentMember();
 
         try {
+            // 게시물 댓글 등록
             commentService.writeComment( member, postId, writeParam);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
@@ -95,7 +93,7 @@ public class PostController {
     @GetMapping("/{postId}/comments")
     public ResponseEntity<?> getComments(@PathVariable Long postId) {
         try {
-            // postId를 사용하여 해당 게시물의 댓글 목록을 조회합니다.
+            // 게시물 댓글 조회
             List<Comment> commentList = commentService.getComments(postId);
             return ResponseEntity.ok(commentList);
         } catch (IllegalArgumentException e){
@@ -106,10 +104,11 @@ public class PostController {
     // 게시물 좋아요
     @PostMapping("/{postId}/like")
     public ResponseEntity<?> likePost(@PathVariable Long postId) {
-
+        // 로그인중인 회원 조회
         Member member = securityUtil.getCurrentMember();
 
         try {
+            // 게시물 좋아요 등록
             postService.likePost(member, postId);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e){
@@ -120,36 +119,52 @@ public class PostController {
     // 게시물 좋아요 취소
     @DeleteMapping("/{postId}/like")
     public ResponseEntity<?> unlikePost(@PathVariable Long postId) {
-
+        // 로그인중인 회원 조회
         Member member = securityUtil.getCurrentMember();
 
         try {
+            // 게시물 좋아요 취소
             postService.unlikePost(member, postId);
             return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     // 게시물 단일 조회
     @GetMapping("/{postId}")
-    public ResponseEntity<Post> getPostById(@PathVariable Long postId) {
-        Optional<Post> post = postService.getPostById(postId);
-        return post.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> getPostById(@PathVariable Long postId) {
+        try {
+            // 게시물 단일 조회
+            Post post = postService.getPostById(postId);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // 게시물 정보 수정
+    // 게시물 수정
     @PutMapping("/{postId}")
     public ResponseEntity<?> modifyPost(@PathVariable Long postId, @RequestBody PostUpdateRequest updateParam) {
-        //postService.modifyPost(postId, updateParam);
-        return ResponseEntity.ok().build();
+        try {
+            // 게시물 수정
+            postService.modifyPost(postId, updateParam);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     // 게시물 삭제
     @DeleteMapping("/{postId}")
     public ResponseEntity<?> removePost(@PathVariable Long postId) {
-        postService.removePost(postId);
-        return ResponseEntity.ok().build();
+        try {
+            // 게시물 삭제
+            postService.removePost(postId);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }

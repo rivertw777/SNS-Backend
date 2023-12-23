@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PostResponseMapper {
-    public List<PostResponse> toPostResponses( Long userId, List<Post> posts) {
+    public List<PostResponse> toPostResponses( Long memberId, List<Post> posts) {
         return posts.stream()
-                .map(post -> toPostResponse(post, userId))
+                .map(post -> toPostResponse(post, memberId))
                 .collect(Collectors.toList());
     }
 

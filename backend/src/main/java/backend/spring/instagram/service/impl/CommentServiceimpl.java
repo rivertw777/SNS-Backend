@@ -44,6 +44,7 @@ public class CommentServiceimpl implements CommentService {
         Post post = postRepository.findByPostId(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 게시물이 없습니다."));
 
+        // 게시물 댓글 조회
         List<Comment> comments = commentRepository.findByPostPostId(postId);
         return comments;
     }
