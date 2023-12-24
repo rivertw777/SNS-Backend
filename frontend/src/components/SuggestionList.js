@@ -24,14 +24,14 @@ export default function SuggestionList({ style }) {
     else setUserList(origUserList.map(user => ({...user, isFollow: false })));
   }, [origUserList]); 
 
-  const onFollowUser = username => {
-    const data = { username };
+  const onFollowUser = name => {
+    const data = { name };
     const config = { headers };
     axiosInstance.post("api/users/follow", data, config)
       .then(response => {
         setUserList(prevUserList =>
           prevUserList.map(user =>
-            user.username !== username ? user : { ...user, isFollow: true }
+            user.name !== name ? user : { ...user, isFollow: true }
           )
         );
       })
@@ -48,7 +48,7 @@ export default function SuggestionList({ style }) {
       <Card title="Suggestions for you " size="small">
         {userList && userList.map(suggestionUser => (
           <Suggestion 
-            key={suggestionUser.username} 
+            key={suggestionUser.name} 
             suggestionUser={suggestionUser} 
             onFollowUser={onFollowUser}
           />

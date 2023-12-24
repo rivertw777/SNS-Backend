@@ -1,16 +1,19 @@
-package backend.spring.instagram.service.impl;
+package backend.spring.SNS.service.impl;
 
-import backend.spring.instagram.model.dto.request.PostUpdateRequest;
-import backend.spring.instagram.model.dto.request.PostUploadRequest;
+import backend.spring.SNS.model.dto.request.CommentWriteRequest;
+import backend.spring.SNS.model.dto.request.PostUpdateRequest;
+import backend.spring.SNS.model.dto.request.PostUploadRequest;
+import backend.spring.SNS.model.entity.Comment;
+import backend.spring.SNS.repository.CommentRepository;
 import backend.spring.member.model.entity.Member;
-import backend.spring.instagram.model.entity.Post;
-import backend.spring.instagram.repository.PostRepository;
-import backend.spring.instagram.service.PostService;
+import backend.spring.SNS.model.entity.Post;
+import backend.spring.SNS.repository.PostRepository;
+import backend.spring.SNS.service.SNSService;
+import backend.spring.member.repository.MemberRepository;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +25,14 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 @Service
 @RequiredArgsConstructor
-public class PostServiceImpl implements PostService {
+public class SNSServiceImpl implements SNSService {
 
     @Autowired
     private final PostRepository postRepository;
+    @Autowired
+    private final CommentRepository commentRepository;
+    @Autowired
+    private final MemberRepository memberRepository;
 
     @Value("${photo.dir}")
     private String uploadPath;
@@ -34,7 +41,10 @@ public class PostServiceImpl implements PostService {
 
     // 게시물 등록
     @Override
-    public void registerPost(Member member, PostUploadRequest uploadParam) throws IOException {
+    public void registerPost(Long memberId, PostUploadRequest uploadParam) throws IOException {
+        // 로그인 중인 회원 조회
+        Member member = findMember(memberId);
+
         // 사진 경로 반환
         List<String> photoUrls = savePhotos(uploadParam.photos());
 
@@ -66,19 +76,52 @@ public class PostServiceImpl implements PostService {
         return photoUrls;
     }
 
+    // 모든 Post 조회
     @Override
     public List<Post> getAllPosts() {
         return postRepository.findAll();
     }
 
+    // 게시물 댓글 작성
     @Override
-    public void likePost(Member member, Long postId) {
+    public void writeComment(Long memberId, Long postId, CommentWriteRequest wirteParam) {
+        // 로그인 중인 회원 조회
+        Member member = findMember(memberId);
+
+        // 게시물 조회
+        Post post = findPost(postId);
+
+        // 댓글 저장
+        Comment comment = Comment.builder()
+                .author(member)
+                .post(post)
+                .message(wirteParam.message())
+                .build();
+        commentRepository.save(comment);
+    }
+
+    // 게시물 댓글 조회
+    @Override
+    public List<Comment> getComments(Long postId) {
+        // 게시물 조회
+        Post post = findPost(postId);
+
+        // 게시물 댓글 조회
+        List<Comment> comments = commentRepository.findByPostPostId(postId);
+        return comments;
+    }
+
+    // 게시물 좋아요
+    @Override
+    public void likePost(Long memberId, Long postId) {
+        // 로그인 중인 회원 조회
+        Member member = findMember(memberId);
+
         // 게시물 조회
         Post post = findPost(postId);
 
         // 이미 좋아요한 경우
-        Set<Member> likeUserSet = post.getLikeUserSet();
-        if (likeUserSet.contains(member)) {
+        if (post.isLikeUser(member.getMemberId())) {
             throw new IllegalArgumentException("이미 좋아요를 눌렀습니다.");
         }
 
@@ -87,14 +130,17 @@ public class PostServiceImpl implements PostService {
         postRepository.save(post);
     }
 
+    // 게시물 좋아요 취소
     @Override
-    public void unlikePost(Member member, Long postId) {
+    public void unlikePost(Long memberId, Long postId) {
+        // 로그인 중인 회원 조회
+        Member member = findMember(memberId);
+
         // 게시물 조회
         Post post = findPost(postId);
 
         // 이미 좋아요 취소한 경우
-        Set<Member> likeUserSet = post.getLikeUserSet();
-        if (!likeUserSet.contains(member)) {
+        if (!post.isLikeUser(member.getMemberId())) {
             throw new IllegalArgumentException("이미 좋아요를 취소했습니다.");
         }
 
@@ -139,6 +185,13 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findByPostId(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 게시물이 없습니다."));
         return post;
+    }
+
+    // 회원 반환
+    private Member findMember(Long memberId){
+        Member member = (Member) memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 회원이 없습니다."));
+        return member;
     }
 
 }

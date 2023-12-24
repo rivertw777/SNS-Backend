@@ -11,11 +11,11 @@ public interface MemberService {
 
     void registerUser(MemberSignupRequest signupParam);
 
-    List<Member> getSuggestions(Member member);
+    List<Member> getSuggestions(Long memberId);
 
-    void followMember(Member member, String suggestionName);
+    void followMember(Long memberId, String suggestionName);
 
-    void unfollowMember(Member member, String suggestionName);
+    void unfollowMember(Long memberId, String suggestionName);
 
     List<Member> getAllUsers();
 

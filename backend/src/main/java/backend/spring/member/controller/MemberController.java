@@ -46,11 +46,11 @@ public class MemberController {
     // 추천 이용자 리스트 반환
     @GetMapping("/suggestions")
     public ResponseEntity<?> getSuggestions() {
-        // 로그인중인 회원 조회
-        Member member = securityUtil.getCurrentMember();
+        // 로그인 중인 회원 id
+        Long memberId = securityUtil.getCurrentMemberId();
 
         // 추천 회원 반환
-        List<Member> suggestions = memberService.getSuggestions(member);
+        List<Member> suggestions = memberService.getSuggestions(memberId);
 
         // 추천 회원 응답 변환
         List<SuggestionResponse> SuggestionResponses = suggestionResponseMapper.toSuggestionResponses(suggestions);
@@ -61,22 +61,22 @@ public class MemberController {
     // 유저 팔로우
     @PostMapping("/follow")
     public ResponseEntity<?> followMember(@Valid @RequestBody SuggestionRequest memberParam) {
-        // 로그인중인 회원 조회
-        Member member = securityUtil.getCurrentMember();
+        // 로그인 중인 회원 id
+        Long memberId = securityUtil.getCurrentMemberId();
 
         // 유저 팔로우
-        memberService.followMember(member, memberParam.name());
+        memberService.followMember(memberId, memberParam.name());
         return ResponseEntity.ok().build();
     }
 
     // 유저 언팔로우
     @DeleteMapping("/follow")
     public ResponseEntity<?> unfollowMember(@Valid @RequestBody SuggestionRequest memberParam) {
-        // 로그인중인 회원 조회
-        Member member = securityUtil.getCurrentMember();
+        // 로그인 중인 회원 id
+        Long memberId = securityUtil.getCurrentMemberId();
 
         // 유저 언팔로우
-        memberService.unfollowMember(member, memberParam.name());
+        memberService.unfollowMember(memberId, memberParam.name());
         return ResponseEntity.ok().build();
     }
 

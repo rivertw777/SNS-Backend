@@ -11,11 +11,11 @@ export default function Signup() {
 
   const onFinish = values => {
     async function fn() {
-      const { username, password } = values;
+      const { name, password } = values;
 
       setFieldErrors({});
 
-      const data = { username, password };
+      const data = {  name, password };
       try {
         await axiosInstance.post("/api/users", data);
 
@@ -64,7 +64,7 @@ export default function Signup() {
       >
         <Form.Item
           label="Username"
-          name="username"
+          name="name"
           rules={[
             { required: true, message: "Please input your username!" },
             { min: 5, message: "5글자 입력해주세요." }

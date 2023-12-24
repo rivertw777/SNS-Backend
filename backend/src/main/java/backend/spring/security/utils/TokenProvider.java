@@ -46,7 +46,7 @@ public class TokenProvider {
         Claims claims = parseClaims(accessToken);
 
         if (claims.get("auth") == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            throw new IllegalArgumentException("권한 정보가 없는 토큰입니다.");
         }
 
         // 회원 이름 추출

@@ -20,11 +20,11 @@ export default function Login() {
 
   const onFinish = values => {
     async function fn() {
-      const { username, password } = values;
+      const { name, password } = values;
 
       setFieldErrors({});
 
-      const data = { username, password };
+      const data = { name, password };
       try {
         const response = await axiosInstance.post("login", data);
         const {
@@ -48,8 +48,6 @@ export default function Login() {
           });
 
           const { data: fieldsErrorMessages } = error.response;
-          // fieldsErrorMessages => { username: "m1 m2", password: [] }
-          // python: mydict.items()
           setFieldErrors(parseErrorMessages(fieldsErrorMessages));
         }
       }
@@ -68,7 +66,7 @@ export default function Login() {
       >
         <Form.Item
           label="Username"
-          name="username"
+          name="name"
           rules={[
             { required: true, message: "Please input your username!" },
             { min: 5, message: "5글자 입력해주세요." }

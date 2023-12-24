@@ -1,4 +1,4 @@
-package backend.spring.instagram.model.entity;
+package backend.spring.SNS.model.entity;
 
 import backend.spring.member.model.entity.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;

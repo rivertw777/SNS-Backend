@@ -1,4 +1,4 @@
-package backend.spring.instagram.model.dto.response;
+package backend.spring.SNS.model.dto.response;
 
 import backend.spring.member.model.entity.Member;
 

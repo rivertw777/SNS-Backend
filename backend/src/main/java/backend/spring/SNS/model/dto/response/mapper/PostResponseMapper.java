@@ -1,7 +1,7 @@
-package backend.spring.instagram.model.dto.response.mapper;
+package backend.spring.SNS.model.dto.response.mapper;
 
-import backend.spring.instagram.model.dto.response.PostResponse;
-import backend.spring.instagram.model.entity.Post;
+import backend.spring.SNS.model.dto.response.PostResponse;
+import backend.spring.SNS.model.entity.Post;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;

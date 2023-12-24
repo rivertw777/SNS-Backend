@@ -4,7 +4,7 @@ import { API_HOST } from "../Constants";
 import "./Suggestion.scss";
 
 export default function Suggestion({ suggestionUser, onFollowUser }) {
-  const { username, avatarUrl, isFollow }  = suggestionUser;
+  const { name, avatarUrl, isFollow }  = suggestionUser;
 
   console.log(suggestionUser);
 
@@ -16,15 +16,15 @@ export default function Suggestion({ suggestionUser, onFollowUser }) {
           icon={
             <img
               src={avatarUrl}
-              alt={`${username}'s avatar`}
+              alt={`${name}'s avatar`}
             />
           }
         />
       </div>
-      <div className="username">{username}</div>
+      <div className="username">{name}</div>
       <div className="action">
         {isFollow && "팔로잉 중"}
-        {!isFollow && <Button size="small" onClick={() => onFollowUser(username)}>
+        {!isFollow && <Button size="small" onClick={() => onFollowUser(name)}>
           Follow
         </Button>}
       </div>

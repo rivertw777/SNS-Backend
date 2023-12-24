@@ -1,4 +1,4 @@
-package backend.spring.instagram.model.dto.request;
+package backend.spring.SNS.model.dto.request;
 
 import org.springframework.web.multipart.MultipartFile;
 

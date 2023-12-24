@@ -1,6 +1,6 @@
-package backend.spring.instagram.repository;
+package backend.spring.SNS.repository;
 
-import backend.spring.instagram.model.entity.Comment;
+import backend.spring.SNS.model.entity.Comment;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 

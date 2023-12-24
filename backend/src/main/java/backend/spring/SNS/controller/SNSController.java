@@ -1,15 +1,13 @@
-package backend.spring.instagram.controller;
+package backend.spring.SNS.controller;
 
-import backend.spring.instagram.model.dto.response.mapper.PostResponseMapper;
-import backend.spring.instagram.model.dto.response.PostResponse;
-import backend.spring.instagram.model.dto.request.CommentWriteRequest;
-import backend.spring.instagram.model.dto.request.PostUpdateRequest;
-import backend.spring.instagram.model.entity.Comment;
-import backend.spring.instagram.service.CommentService;
-import backend.spring.instagram.model.dto.request.PostUploadRequest;
-import backend.spring.instagram.model.entity.Post;
-import backend.spring.instagram.service.PostService;
-import backend.spring.member.model.entity.Member;
+import backend.spring.SNS.model.dto.response.mapper.PostResponseMapper;
+import backend.spring.SNS.model.dto.response.PostResponse;
+import backend.spring.SNS.model.dto.request.CommentWriteRequest;
+import backend.spring.SNS.model.dto.request.PostUpdateRequest;
+import backend.spring.SNS.model.entity.Comment;
+import backend.spring.SNS.model.dto.request.PostUploadRequest;
+import backend.spring.SNS.model.entity.Post;
+import backend.spring.SNS.service.SNSService;
 import backend.spring.security.utils.SecurityUtil;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -31,14 +29,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/posts")
-public class PostController {
+public class SNSController {
 
     @Autowired
     private final SecurityUtil securityUtil;
     @Autowired
-    private final PostService postService;
-    @Autowired
-    private final CommentService commentService;
+    private final SNSService SNSService;
     @Autowired
     private final PostResponseMapper postResponseMapper;
 
@@ -47,13 +43,13 @@ public class PostController {
     public ResponseEntity<?> uploadPost(@RequestParam("photo") MultipartFile[] photos,
                                         @RequestParam("caption") String caption,
                                         @RequestParam("location") String location) {
-        // 로그인중인 회원 조회
-        Member member = securityUtil.getCurrentMember();
+        // 로그인 중인 회원 id
+        Long memberId = securityUtil.getCurrentMemberId();
 
         PostUploadRequest uploadParam = new PostUploadRequest(photos, caption, location);
         try {
             // 게시물 등록
-            postService.registerPost(member, uploadParam);
+            SNSService.registerPost(memberId, uploadParam);
         } catch (IOException | IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
@@ -63,13 +59,14 @@ public class PostController {
     // 게시물 전체 조회
     @GetMapping("")
     public ResponseEntity<?> getAllPosts() {
-        // 로그인중인 회원 조회
-        Member member = securityUtil.getCurrentMember();
+        // 로그인 중인 회원 id
+        Long memberId = securityUtil.getCurrentMemberId();
+
         // 모든 Post 조회
-        List<Post> posts = postService.getAllPosts();
+        List<Post> posts = SNSService.getAllPosts();
 
         // 게시물 dto 반환
-        List<PostResponse> postResponses = postResponseMapper.toPostResponses(member.getMemberId(), posts );
+        List<PostResponse> postResponses = postResponseMapper.toPostResponses(memberId, posts);
         return ResponseEntity.ok(postResponses);
     }
 
@@ -77,12 +74,12 @@ public class PostController {
     @PostMapping("/{postId}/comments")
     public ResponseEntity<?> writeComment(@PathVariable Long postId,
                                           @Valid @RequestBody CommentWriteRequest writeParam) {
-        // 로그인중인 회원 조회
-        Member member = securityUtil.getCurrentMember();
+        // 로그인 중인 회원 id
+        Long memberId = securityUtil.getCurrentMemberId();
 
         try {
             // 게시물 댓글 등록
-            commentService.writeComment( member, postId, writeParam);
+            SNSService.writeComment( memberId, postId, writeParam);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
@@ -94,7 +91,7 @@ public class PostController {
     public ResponseEntity<?> getComments(@PathVariable Long postId) {
         try {
             // 게시물 댓글 조회
-            List<Comment> commentList = commentService.getComments(postId);
+            List<Comment> commentList = SNSService.getComments(postId);
             return ResponseEntity.ok(commentList);
         } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().build();
@@ -104,12 +101,12 @@ public class PostController {
     // 게시물 좋아요
     @PostMapping("/{postId}/like")
     public ResponseEntity<?> likePost(@PathVariable Long postId) {
-        // 로그인중인 회원 조회
-        Member member = securityUtil.getCurrentMember();
+        // 로그인 중인 회원 id
+        Long memberId = securityUtil.getCurrentMemberId();
 
         try {
             // 게시물 좋아요 등록
-            postService.likePost(member, postId);
+            SNSService.likePost(memberId, postId);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().build();
@@ -119,12 +116,12 @@ public class PostController {
     // 게시물 좋아요 취소
     @DeleteMapping("/{postId}/like")
     public ResponseEntity<?> unlikePost(@PathVariable Long postId) {
-        // 로그인중인 회원 조회
-        Member member = securityUtil.getCurrentMember();
+        // 로그인 중인 회원 id
+        Long memberId = securityUtil.getCurrentMemberId();
 
         try {
             // 게시물 좋아요 취소
-            postService.unlikePost(member, postId);
+            SNSService.unlikePost(memberId, postId);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
@@ -136,7 +133,7 @@ public class PostController {
     public ResponseEntity<?> getPostById(@PathVariable Long postId) {
         try {
             // 게시물 단일 조회
-            Post post = postService.getPostById(postId);
+            Post post = SNSService.getPostById(postId);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
@@ -148,7 +145,7 @@ public class PostController {
     public ResponseEntity<?> modifyPost(@PathVariable Long postId, @RequestBody PostUpdateRequest updateParam) {
         try {
             // 게시물 수정
-            postService.modifyPost(postId, updateParam);
+            SNSService.modifyPost(postId, updateParam);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
@@ -160,7 +157,7 @@ public class PostController {
     public ResponseEntity<?> removePost(@PathVariable Long postId) {
         try {
             // 게시물 삭제
-            postService.removePost(postId);
+            SNSService.removePost(postId);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();

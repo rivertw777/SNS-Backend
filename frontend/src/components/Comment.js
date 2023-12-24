@@ -5,11 +5,11 @@ import moment from "moment";
 export default function Comment({ comment }) {
 
   const {
-    author: { username, avatarUrl },
+    author: { name, avatarUrl },
     message,
     createdAt
   } = comment;
-  const displayName = username;
+  const displayName = name;
   return (
     <AntdComment
       author={displayName}

@@ -35,7 +35,6 @@ public class MemberServiceImpl implements MemberService {
     // 회원 가입
     @Override
     public void registerUser(MemberSignupRequest signupParam) {
-
         // 이미 존재하는 사용자 이름이라면 예외 발생
         validateDuplicateUser(signupParam.name());
 
@@ -65,9 +64,18 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    // 아바타 url 생성 (임시)
+    private String generateAvatarUrl(Long userId) {
+        String avatarUrl = serverUrl + userId + ".png";
+        return avatarUrl;
+    }
+
     // 추천 회원 리스트 반환
     @Override
-    public List<Member> getSuggestions(Member member) {
+    public List<Member> getSuggestions(Long memberId) {
+        // 로그인 중인 회원 조회
+        Member member = findMember(memberId);
+
         // 모든 회원 반환
         List<Member> members = memberRepository.findAll();
 
@@ -76,14 +84,11 @@ public class MemberServiceImpl implements MemberService {
         return suggestions;
     }
 
-    // 아바타 url 생성 (임시)
-    private String generateAvatarUrl(Long userId) {
-        String avatarUrl = serverUrl + userId + ".png";
-        return avatarUrl;
-    }
-
     @Override
-    public void followMember(Member member, String suggestionMemberName) {
+    public void followMember(Long memberId, String suggestionMemberName) {
+        // 로그인 중인 회원 조회
+        Member member = findMember(memberId);
+
         //  추천 회원 조회
         Member suggestionMember = findSuggestionMember(suggestionMemberName);
 
@@ -93,7 +98,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void unfollowMember(Member member, String suggestionMemberName) {
+    public void unfollowMember(Long memberId, String suggestionMemberName) {
+        // 로그인 중인 회원 조회
+        Member member = findMember(memberId);
+
         //  추천 회원 조회
         Member suggestionMember = findSuggestionMember(suggestionMemberName);
 
@@ -113,6 +121,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<Member> getAllUsers() {
         return memberRepository.findAll();
+    }
+
+    // id로 찿아서 반환
+    private Member findMember(Long memberId){
+        Member member = (Member) memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 회원이 없습니다."));
+        return member;
     }
 
 }

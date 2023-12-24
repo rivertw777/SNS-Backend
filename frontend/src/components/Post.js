@@ -8,7 +8,7 @@ import CommentList from "./CommentList";
 function Post({ post, handleLike }) {
 
   const { author, caption, location, photoUrl, isLike } = post;
-  const { username, avatarUrl } = author;
+  const { name, avatarUrl } = author;
 
   console.log(post);
 
@@ -36,7 +36,7 @@ function Post({ post, handleLike }) {
           avatar={
             <Avatar
               size="large"
-              icon={<img src={avatarUrl} alt={username} />}
+              icon={<img src={avatarUrl} alt={name} />}
             />
           }
           title={location}

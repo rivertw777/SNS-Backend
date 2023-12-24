@@ -1,4 +1,4 @@
-package backend.spring.instagram.model.entity;
+package backend.spring.SNS.model.entity;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
