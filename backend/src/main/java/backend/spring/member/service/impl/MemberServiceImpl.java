@@ -36,11 +36,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void registerUser(MemberSignupRequest signupParam) {
         // 이미 존재하는 사용자 이름이라면 예외 발생
-        validateDuplicateUser(signupParam.name());
+        validateDuplicateName(signupParam.name());
 
         // 비밀번호 인코딩
         String encodedPassword = passwordEncoder.encode(signupParam.password());
-        // 일반 권한
+
+        // 일반 역할 부여
         List<Role> roles = new ArrayList<>();
         roles.add(Role.USER);
 
@@ -57,7 +58,7 @@ public class MemberServiceImpl implements MemberService {
         member.setAvatarUrl(avatarUrl);
     }
 
-    private void validateDuplicateUser(String username){
+    private void validateDuplicateName(String username){
         Optional<Member> findUser = memberRepository.findByName(username);
         if (findUser.isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 이름입니다: " + username);
@@ -84,6 +85,7 @@ public class MemberServiceImpl implements MemberService {
         return suggestions;
     }
 
+    // 회원 팔로우
     @Override
     public void followMember(Long memberId, String suggestionMemberName) {
         // 로그인 중인 회원 조회
@@ -97,6 +99,7 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
+    // 회원 언팔로우
     @Override
     public void unfollowMember(Long memberId, String suggestionMemberName) {
         // 로그인 중인 회원 조회

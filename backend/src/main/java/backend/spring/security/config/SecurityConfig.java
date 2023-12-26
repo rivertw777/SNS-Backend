@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 // 회원가입, 이미지 경로 허용
-                .requestMatchers("/api/users", "/users/avatars/**","/instagram/photos/**").permitAll()
+                .requestMatchers("/api/users", "/users/avatars/**","/sns/photos/**").permitAll()
                 .anyRequest().authenticated();
 
         return http.build();

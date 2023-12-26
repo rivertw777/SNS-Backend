@@ -33,7 +33,7 @@ public class MemberController {
 
     // 회원 가입
     @PostMapping("")
-    public ResponseEntity<?> signUp(@Valid @RequestBody MemberSignupRequest signupParam) {
+    public ResponseEntity<Void> signUp(@Valid @RequestBody MemberSignupRequest signupParam) {
         try {
             // 회원 등록
             memberService.registerUser(signupParam);
@@ -45,14 +45,14 @@ public class MemberController {
 
     // 추천 이용자 리스트 반환
     @GetMapping("/suggestions")
-    public ResponseEntity<?> getSuggestions() {
+    public ResponseEntity<List<SuggestionResponse>> getSuggestions() {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
         // 추천 회원 반환
         List<Member> suggestions = memberService.getSuggestions(memberId);
 
-        // 추천 회원 응답 변환
+        // 추천 회원 응답 DTO 변환
         List<SuggestionResponse> SuggestionResponses = suggestionResponseMapper.toSuggestionResponses(suggestions);
         return ResponseEntity.ok(SuggestionResponses);
     }
@@ -60,7 +60,7 @@ public class MemberController {
 
     // 유저 팔로우
     @PostMapping("/follow")
-    public ResponseEntity<?> followMember(@Valid @RequestBody SuggestionRequest memberParam) {
+    public ResponseEntity<Void> followMember(@Valid @RequestBody SuggestionRequest memberParam) {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
@@ -71,7 +71,7 @@ public class MemberController {
 
     // 유저 언팔로우
     @DeleteMapping("/follow")
-    public ResponseEntity<?> unfollowMember(@Valid @RequestBody SuggestionRequest memberParam) {
+    public ResponseEntity<Void> unfollowMember(@Valid @RequestBody SuggestionRequest memberParam) {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 

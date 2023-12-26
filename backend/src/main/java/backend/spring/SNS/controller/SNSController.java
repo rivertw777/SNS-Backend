@@ -1,5 +1,7 @@
 package backend.spring.SNS.controller;
 
+import backend.spring.SNS.model.dto.response.CommentResponse;
+import backend.spring.SNS.model.dto.response.mapper.CommentResponseMapper;
 import backend.spring.SNS.model.dto.response.mapper.PostResponseMapper;
 import backend.spring.SNS.model.dto.response.PostResponse;
 import backend.spring.SNS.model.dto.request.CommentWriteRequest;
@@ -37,15 +39,18 @@ public class SNSController {
     private final SNSService SNSService;
     @Autowired
     private final PostResponseMapper postResponseMapper;
+    @Autowired
+    private final CommentResponseMapper commentResponseMapper;
 
     // 게시물 업로드
     @PostMapping("")
-    public ResponseEntity<?> uploadPost(@RequestParam("photo") MultipartFile[] photos,
+    public ResponseEntity<Void> uploadPost(@RequestParam("photo") MultipartFile[] photos,
                                         @RequestParam("caption") String caption,
                                         @RequestParam("location") String location) {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
+        // 업로드 요청 DTO 변환
         PostUploadRequest uploadParam = new PostUploadRequest(photos, caption, location);
         try {
             // 게시물 등록
@@ -58,21 +63,21 @@ public class SNSController {
 
     // 게시물 전체 조회
     @GetMapping("")
-    public ResponseEntity<?> getAllPosts() {
+    public ResponseEntity<List<PostResponse>> getAllPosts() {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
         // 모든 Post 조회
         List<Post> posts = SNSService.getAllPosts();
 
-        // 게시물 dto 반환
+        // 게시물 응답 DTO 변환
         List<PostResponse> postResponses = postResponseMapper.toPostResponses(memberId, posts);
         return ResponseEntity.ok(postResponses);
     }
 
     // 댓글 작성
     @PostMapping("/{postId}/comments")
-    public ResponseEntity<?> writeComment(@PathVariable Long postId,
+    public ResponseEntity<Void> writeComment(@PathVariable Long postId,
                                           @Valid @RequestBody CommentWriteRequest writeParam) {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
@@ -88,11 +93,14 @@ public class SNSController {
 
     // 댓글 조회
     @GetMapping("/{postId}/comments")
-    public ResponseEntity<?> getComments(@PathVariable Long postId) {
+    public ResponseEntity<List<CommentResponse>> getComments(@PathVariable Long postId) {
         try {
             // 게시물 댓글 조회
-            List<Comment> commentList = SNSService.getComments(postId);
-            return ResponseEntity.ok(commentList);
+            List<Comment> comments = SNSService.getComments(postId);
+
+            // 댓글 응답 DTO 변환
+            List<CommentResponse> commentResponses = commentResponseMapper.toCommentResponses(comments);
+            return ResponseEntity.ok(commentResponses);
         } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().build();
         }
@@ -100,7 +108,7 @@ public class SNSController {
 
     // 게시물 좋아요
     @PostMapping("/{postId}/like")
-    public ResponseEntity<?> likePost(@PathVariable Long postId) {
+    public ResponseEntity<Void> likePost(@PathVariable Long postId) {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
@@ -115,7 +123,7 @@ public class SNSController {
 
     // 게시물 좋아요 취소
     @DeleteMapping("/{postId}/like")
-    public ResponseEntity<?> unlikePost(@PathVariable Long postId) {
+    public ResponseEntity<Void> unlikePost(@PathVariable Long postId) {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
@@ -130,11 +138,11 @@ public class SNSController {
 
     // 게시물 단일 조회
     @GetMapping("/{postId}")
-    public ResponseEntity<?> getPostById(@PathVariable Long postId) {
+    public ResponseEntity<Post> getPostById(@PathVariable Long postId) {
         try {
             // 게시물 단일 조회
             Post post = SNSService.getPostById(postId);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(post);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
@@ -142,7 +150,7 @@ public class SNSController {
 
     // 게시물 수정
     @PutMapping("/{postId}")
-    public ResponseEntity<?> modifyPost(@PathVariable Long postId, @RequestBody PostUpdateRequest updateParam) {
+    public ResponseEntity<Void> modifyPost(@PathVariable Long postId, @RequestBody PostUpdateRequest updateParam) {
         try {
             // 게시물 수정
             SNSService.modifyPost(postId, updateParam);
@@ -154,7 +162,7 @@ public class SNSController {
 
     // 게시물 삭제
     @DeleteMapping("/{postId}")
-    public ResponseEntity<?> removePost(@PathVariable Long postId) {
+    public ResponseEntity<Void> removePost(@PathVariable Long postId) {
         try {
             // 게시물 삭제
             SNSService.removePost(postId);

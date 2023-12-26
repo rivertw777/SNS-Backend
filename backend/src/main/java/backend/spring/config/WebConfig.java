@@ -20,9 +20,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/users/avatars/**", "/instagram/photos/**")
+        registry.addResourceHandler("/users/avatars/**", "/sns/photos/**")
                 .addResourceLocations(
-                        "file:C:/2023project/spring-with-react/backend/src/main/resources/static/instagram/photos/",
+                        "file:C:/2023project/spring-with-react/backend/src/main/resources/static/sns/photos/",
                         "file:C:/2023project/spring-with-react/backend/src/main/resources/static/users/avatars/");
     }
 
