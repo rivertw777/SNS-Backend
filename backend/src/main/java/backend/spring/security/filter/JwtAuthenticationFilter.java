@@ -52,7 +52,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String jwt = tokenProvider.generateToken(userDetails);
         TokenResponse tokenResponse = new TokenResponse(jwt);
 
-        // response body에 토큰 dto 반환
+        // response body에 토큰 DTO 반환
         ObjectMapper objectMapper = new ObjectMapper();
         String responseBody = objectMapper.writeValueAsString(tokenResponse);
         response.setContentType("application/json");

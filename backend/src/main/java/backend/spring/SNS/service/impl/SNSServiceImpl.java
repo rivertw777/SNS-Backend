@@ -1,6 +1,7 @@
 package backend.spring.SNS.service.impl;
 
 import backend.spring.SNS.model.dto.request.CommentWriteRequest;
+import backend.spring.SNS.model.dto.request.PostSearchCondition;
 import backend.spring.SNS.model.dto.request.PostUpdateRequest;
 import backend.spring.SNS.model.dto.request.PostUploadRequest;
 import backend.spring.SNS.model.entity.Comment;
@@ -147,6 +148,12 @@ public class SNSServiceImpl implements SNSService {
         // 좋아요 목록에서 삭제
         post.getLikeUserSet().remove(member);
         postRepository.save(post);
+    }
+
+    // 검색 조건으로 게시물 조회
+    @Override
+    public List<Post> searchByConditions(PostSearchCondition conditionParam) {
+        return null;
     }
 
     // 게시물 단일 조회

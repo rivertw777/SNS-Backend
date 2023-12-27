@@ -2,7 +2,6 @@ package backend.spring.security.config;
 
 import backend.spring.security.filter.JwtAuthenticationFilter;
 import backend.spring.security.filter.JwtAuthorizationFilter;
-import backend.spring.security.service.SecurityService;
 import backend.spring.security.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,12 +23,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    @Autowired
-    private SecurityService securityService;
 
+    @Autowired
     private final TokenProvider tokenProvider;
 
-    // 보안 필터 체인을 구성
+    // 보안 필터 체인 구성
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -45,11 +44,18 @@ public class SecurityConfig {
                 // 요청 처리
                 .and()
                 .authorizeRequests()
-                // 회원가입, 이미지 경로 허용
-                .requestMatchers("/api/users", "/users/avatars/**","/sns/photos/**").permitAll()
+                // 회원가입 경로
+                .requestMatchers("/api/users").permitAll()
                 .anyRequest().authenticated();
 
         return http.build();
+    }
+
+    // 특정 주소 무시
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        // 정적 리소스 경로
+        return (web) -> web.ignoring().requestMatchers("/users/avatars/**", "/sns/photos/**");
     }
 
     // 빈 생성 시 스프링의 내부 동작으로 UserSecurityService와 PasswordEncoder가 자동으로 설정
@@ -69,10 +75,13 @@ public class SecurityConfig {
         @Override
         public void configure(HttpSecurity http) throws Exception {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
+            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, tokenProvider);
+            JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter(authenticationManager, tokenProvider);
+            // 로그인 경로 수정
+            jwtAuthenticationFilter.setFilterProcessesUrl("/api/users/login");
             http
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager, tokenProvider))
-                    .addFilter(new JwtAuthorizationFilter(authenticationManager, tokenProvider));
-
+                    .addFilter(jwtAuthenticationFilter)
+                    .addFilter(jwtAuthorizationFilter);
         }
     }
 

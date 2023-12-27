@@ -26,7 +26,7 @@ export default function Login() {
 
       const data = { name, password };
       try {
-        const response = await axiosInstance.post("login", data);
+        const response = await axiosInstance.post("api/users/login", data);
         const {
           data: { token: jwtToken }
         } = response;

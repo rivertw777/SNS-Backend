@@ -1,6 +1,7 @@
 package backend.spring.SNS.service;
 
 import backend.spring.SNS.model.dto.request.CommentWriteRequest;
+import backend.spring.SNS.model.dto.request.PostSearchCondition;
 import backend.spring.SNS.model.dto.request.PostUpdateRequest;
 import backend.spring.SNS.model.dto.request.PostUploadRequest;
 import backend.spring.SNS.model.entity.Comment;
@@ -23,6 +24,8 @@ public interface SNSService {
     void likePost(Long memberId, Long postId);
 
     void unlikePost(Long memberId, Long postId);
+
+    List<Post> searchByConditions(PostSearchCondition conditionParam);
 
     Post getPostById(Long postId);
 

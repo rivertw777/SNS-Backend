@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,8 +30,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "users")
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
     @Id
@@ -49,14 +48,17 @@ public class Member {
 
     @Column(name = "roles")
     @JsonIgnore
+    @Builder.Default
     private List<Role> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
+    @Builder.Default
     private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
+    @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -66,6 +68,7 @@ public class Member {
             joinColumns = @JoinColumn(name = "follower_id"),
             inverseJoinColumns = @JoinColumn(name = "following_id")
     )
+    @Builder.Default
     private Set<Member> followingSet = new HashSet<>();
 
     @Builder

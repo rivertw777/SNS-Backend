@@ -16,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class CustomUserDetails implements UserDetails {
 
     private Member member;
+
+    // 권환 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<Role> roles = member.getRoles();
@@ -24,31 +26,37 @@ public class CustomUserDetails implements UserDetails {
                 .collect(Collectors.toList());
     }
 
+    // 비밀번호 반환
     @Override
     public String getPassword() {
         return member.getPassword();
     }
 
+    // 이름 반환
     @Override
     public String getUsername() {
         return member.getName();
     }
 
+    // 계정 만료 여부
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    // 계정 잠김 여부
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    // 자격 증명 만료 여부
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    // 계정 활성화 여부
     @Override
     public boolean isEnabled() {
         return true;

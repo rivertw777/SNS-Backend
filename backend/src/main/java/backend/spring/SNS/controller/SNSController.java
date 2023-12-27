@@ -1,5 +1,6 @@
 package backend.spring.SNS.controller;
 
+import backend.spring.SNS.model.dto.request.PostSearchCondition;
 import backend.spring.SNS.model.dto.response.CommentResponse;
 import backend.spring.SNS.model.dto.response.mapper.CommentResponseMapper;
 import backend.spring.SNS.model.dto.response.mapper.PostResponseMapper;
@@ -44,9 +45,9 @@ public class SNSController {
 
     // 게시물 업로드
     @PostMapping("")
-    public ResponseEntity<Void> uploadPost(@RequestParam("photo") MultipartFile[] photos,
-                                        @RequestParam("caption") String caption,
-                                        @RequestParam("location") String location) {
+    public ResponseEntity<Void> uploadPost(@Valid @RequestParam("photo") MultipartFile[] photos,
+                                           @Valid @RequestParam("caption") String caption,
+                                           @Valid @RequestParam("location") String location) {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
@@ -77,7 +78,7 @@ public class SNSController {
 
     // 댓글 작성
     @PostMapping("/{postId}/comments")
-    public ResponseEntity<Void> writeComment(@PathVariable Long postId,
+    public ResponseEntity<Void> writeComment(@Valid @PathVariable Long postId,
                                           @Valid @RequestBody CommentWriteRequest writeParam) {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
@@ -93,7 +94,7 @@ public class SNSController {
 
     // 댓글 조회
     @GetMapping("/{postId}/comments")
-    public ResponseEntity<List<CommentResponse>> getComments(@PathVariable Long postId) {
+    public ResponseEntity<List<CommentResponse>> getComments(@Valid @PathVariable Long postId) {
         try {
             // 게시물 댓글 조회
             List<Comment> comments = SNSService.getComments(postId);
@@ -108,7 +109,7 @@ public class SNSController {
 
     // 게시물 좋아요
     @PostMapping("/{postId}/like")
-    public ResponseEntity<Void> likePost(@PathVariable Long postId) {
+    public ResponseEntity<Void> likePost(@Valid @PathVariable Long postId) {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
@@ -123,7 +124,7 @@ public class SNSController {
 
     // 게시물 좋아요 취소
     @DeleteMapping("/{postId}/like")
-    public ResponseEntity<Void> unlikePost(@PathVariable Long postId) {
+    public ResponseEntity<Void> unlikePost(@Valid @PathVariable Long postId) {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
@@ -136,9 +137,27 @@ public class SNSController {
         }
     }
 
+    // 검색 조건으로 게시물 조회
+    @GetMapping("/search")
+    public ResponseEntity<List<PostResponse>> searchByConditions(@Valid @RequestBody PostSearchCondition searchParam){
+        // 로그인 중인 회원 id
+        Long memberId = securityUtil.getCurrentMemberId();
+
+        try {
+            // 검색 정보로 게시물 조회
+            List<Post> posts = SNSService.searchByConditions(searchParam);
+
+            // 게시물 응답 DTO 변환
+            List<PostResponse> postResponses = postResponseMapper.toPostResponses(memberId, posts);
+            return ResponseEntity.ok(postResponses);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     // 게시물 단일 조회
     @GetMapping("/{postId}")
-    public ResponseEntity<Post> getPostById(@PathVariable Long postId) {
+    public ResponseEntity<Post> getPostById(@Valid @PathVariable Long postId) {
         try {
             // 게시물 단일 조회
             Post post = SNSService.getPostById(postId);
@@ -150,7 +169,7 @@ public class SNSController {
 
     // 게시물 수정
     @PutMapping("/{postId}")
-    public ResponseEntity<Void> modifyPost(@PathVariable Long postId, @RequestBody PostUpdateRequest updateParam) {
+    public ResponseEntity<Void> modifyPost(@Valid @PathVariable Long postId, @Valid @RequestBody PostUpdateRequest updateParam) {
         try {
             // 게시물 수정
             SNSService.modifyPost(postId, updateParam);
@@ -162,7 +181,7 @@ public class SNSController {
 
     // 게시물 삭제
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> removePost(@PathVariable Long postId) {
+    public ResponseEntity<Void> removePost(@Valid @PathVariable Long postId) {
         try {
             // 게시물 삭제
             SNSService.removePost(postId);
