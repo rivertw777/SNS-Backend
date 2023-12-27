@@ -17,7 +17,8 @@ public class LoggingAspect {
 
     // 예외 발생 시 로깅
     @AfterThrowing(pointcut = "execution(* backend.spring.*.service.*.*(..)) || " +
-            "execution(* backend.spring.*.controller.*.*(..))", throwing = "ex")
+            "execution(* backend.spring.*.controller.*.*(..))" + "execution(* backend.spring.security.*.*(..))",
+            throwing = "ex")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable ex) {
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getSignature().getDeclaringTypeName();

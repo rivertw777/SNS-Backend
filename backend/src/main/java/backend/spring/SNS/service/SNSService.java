@@ -4,6 +4,7 @@ import backend.spring.SNS.model.dto.request.CommentWriteRequest;
 import backend.spring.SNS.model.dto.request.PostSearchCondition;
 import backend.spring.SNS.model.dto.request.PostUpdateRequest;
 import backend.spring.SNS.model.dto.request.PostUploadRequest;
+import backend.spring.SNS.model.dto.response.PostSearchResult;
 import backend.spring.SNS.model.entity.Comment;
 import backend.spring.SNS.model.entity.Post;
 import java.io.IOException;
@@ -25,7 +26,7 @@ public interface SNSService {
 
     void unlikePost(Long memberId, Long postId);
 
-    List<Post> searchByConditions(PostSearchCondition conditionParam);
+    List<PostSearchResult> searchByConditions(PostSearchCondition conditionParam);
 
     Post getPostById(Long postId);
 

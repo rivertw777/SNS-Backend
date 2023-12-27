@@ -4,6 +4,7 @@ import backend.spring.SNS.model.dto.request.CommentWriteRequest;
 import backend.spring.SNS.model.dto.request.PostSearchCondition;
 import backend.spring.SNS.model.dto.request.PostUpdateRequest;
 import backend.spring.SNS.model.dto.request.PostUploadRequest;
+import backend.spring.SNS.model.dto.response.PostSearchResult;
 import backend.spring.SNS.model.entity.Comment;
 import backend.spring.SNS.repository.CommentRepository;
 import backend.spring.member.model.entity.Member;
@@ -152,8 +153,8 @@ public class SNSServiceImpl implements SNSService {
 
     // 검색 조건으로 게시물 조회
     @Override
-    public List<Post> searchByConditions(PostSearchCondition conditionParam) {
-        return null;
+    public List<PostSearchResult> searchByConditions(PostSearchCondition conditionParam) {
+        return postRepository.search(conditionParam);
     }
 
     // 게시물 단일 조회

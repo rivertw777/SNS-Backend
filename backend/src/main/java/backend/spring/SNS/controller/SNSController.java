@@ -2,6 +2,7 @@ package backend.spring.SNS.controller;
 
 import backend.spring.SNS.model.dto.request.PostSearchCondition;
 import backend.spring.SNS.model.dto.response.CommentResponse;
+import backend.spring.SNS.model.dto.response.PostSearchResult;
 import backend.spring.SNS.model.dto.response.mapper.CommentResponseMapper;
 import backend.spring.SNS.model.dto.response.mapper.PostResponseMapper;
 import backend.spring.SNS.model.dto.response.PostResponse;
@@ -138,18 +139,15 @@ public class SNSController {
     }
 
     // 검색 조건으로 게시물 조회
-    @GetMapping("/search")
-    public ResponseEntity<List<PostResponse>> searchByConditions(@Valid @RequestBody PostSearchCondition searchParam){
+    @PostMapping("/search")
+    public ResponseEntity<List<PostSearchResult>> searchByConditions(@Valid @RequestBody PostSearchCondition searchParam){
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
         try {
             // 검색 정보로 게시물 조회
-            List<Post> posts = SNSService.searchByConditions(searchParam);
-
-            // 게시물 응답 DTO 변환
-            List<PostResponse> postResponses = postResponseMapper.toPostResponses(memberId, posts);
-            return ResponseEntity.ok(postResponses);
+            List<PostSearchResult> postSearchResults = SNSService.searchByConditions(searchParam);
+            return ResponseEntity.ok(postSearchResults);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
