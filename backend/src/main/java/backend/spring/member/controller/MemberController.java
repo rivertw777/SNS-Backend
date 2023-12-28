@@ -7,6 +7,7 @@ import backend.spring.member.model.dto.response.mapper.SuggestionResponseMapper;
 import backend.spring.member.model.entity.Member;
 import backend.spring.member.service.MemberService;
 import backend.spring.security.utils.SecurityUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class MemberController {
     private final SuggestionResponseMapper suggestionResponseMapper;
 
     // 회원 가입
+    @Operation(summary = "회원 가입")
     @PostMapping("")
     public ResponseEntity<Void> signUp(@Valid @RequestBody MemberSignupRequest signupParam) {
         try {
@@ -44,6 +46,7 @@ public class MemberController {
     }
 
     // 추천 이용자 리스트 반환
+    @Operation(summary = "추천 회원 리스트 조회")
     @GetMapping("/suggestions")
     public ResponseEntity<List<SuggestionResponse>> getSuggestions() {
         // 로그인 중인 회원 id
@@ -58,7 +61,8 @@ public class MemberController {
     }
 
 
-    // 유저 팔로우
+    // 회원 팔로우
+    @Operation(summary = "회원 팔로우")
     @PostMapping("/follow")
     public ResponseEntity<Void> followMember(@Valid @RequestBody SuggestionRequest memberParam) {
         // 로그인 중인 회원 id
@@ -69,7 +73,8 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    // 유저 언팔로우
+    // 회원 언팔로우
+    @Operation(summary = "회원 언팔로우")
     @DeleteMapping("/follow")
     public ResponseEntity<Void> unfollowMember(@Valid @RequestBody SuggestionRequest memberParam) {
         // 로그인 중인 회원 id
@@ -81,6 +86,7 @@ public class MemberController {
     }
 
     // 회원 전체 조회
+    @Operation(summary = "회원 전체 조회")
     @GetMapping("")
     public ResponseEntity<List<Member>> getAllUsers() {
         List<Member> members = memberService.getAllUsers();

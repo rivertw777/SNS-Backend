@@ -1,7 +1,7 @@
 package backend.spring.member.model.entity;
 
-import backend.spring.SNS.model.entity.Comment;
-import backend.spring.SNS.model.entity.Post;
+import backend.spring.sns.model.entity.Comment;
+import backend.spring.sns.model.entity.Post;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

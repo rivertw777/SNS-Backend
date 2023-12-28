@@ -1,7 +1,7 @@
 package backend.spring.security.config;
 
-import backend.spring.security.filter.JwtAuthenticationFilter;
-import backend.spring.security.filter.JwtAuthorizationFilter;
+import backend.spring.security.config.filter.JwtAuthenticationFilter;
+import backend.spring.security.config.filter.JwtAuthorizationFilter;
 import backend.spring.security.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +55,12 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         // 정적 리소스 경로
-        return (web) -> web.ignoring().requestMatchers("/users/avatars/**", "/sns/photos/**");
+        return (web) -> web.ignoring().requestMatchers(
+                "/users/avatars/**",
+                "/sns/photos/**",
+                "/swagger-ui/**",
+                "/swagger-resources/**",
+                "/v3/api-docs/**");
     }
 
     // 빈 생성 시 스프링의 내부 동작으로 UserSecurityService와 PasswordEncoder가 자동으로 설정
