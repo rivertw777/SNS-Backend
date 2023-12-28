@@ -1,5 +1,6 @@
 package backend.spring.sns.model.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
@@ -14,8 +15,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class BaseTimeEntity {
 
     @CreatedDate
+    @Schema(description = "생성 날짜")
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @Schema(description = "수정 날짜")
     private LocalDateTime modifiedAt;
 }

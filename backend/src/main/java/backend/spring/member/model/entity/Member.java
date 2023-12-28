@@ -3,6 +3,7 @@ package backend.spring.member.model.entity;
 import backend.spring.sns.model.entity.Comment;
 import backend.spring.sns.model.entity.Post;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,6 +27,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Schema(description = "회원")
 @Builder
 @Getter
 @Setter
@@ -37,15 +39,19 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "회원 id")
     private Long memberId;
 
     @Column(unique = true, name = "username", length = 10)
+    @Schema(description = "이름")
     private String name;
 
     @Column(name = "password", length = 60)
+    @Schema(description = "비밀번호")
     private String password;
 
     @Column(name = "avatar_url")
+    @Schema(description = "아바타 이미지 경로")
     private String avatarUrl;
 
     @Column(name = "roles")

@@ -8,11 +8,16 @@ import backend.spring.member.model.entity.Member;
 import backend.spring.member.service.MemberService;
 import backend.spring.security.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +38,9 @@ public class MemberController {
     private final SuggestionResponseMapper suggestionResponseMapper;
 
     // 회원 가입
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 가입 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @Operation(summary = "회원 가입")
     @PostMapping("")
     public ResponseEntity<Void> signUp(@Valid @RequestBody MemberSignupRequest signupParam) {
@@ -46,7 +54,9 @@ public class MemberController {
     }
 
     // 추천 이용자 리스트 반환
-    @Operation(summary = "추천 회원 리스트 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "추천 회원 조회 성공")})
+    @Operation(summary = "추천 회원 조회")
     @GetMapping("/suggestions")
     public ResponseEntity<List<SuggestionResponse>> getSuggestions() {
         // 로그인 중인 회원 id
@@ -62,6 +72,9 @@ public class MemberController {
 
 
     // 회원 팔로우
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 팔로우 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @Operation(summary = "회원 팔로우")
     @PostMapping("/follow")
     public ResponseEntity<Void> followMember(@Valid @RequestBody SuggestionRequest memberParam) {
@@ -74,6 +87,9 @@ public class MemberController {
     }
 
     // 회원 언팔로우
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 팔로우 취소 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @Operation(summary = "회원 언팔로우")
     @DeleteMapping("/follow")
     public ResponseEntity<Void> unfollowMember(@Valid @RequestBody SuggestionRequest memberParam) {
@@ -86,6 +102,8 @@ public class MemberController {
     }
 
     // 회원 전체 조회
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 전체 조회 성공")})
     @Operation(summary = "회원 전체 조회")
     @GetMapping("")
     public ResponseEntity<List<Member>> getAllUsers() {

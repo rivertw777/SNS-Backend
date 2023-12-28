@@ -14,7 +14,6 @@ import backend.spring.sns.service.SNSService;
 import backend.spring.member.repository.MemberRepository;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +61,7 @@ public class SNSServiceImpl implements SNSService {
 
     // 사진 저장 및 경로 반환
     private String savePhotos(MultipartFile photo) throws IOException {
+        // 사진 이름 생성
         String projectPath = System.getProperty("user.dir") + uploadPath;
         String fileName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
         // 사진 파일 저장

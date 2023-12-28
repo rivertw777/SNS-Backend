@@ -2,6 +2,7 @@ package backend.spring.sns.model.entity;
 
 import backend.spring.member.model.entity.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,6 +26,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Schema(description = "게시물")
 @Entity
 @Getter
 @Setter
@@ -34,19 +36,24 @@ public class Post extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "게시물 id")
     private Long postId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
+    @Schema(description = "작성자 id")
     private Member author;
 
     @Column(name = "photo_url")
+    @Schema(description = "사진 경로")
     private String photoUrl;
 
     @Column(name = "caption", length = 500)
+    @Schema(description = "설명")
     private String caption;
 
     @Column(name = "location", length = 100)
+    @Schema(description = "위치")
     private String location;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -59,6 +66,7 @@ public class Post extends BaseTimeEntity {
             joinColumns = @JoinColumn(name = "postId"),
             inverseJoinColumns = @JoinColumn(name = "userId")
     )
+    @JsonIgnore
     private Set<Member> likeUserSet = new HashSet<>();
 
     @Builder

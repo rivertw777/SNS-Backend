@@ -45,9 +45,7 @@ export default function PostNewForm() {
     } = fieldValues;
 
     const formData = new FormData();
-    fileList.forEach(file => {
-      formData.append("photo", file.originFileObj);
-    });
+    formData.append("photo", fileList[0].originFileObj);
     formData.append("caption", caption);
     formData.append("location", location);
 

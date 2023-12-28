@@ -2,6 +2,7 @@ package backend.spring.sns.model.entity;
 
 import backend.spring.member.model.entity.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,7 +16,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+@Schema(description = "댓글")
 @Entity
 @Getter
 @Table(name = "comments")
@@ -24,6 +25,7 @@ public class Comment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "댓글 id")
     private Long commentId;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -36,6 +38,7 @@ public class Comment extends BaseTimeEntity {
     private Post post;
 
     @Column(name = "message", length = 200)
+    @Schema(description = "메시지")
     private String message;
 
     @Builder
