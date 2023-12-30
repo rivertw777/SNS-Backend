@@ -58,6 +58,7 @@ public class MemberServiceImpl implements MemberService {
         member.setAvatarUrl(avatarUrl);
     }
 
+    // 이름의 중복 검증
     private void validateDuplicateName(String username){
         Optional<Member> findUser = memberRepository.findByName(username);
         if (findUser.isPresent()) {

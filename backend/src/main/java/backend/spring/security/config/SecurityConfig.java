@@ -54,7 +54,7 @@ public class SecurityConfig {
     // 특정 주소 무시
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        // 정적 리소스 경로
+        // 정적 리소스, Swagger 경로
         return (web) -> web.ignoring().requestMatchers(
                 "/users/avatars/**",
                 "/sns/photos/**",

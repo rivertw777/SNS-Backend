@@ -12,14 +12,21 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI(){
+        // 보안 스킴 정의
         SecurityScheme securityScheme = new SecurityScheme()
-                .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
-                .in(SecurityScheme.In.HEADER).name("Authorization");
+                .type(SecurityScheme.Type.HTTP) // HTTP 타입의 보안 스킴
+                .scheme("bearer") // Bearer Token 방식
+                .bearerFormat("JWT") // Bearer Token의 형식
+                .in(SecurityScheme.In.HEADER) // 헤더에 인증 정보를 포함
+                .name("Authorization"); // 헤더의 이름은 "Authorization"
+
+        // 보안 요구사항 정의
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("bearerAuth");
 
+        // OpenAPI 객체 생성 및 설정
         return new OpenAPI()
-                .components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
-                .security(Arrays.asList(securityRequirement));
+                .components(new Components().addSecuritySchemes("bearerAuth", securityScheme)) // 보안 스킴을 Components에 추가
+                .security(Arrays.asList(securityRequirement)); // 보안 요구사항을 OpenAPI에 추가
     }
 
 }
