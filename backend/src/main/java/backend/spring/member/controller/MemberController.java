@@ -1,7 +1,5 @@
 package backend.spring.member.controller;
 
-import backend.spring.exception.member.DuplicateNameException;
-import backend.spring.exception.member.MemberNotFoundException;
 import backend.spring.member.dto.request.MemberSignupRequest;
 import backend.spring.member.dto.request.SuggestionRequest;
 import backend.spring.member.dto.response.SuggestionResponse;
@@ -16,7 +14,6 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,14 +41,9 @@ public class MemberController {
     @Operation(summary = "회원 가입")
     @PostMapping("")
     public ResponseEntity<Void> signUp(@Valid @RequestBody MemberSignupRequest signupParam) {
-        try {
-            // 회원 등록
-            memberService.registerUser(signupParam);
-            return ResponseEntity.ok().build();
-        } catch (DuplicateNameException e) {
-            // 회원 이름 중복 시
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        // 회원 가입
+        memberService.registerUser(signupParam);
+        return ResponseEntity.ok().build();
     }
 
     // 추천 이용자 리스트 반환
@@ -64,16 +56,12 @@ public class MemberController {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
-        try {
-            // 추천 회원 반환
-            List<Member> suggestions = memberService.getSuggestions(memberId);
+        // 추천 회원 반환
+        List<Member> suggestions = memberService.getSuggestions(memberId);
 
-            // 추천 회원 응답 DTO 변환
-            List<SuggestionResponse> SuggestionResponses = suggestionResponseMapper.toSuggestionResponses(suggestions);
-            return ResponseEntity.ok(SuggestionResponses);
-        } catch (MemberNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        // 추천 회원 응답 DTO 변환
+        List<SuggestionResponse> SuggestionResponses = suggestionResponseMapper.toSuggestionResponses(suggestions);
+        return ResponseEntity.ok(SuggestionResponses);
     }
 
 
@@ -87,13 +75,9 @@ public class MemberController {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
-        try {
-            // 유저 팔로우
-            memberService.followMember(memberId, memberParam.name());
-            return ResponseEntity.ok().build();
-        } catch (MemberNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        // 유저 팔로우
+        memberService.followMember(memberId, memberParam.name());
+        return ResponseEntity.ok().build();
     }
 
     // 회원 언팔로우
@@ -106,13 +90,9 @@ public class MemberController {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
-        try {
-            // 유저 언팔로우
-            memberService.unfollowMember(memberId, memberParam.name());
-            return ResponseEntity.ok().build();
-        } catch (MemberNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        // 유저 언팔로우
+        memberService.unfollowMember(memberId, memberParam.name());
+        return ResponseEntity.ok().build();
     }
 
     // 회원 전체 조회
