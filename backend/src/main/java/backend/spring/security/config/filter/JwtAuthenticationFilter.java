@@ -1,6 +1,6 @@
 package backend.spring.security.config.filter;
 
-import backend.spring.member.model.dto.request.MemberLoginRequest;
+import backend.spring.member.dto.request.MemberLoginRequest;
 import backend.spring.security.dto.response.TokenResponse;
 import backend.spring.security.model.CustomUserDetails;
 import backend.spring.security.utils.TokenProvider;

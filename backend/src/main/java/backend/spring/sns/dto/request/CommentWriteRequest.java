@@ -1,4 +1,4 @@
-package backend.spring.sns.model.dto.request;
+package backend.spring.sns.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

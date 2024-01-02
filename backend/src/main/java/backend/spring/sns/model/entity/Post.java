@@ -29,6 +29,7 @@ import lombok.Setter;
 @Schema(description = "게시물")
 @Entity
 @Getter
+@Setter
 @Table(name = "posts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseTimeEntity {

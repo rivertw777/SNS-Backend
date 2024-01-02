@@ -1,23 +1,23 @@
 package backend.spring.member.controller;
 
-import backend.spring.member.model.dto.request.MemberSignupRequest;
-import backend.spring.member.model.dto.request.SuggestionRequest;
-import backend.spring.member.model.dto.response.SuggestionResponse;
-import backend.spring.member.model.dto.response.mapper.SuggestionResponseMapper;
+import backend.spring.exception.member.DuplicateNameException;
+import backend.spring.exception.member.MemberNotFoundException;
+import backend.spring.member.dto.request.MemberSignupRequest;
+import backend.spring.member.dto.request.SuggestionRequest;
+import backend.spring.member.dto.response.SuggestionResponse;
+import backend.spring.member.dto.response.mapper.SuggestionResponseMapper;
 import backend.spring.member.model.entity.Member;
 import backend.spring.member.service.MemberService;
 import backend.spring.security.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,7 +40,7 @@ public class MemberController {
     // 회원 가입
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원 가입 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+            @ApiResponse(responseCode = "409", description = "중복된 이름")})
     @Operation(summary = "회원 가입")
     @PostMapping("")
     public ResponseEntity<Void> signUp(@Valid @RequestBody MemberSignupRequest signupParam) {
@@ -48,57 +48,71 @@ public class MemberController {
             // 회원 등록
             memberService.registerUser(signupParam);
             return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+        } catch (DuplicateNameException e) {
+            // 회원 이름 중복 시
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
     // 추천 이용자 리스트 반환
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "추천 회원 조회 성공")})
+            @ApiResponse(responseCode = "200", description = "추천 회원 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "리소스 찾을 수 없음.")})
     @Operation(summary = "추천 회원 조회")
     @GetMapping("/suggestions")
     public ResponseEntity<List<SuggestionResponse>> getSuggestions() {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
-        // 추천 회원 반환
-        List<Member> suggestions = memberService.getSuggestions(memberId);
+        try {
+            // 추천 회원 반환
+            List<Member> suggestions = memberService.getSuggestions(memberId);
 
-        // 추천 회원 응답 DTO 변환
-        List<SuggestionResponse> SuggestionResponses = suggestionResponseMapper.toSuggestionResponses(suggestions);
-        return ResponseEntity.ok(SuggestionResponses);
+            // 추천 회원 응답 DTO 변환
+            List<SuggestionResponse> SuggestionResponses = suggestionResponseMapper.toSuggestionResponses(suggestions);
+            return ResponseEntity.ok(SuggestionResponses);
+        } catch (MemberNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
 
     // 회원 팔로우
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원 팔로우 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+            @ApiResponse(responseCode = "404", description = "리소스 찾을 수 없음.")})
     @Operation(summary = "회원 팔로우")
     @PostMapping("/follow")
     public ResponseEntity<Void> followMember(@Valid @RequestBody SuggestionRequest memberParam) {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
-        // 유저 팔로우
-        memberService.followMember(memberId, memberParam.name());
-        return ResponseEntity.ok().build();
+        try {
+            // 유저 팔로우
+            memberService.followMember(memberId, memberParam.name());
+            return ResponseEntity.ok().build();
+        } catch (MemberNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     // 회원 언팔로우
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원 팔로우 취소 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+            @ApiResponse(responseCode = "404", description = "리소스 찾을 수 없음.")})
     @Operation(summary = "회원 언팔로우")
     @DeleteMapping("/follow")
     public ResponseEntity<Void> unfollowMember(@Valid @RequestBody SuggestionRequest memberParam) {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
-        // 유저 언팔로우
-        memberService.unfollowMember(memberId, memberParam.name());
-        return ResponseEntity.ok().build();
+        try {
+            // 유저 언팔로우
+            memberService.unfollowMember(memberId, memberParam.name());
+            return ResponseEntity.ok().build();
+        } catch (MemberNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     // 회원 전체 조회

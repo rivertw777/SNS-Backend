@@ -1,6 +1,6 @@
 package backend.spring.member.service;
 
-import backend.spring.member.model.dto.request.MemberSignupRequest;
+import backend.spring.member.dto.request.MemberSignupRequest;
 import backend.spring.member.model.entity.Member;
 import org.springframework.stereotype.Service;
 

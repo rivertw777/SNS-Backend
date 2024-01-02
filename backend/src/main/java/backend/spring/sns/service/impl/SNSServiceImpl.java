@@ -1,10 +1,18 @@
 package backend.spring.sns.service.impl;
 
-import backend.spring.sns.model.dto.request.CommentWriteRequest;
-import backend.spring.sns.model.dto.request.PostSearchCondition;
-import backend.spring.sns.model.dto.request.PostUpdateRequest;
-import backend.spring.sns.model.dto.request.PostUploadRequest;
-import backend.spring.sns.model.dto.response.PostSearchResult;
+import static backend.spring.exception.member.constants.MemberExceptionMessages.MEMBER_ID_NOT_FOUND;
+import static backend.spring.exception.sns.constants.SNSExceptionMessages.ALREADY_LIKE;
+import static backend.spring.exception.sns.constants.SNSExceptionMessages.ALREADY_UNLIKE;
+import static backend.spring.exception.sns.constants.SNSExceptionMessages.POST_ID_NOT_FOUND;
+
+import backend.spring.exception.member.MemberNotFoundException;
+import backend.spring.exception.sns.PostLikeException;
+import backend.spring.exception.sns.PostNotFoundException;
+import backend.spring.sns.dto.request.CommentWriteRequest;
+import backend.spring.sns.dto.request.PostSearchCondition;
+import backend.spring.sns.dto.request.PostUpdateRequest;
+import backend.spring.sns.dto.request.PostUploadRequest;
+import backend.spring.sns.dto.response.PostSearchResult;
 import backend.spring.sns.model.entity.Comment;
 import backend.spring.sns.repository.CommentRepository;
 import backend.spring.member.model.entity.Member;
@@ -117,13 +125,17 @@ public class SNSServiceImpl implements SNSService {
         Post post = findPost(postId);
 
         // 이미 좋아요한 경우
-        if (post.isLikeUser(member.getMemberId())) {
-            throw new IllegalArgumentException("이미 좋아요를 눌렀습니다.");
-        }
+        checkLike(member, post);
 
         // 좋아요 목록에 추가
         post.getLikeUserSet().add(member);
-        postRepository.save(post);
+    }
+
+    // 좋아요 확인
+    private void checkLike(Member member, Post post) {
+        if (post.isLikeUser(member.getMemberId())) {
+            throw new PostLikeException(ALREADY_LIKE.getMessage());
+        }
     }
 
     // 게시물 좋아요 취소
@@ -136,13 +148,25 @@ public class SNSServiceImpl implements SNSService {
         Post post = findPost(postId);
 
         // 이미 좋아요 취소한 경우
-        if (!post.isLikeUser(member.getMemberId())) {
-            throw new IllegalArgumentException("이미 좋아요를 취소했습니다.");
-        }
+        checkUnlike(member, post);
 
         // 좋아요 목록에서 삭제
         post.getLikeUserSet().remove(member);
-        postRepository.save(post);
+    }
+
+    // 좋아요 취소 확인
+    private void checkUnlike(Member member, Post post) {
+        if (!post.isLikeUser(member.getMemberId())) {
+            throw new PostLikeException(ALREADY_UNLIKE.getMessage());
+        }
+    }
+
+    // 해당 회원이 게시물에 좋아요를 눌렀는지
+    @Override
+    public boolean isPostLikedByUser(Long postId, Long userId) {
+        // 게시물 조회
+        Post post = findPost(postId);
+        return post.isLikeUser(userId);
     }
 
     // 검색 조건으로 게시물 조회
@@ -185,14 +209,14 @@ public class SNSServiceImpl implements SNSService {
     // 게시물 반환
     private Post findPost(Long postId){
         Post post = postRepository.findByPostId(postId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 게시물이 없습니다."));
+                .orElseThrow(() -> new PostNotFoundException(POST_ID_NOT_FOUND.getMessage()));
         return post;
     }
 
     // 회원 반환
     private Member findMember(Long memberId){
         Member member = (Member) memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 회원이 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_ID_NOT_FOUND.getMessage()));
         return member;
     }
 

@@ -1,4 +1,4 @@
-package backend.spring.sns.model.dto.response;
+package backend.spring.sns.dto.response;
 
 import backend.spring.member.model.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;

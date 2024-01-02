@@ -1,6 +1,12 @@
 package backend.spring.member.service.impl;
 
-import backend.spring.member.model.dto.request.MemberSignupRequest;
+import static backend.spring.exception.member.constants.MemberExceptionMessages.DUPLICATE_NAME;
+import static backend.spring.exception.member.constants.MemberExceptionMessages.MEMBER_ID_NOT_FOUND;
+import static backend.spring.exception.member.constants.MemberExceptionMessages.MEMBER_NAME_NOT_FOUND;
+
+import backend.spring.exception.member.DuplicateNameException;
+import backend.spring.exception.member.MemberNotFoundException;
+import backend.spring.member.dto.request.MemberSignupRequest;
 import backend.spring.member.model.entity.Member;
 import backend.spring.member.model.entity.Role;
 import backend.spring.member.repository.MemberRepository;
@@ -12,7 +18,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,7 +67,7 @@ public class MemberServiceImpl implements MemberService {
     private void validateDuplicateName(String username){
         Optional<Member> findUser = memberRepository.findByName(username);
         if (findUser.isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 이름입니다: " + username);
+            throw new DuplicateNameException(DUPLICATE_NAME.getMessage());
         }
     }
 
@@ -114,12 +119,6 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
-    // 이름으로 찾아서 반환
-    private Member findSuggestionMember(String suggestionMemberName){
-        Member suggestionMember = memberRepository.findByName(suggestionMemberName)
-                .orElseThrow(() -> new UsernameNotFoundException("해당하는 이름을 가진 회원이 없습니다."));
-        return suggestionMember;
-    }
 
     // 모든 회원 조회
     @Override
@@ -127,10 +126,17 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findAll();
     }
 
+    // 이름으로 찾아서 반환
+    private Member findSuggestionMember(String suggestionMemberName){
+        Member suggestionMember = memberRepository.findByName(suggestionMemberName)
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NAME_NOT_FOUND.getMessage()));
+        return suggestionMember;
+    }
+
     // id로 찿아서 반환
     private Member findMember(Long memberId){
         Member member = (Member) memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 회원이 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_ID_NOT_FOUND.getMessage()));
         return member;
     }
 

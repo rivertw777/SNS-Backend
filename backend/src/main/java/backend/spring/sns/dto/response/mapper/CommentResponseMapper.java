@@ -1,6 +1,6 @@
-package backend.spring.sns.model.dto.response.mapper;
+package backend.spring.sns.dto.response.mapper;
 
-import backend.spring.sns.model.dto.response.CommentResponse;
+import backend.spring.sns.dto.response.CommentResponse;
 import backend.spring.sns.model.entity.Comment;
 import java.util.List;
 import java.util.stream.Collectors;

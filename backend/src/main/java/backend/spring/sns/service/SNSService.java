@@ -1,10 +1,10 @@
 package backend.spring.sns.service;
 
-import backend.spring.sns.model.dto.request.CommentWriteRequest;
-import backend.spring.sns.model.dto.request.PostSearchCondition;
-import backend.spring.sns.model.dto.request.PostUpdateRequest;
-import backend.spring.sns.model.dto.request.PostUploadRequest;
-import backend.spring.sns.model.dto.response.PostSearchResult;
+import backend.spring.sns.dto.request.CommentWriteRequest;
+import backend.spring.sns.dto.request.PostSearchCondition;
+import backend.spring.sns.dto.request.PostUpdateRequest;
+import backend.spring.sns.dto.request.PostUploadRequest;
+import backend.spring.sns.dto.response.PostSearchResult;
 import backend.spring.sns.model.entity.Comment;
 import backend.spring.sns.model.entity.Post;
 import java.io.IOException;
@@ -25,6 +25,8 @@ public interface SNSService {
     void likePost(Long memberId, Long postId);
 
     void unlikePost(Long memberId, Long postId);
+
+    boolean isPostLikedByUser(Long postId, Long userId);
 
     List<PostSearchResult> searchByConditions(PostSearchCondition conditionParam);
 

@@ -2,10 +2,10 @@ package backend.spring.sns.repository.impl;
 
 import static backend.spring.sns.model.entity.QPost.post;
 import static backend.spring.member.model.entity.QMember.member;
-import backend.spring.sns.model.dto.response.QPostSearchResult;
+import backend.spring.sns.dto.response.QPostSearchResult;
 
-import backend.spring.sns.model.dto.request.PostSearchCondition;
-import backend.spring.sns.model.dto.response.PostSearchResult;
+import backend.spring.sns.dto.request.PostSearchCondition;
+import backend.spring.sns.dto.response.PostSearchResult;
 import backend.spring.sns.repository.PostRepositoryCustom;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;

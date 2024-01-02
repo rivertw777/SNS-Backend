@@ -1,4 +1,4 @@
-package backend.spring.member.model.dto.request;
+package backend.spring.member.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

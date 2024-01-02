@@ -1,6 +1,6 @@
-package backend.spring.member.model.dto.response.mapper;
+package backend.spring.member.dto.response.mapper;
 
-import backend.spring.member.model.dto.response.SuggestionResponse;
+import backend.spring.member.dto.response.SuggestionResponse;
 import backend.spring.member.model.entity.Member;
 import java.util.List;
 import java.util.stream.Collectors;
