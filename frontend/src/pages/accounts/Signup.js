@@ -9,97 +9,94 @@ export default function Signup() {
   const history = useHistory();
   const [fieldErrors, setFieldErrors] = useState({});
 
-  const onFinish = values => {
-    async function fn() {
-      const { name, password } = values;
+  const onFinish = async (values) => {
+    const { name, password } = values;
 
-      setFieldErrors({});
+    setFieldErrors({});
 
-      const data = {  name, password };
-      try {
-        await axiosInstance.post("/api/users", data);
+    const data = { name, password };
+    try {
+      await axiosInstance.post("/api/users", data);
+
+      notification.open({
+        message: "회원가입 성공",
+        description: "로그인 페이지로 이동합니다.",
+        icon: <SmileOutlined style={{ color: "#108ee9" }} />,
+      });
+
+      history.push("/users/login");
+    } catch (error) {
+      if (error.response) {
+        const { status, data: { errorMessage } } = error.response;
 
         notification.open({
-          message: "회원가입 성공",
-          description: "로그인 페이지로 이동합니다.",
-          icon: <SmileOutlined style={{ color: "#108ee9" }} />
+          message: `회원가입 실패`,
+          description: errorMessage,
+          icon: <FrownOutlined style={{ color: "#ff3333" }} />,
         });
 
-        history.push("/users/login");
-      } catch (error) {
-        if (error.response) {
-          notification.open({
-            message: "회원가입 실패",
-            description: "아이디/암호를 확인해주세요.",
-            icon: <FrownOutlined style={{ color: "#ff3333" }} />
-          });
+        setFieldErrors((prevErrors) => {
+          const updatedErrors = {};
 
-          const { data: fieldsErrorMessages } = error.response;
+          for (const [fieldName, errors] of Object.entries(prevErrors)) {
+            const errorMessage = errors instanceof Array ? errors.join(" ") : errors;
+            updatedErrors[fieldName] = {
+              validateStatus: "error",
+              help: errorMessage,
+            };
+          }
 
-          setFieldErrors(
-            Object.entries(fieldsErrorMessages).reduce(
-              (acc, [fieldName, errors]) => {
-                acc[fieldName] = {
-                  validateStatus: "error",
-                  help: errors.join(" ")
-                };
-                return acc;
-              },
-              {}
-            )
-          );
-        }
+          return {
+            ...prevErrors,
+            ...updatedErrors,
+          };
+        });
       }
     }
-    fn();
   };
 
   return (
     <div className="Signup">
-    <Card title="회원가입">
-      <Form
-        {...layout}
-        onFinish={onFinish}
+      <Card title="회원가입">
+        <Form {...layout} onFinish={onFinish}>
+          <Form.Item
+            label="Username"
+            name="name"
+            rules={[
+              { required: true, message: "Please input your username!" },
+              { min: 5, message: "5글자 입력해주세요." },
+            ]}
+            hasFeedback
+            {...fieldErrors.username}
+          >
+            <Input />
+          </Form.Item>
 
-      >
-        <Form.Item
-          label="Username"
-          name="name"
-          rules={[
-            { required: true, message: "Please input your username!" },
-            { min: 5, message: "5글자 입력해주세요." }
-          ]}
-          hasFeedback
-          {...fieldErrors.username}
-        >
-          <Input />
-        </Form.Item>
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+            {...fieldErrors.password}
+          >
+            <Input.Password />
+          </Form.Item>
 
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
-          {...fieldErrors.password}
-        >
-          <Input.Password />
-        </Form.Item>
-
-        <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item {...tailLayout}>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
       </Card>
-      </div>
-    );
-  }
+    </div>
+  );
+}
 
 const layout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 10}
+  wrapperCol: { span: 10 },
 };
-  
+
 const tailLayout = {
-  wrapperCol: { offset: 11}
+  wrapperCol: { offset: 11 },
 };
