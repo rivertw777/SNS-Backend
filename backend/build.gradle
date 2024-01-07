@@ -30,8 +30,8 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation project(path: ':')
-    compileOnly 'org.projectlombok:lombok'
+	implementation project(path: ':')
+	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
@@ -88,5 +88,6 @@ clean.doLast {
 	file(querydslDir).deleteDir()
 }
 // QueryDSL
+
 
 
