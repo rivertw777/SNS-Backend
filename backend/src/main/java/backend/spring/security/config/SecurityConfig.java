@@ -43,8 +43,8 @@ public class SecurityConfig {
                 // 요청 처리
                 .and()
                 .authorizeRequests()
-                // 회원가입 경로
-                .requestMatchers("/api/users").permitAll()
+                // 회원가입 경로, 이미지 경로
+                .requestMatchers("/api/users", "/users/avatars/**", "/sns/photos/**").permitAll()
                 .anyRequest().authenticated();
 
         return http.build();
@@ -55,8 +55,6 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         // 정적 리소스, Swagger 경로
         return (web) -> web.ignoring().requestMatchers(
-                "/users/avatars/**",
-                "/sns/photos/**",
                 "/swagger-ui/**",
                 "/swagger-resources/**",
                 "/v3/api-docs/**");

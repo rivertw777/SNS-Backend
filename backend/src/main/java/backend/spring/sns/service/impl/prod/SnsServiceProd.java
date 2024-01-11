@@ -6,12 +6,16 @@ import backend.spring.exception.member.MemberNotFoundException;
 import backend.spring.member.model.entity.Member;
 import backend.spring.member.repository.MemberRepository;
 import backend.spring.sns.dto.request.PostUploadRequest;
+import backend.spring.sns.model.entity.Post;
 import backend.spring.sns.repository.CommentRepository;
 import backend.spring.sns.repository.PostRepository;
 import backend.spring.sns.service.impl.SnsServiceImpl;
 import java.io.IOException;
+import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Profile("prod")
 @Service
@@ -28,9 +32,37 @@ public class SnsServiceProd extends SnsServiceImpl {
         this.memberRepository = memberRepository;
     }
 
+    @Value("${photo.access.url}")
+    private String accessUrl;
+
     @Override
     public void registerPost(Long memberId, PostUploadRequest uploadParam) throws IOException {
+        // 로그인 중인 회원 조회
+        Member member = findMember(memberId);
 
+        // 사진 경로 반환
+        String photoUrl = savePhotos(uploadParam.photo());
+
+        // 게시물 저장
+        Post post = Post.builder()
+                .author(member)
+                .photoUrl(photoUrl)
+                .caption(uploadParam.caption())
+                .location(uploadParam.location())
+                .build();
+        postRepository.save(post);
+    }
+
+    // 사진 저장 및 경로 반환
+    private String savePhotos(MultipartFile photo) throws IOException {
+        // 사진 이름 생성
+        String fileName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
+
+        // s3 버킷에 사진 업로드
+
+        // post 모델에 담길 경로
+        String photoUrl = accessUrl + fileName;
+        return photoUrl;
     }
 
     // 회원 반환
