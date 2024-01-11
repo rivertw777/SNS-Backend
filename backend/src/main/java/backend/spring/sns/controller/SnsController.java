@@ -11,7 +11,7 @@ import backend.spring.sns.dto.request.PostUpdateRequest;
 import backend.spring.sns.model.entity.Comment;
 import backend.spring.sns.dto.request.PostUploadRequest;
 import backend.spring.sns.model.entity.Post;
-import backend.spring.sns.service.SNSService;
+import backend.spring.sns.service.SnsService;
 import backend.spring.security.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -37,12 +37,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/posts")
-public class SNSController {
+public class SnsController {
 
     @Autowired
     private final SecurityUtil securityUtil;
     @Autowired
-    private final SNSService snsService;
+    private final SnsService snsService;
     @Autowired
     private final PostResponseMapper postResponseMapper;
     @Autowired

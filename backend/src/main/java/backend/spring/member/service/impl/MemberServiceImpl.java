@@ -4,17 +4,13 @@ import static backend.spring.exception.member.constants.MemberExceptionMessages.
 import static backend.spring.exception.member.constants.MemberExceptionMessages.MEMBER_ID_NOT_FOUND;
 import static backend.spring.exception.member.constants.MemberExceptionMessages.MEMBER_NAME_NOT_FOUND;
 
-import backend.spring.exception.member.DuplicateNameException;
 import backend.spring.exception.member.MemberNotFoundException;
 import backend.spring.member.dto.request.MemberSignupRequest;
 import backend.spring.member.model.entity.Member;
-import backend.spring.member.model.entity.Role;
 import backend.spring.member.repository.MemberRepository;
 import backend.spring.member.service.MemberService;
 import backend.spring.member.service.filter.MemberFilter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,10 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Service
 @RequiredArgsConstructor
-public class MemberServiceImpl implements MemberService {
+public abstract class MemberServiceImpl implements MemberService {
 
-    @Value("${avatar.url}")
-    private String serverUrl;
+    @Value("${avatar.access.url}")
+    private String accessUrl;
 
     @Autowired
     private final MemberRepository memberRepository;
@@ -38,44 +34,8 @@ public class MemberServiceImpl implements MemberService {
     private final MemberFilter memberFilter;
 
     // 회원 가입
-    @Override
-    public void registerUser(MemberSignupRequest signupParam) {
-        // 이미 존재하는 사용자 이름이라면 예외 발생
-        validateDuplicateName(signupParam.name());
+    public abstract void registerUser(MemberSignupRequest signupParam);
 
-        // 비밀번호 인코딩
-        String encodedPassword = passwordEncoder.encode(signupParam.password());
-
-        // 일반 역할 부여
-        List<Role> roles = new ArrayList<>();
-        roles.add(Role.USER);
-
-        // 회원 저장
-        Member member = Member.builder()
-                .name(signupParam.name())
-                .password(encodedPassword)
-                .roles(roles)
-                .build();
-        memberRepository.save(member);
-
-        // 아바타 이미지 경로 저장
-        String avatarUrl = generateAvatarUrl(member.getMemberId());
-        member.setAvatarUrl(avatarUrl);
-    }
-
-    // 이름의 중복 검증
-    private void validateDuplicateName(String username){
-        Optional<Member> findUser = memberRepository.findByName(username);
-        if (findUser.isPresent()) {
-            throw new DuplicateNameException(DUPLICATE_NAME.getMessage());
-        }
-    }
-
-    // 아바타 url 생성 (임시)
-    private String generateAvatarUrl(Long userId) {
-        String avatarUrl = serverUrl + userId + ".png";
-        return avatarUrl;
-    }
 
     // 추천 회원 리스트 반환
     @Override

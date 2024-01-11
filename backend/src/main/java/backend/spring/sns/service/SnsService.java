@@ -12,7 +12,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface SNSService {
+public interface SnsService {
 
     void registerPost(Long memberId, PostUploadRequest uploadParam) throws IOException;
 
