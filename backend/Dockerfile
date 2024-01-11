@@ -5,7 +5,7 @@ FROM openjdk:17
 WORKDIR /app
 
 # Copy the JAR file to the container
-COPY gradle/wrapper/*.jar app.jar
+COPY build/libs/*.jar app.jar
 
 # Expose the port
 EXPOSE 8080

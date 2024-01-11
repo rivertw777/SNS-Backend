@@ -6,8 +6,15 @@ buildscript {
 
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.1.5'
-	id 'io.spring.dependency-management' version '1.1.3'
+	id 'org.springframework.boot' version '3.1.7'
+	id 'io.spring.dependency-management' version '1.1.4'
+}
+
+jar {
+	enabled = false
+	manifest {
+		attributes 'Main-Class': 'backend.spring.Application' // 메인 클래스명으로 변경해주세요
+	}
 }
 
 group = 'backend'
@@ -28,15 +35,15 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation project(path: ':')
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
+	//developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-	// mysql
-	runtimeOnly 'mysql:mysql-connector-java'
+	testImplementation 'org.springframework.security:spring-security-test'
 
 	// AOP
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
@@ -46,23 +53,14 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-	// Security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-
 	// QueryDSL
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
-	implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
-
 	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-
-	// 테스트에서 Lombok 사용
-	testCompileOnly 'org.projectlombok:lombok'
-	testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('bootBuildImage') {
@@ -88,6 +86,3 @@ clean.doLast {
 	file(querydslDir).deleteDir()
 }
 // QueryDSL
-
-
-
