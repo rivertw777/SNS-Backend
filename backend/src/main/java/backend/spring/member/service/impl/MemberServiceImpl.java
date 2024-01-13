@@ -77,7 +77,6 @@ public class MemberServiceImpl implements MemberService {
         return avatarUrl;
     }
 
-
     // 추천 회원 리스트 반환
     @Override
     public List<Member> getSuggestions(Long memberId) {

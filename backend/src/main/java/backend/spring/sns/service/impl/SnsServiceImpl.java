@@ -22,6 +22,7 @@ import backend.spring.sns.service.SnsService;
 import backend.spring.member.repository.MemberRepository;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Service
 @RequiredArgsConstructor
-public abstract class SnsServiceImpl implements SnsService {
+public class SnsServiceImpl implements SnsService {
 
     @Autowired
     private final PostRepository postRepository;
@@ -38,9 +39,28 @@ public abstract class SnsServiceImpl implements SnsService {
     private final CommentRepository commentRepository;
     @Autowired
     private final MemberRepository memberRepository;
+    @Autowired
+    private final PhotoUploader photoUploader;
 
     // 게시물 등록
-    public abstract void registerPost(Long memberId, PostUploadRequest uploadParam) throws IOException;
+    @Override
+    public void registerPost(Long memberId, PostUploadRequest uploadParam) throws IOException {
+        // 로그인 중인 회원 조회
+        Member member = findMember(memberId);
+
+        // 사진 경로 반환
+        String photoName = UUID.randomUUID() + "_" + uploadParam.photo().getOriginalFilename();
+        String photoUrl = photoUploader.uploadPhoto(uploadParam.photo(), photoName);
+
+        // 게시물 저장
+        Post post = Post.builder()
+                .author(member)
+                .photoUrl(photoUrl)
+                .caption(uploadParam.caption())
+                .location(uploadParam.location())
+                .build();
+        postRepository.save(post);
+    }
 
     // 모든 Post 조회
     @Override
