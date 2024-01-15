@@ -6,28 +6,33 @@ services:
     image: mysql
     environment:
       MYSQL_DATABASE: instagram
-      MYSQL_ROOT_HOST: '%'
       MYSQL_ROOT_PASSWORD: 1234
     ports:
       - "3306:3306"
+    restart: always
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
     command: ["--character-set-server=utf8mb4","--collation-server=utf8mb4_unicode_ci"]
     networks:
-      - my_network
+      - sns_project
 
   application:
     container_name: backend-app
-    image: ec2-23-20-240-88.compute-1.amazonaws.com:5000/spring
+    image: spring
     ports:
       - "8080:8080"
     environment:
-      SPRING_PROFILES_ACTIVE: prod
+      SPRING_PROFILES_ACTIVE: prod,common
       SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/instagram?useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: "root"
       SPRING_DATASOURCE_PASSWORD: "1234"
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     networks:
-      - my_network
+      - sns_project
 
 networks:
-  my_network:
+  sns_project:
