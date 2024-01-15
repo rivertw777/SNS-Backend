@@ -22,5 +22,4 @@ public class WebConfigProd implements WebMvcConfigurer {
                 .exposedHeaders("Authorization")
                 .allowCredentials(true);
     }
-
 }

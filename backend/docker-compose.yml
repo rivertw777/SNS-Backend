@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  database:
+    container_name: mysql-db
+    image: mysql
+    environment:
+      MYSQL_DATABASE: instagram
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: 1234
+    ports:
+      - "3306:3306"
+    command: ["--character-set-server=utf8mb4","--collation-server=utf8mb4_unicode_ci"]
+    networks:
+      - my_network
+
+  application:
+    container_name: backend-app
+    image: ec2-23-20-240-88.compute-1.amazonaws.com:5000/spring
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/instagram?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "1234"
+    depends_on:
+      - database
+    networks:
+      - my_network
+
+networks:
+  my_network:

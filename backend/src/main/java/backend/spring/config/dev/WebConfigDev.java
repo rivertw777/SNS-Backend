@@ -36,5 +36,4 @@ public class WebConfigDev implements WebMvcConfigurer {
                 .addResourceLocations(
                         photoFileDir, avatarFileDir);
     }
-
 }
