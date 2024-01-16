@@ -1,5 +1,7 @@
 package backend.spring.security.service;
 
+import static backend.spring.exception.member.constants.MemberExceptionMessages.MEMBER_NAME_NOT_FOUND;
+
 import backend.spring.member.model.entity.Member;
 import backend.spring.security.model.CustomUserDetails;
 import backend.spring.member.repository.MemberRepository;
@@ -20,7 +22,7 @@ public class SecurityService implements UserDetailsService {
     @Override
     public CustomUserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
         Member member = memberRepository.findByName(name)
-                .orElseThrow(() -> new UsernameNotFoundException("해당하는 이름을 가진 회원이 없습니다."));
+                .orElseThrow(() -> new UsernameNotFoundException(MEMBER_NAME_NOT_FOUND.getMessage()));
 
         return new CustomUserDetails(member);
     }

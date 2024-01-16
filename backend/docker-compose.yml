@@ -2,8 +2,8 @@ version: '3'
 
 services:
   database:
-    container_name: mysql-db
-    image: mysql
+    container_name: mysql
+    image: mysql:latest
     environment:
       MYSQL_DATABASE: instagram
       MYSQL_ROOT_PASSWORD: 1234
@@ -16,15 +16,14 @@ services:
       retries: 10
     command: ["--character-set-server=utf8mb4","--collation-server=utf8mb4_unicode_ci"]
     networks:
-      - sns_project
+      - sns-project
 
-  application:
-    container_name: backend-app
+  backend-app:
+    container_name: spring
     image: spring
     ports:
       - "8080:8080"
     environment:
-      SPRING_PROFILES_ACTIVE: prod,common
       SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/instagram?useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: "root"
       SPRING_DATASOURCE_PASSWORD: "1234"
@@ -32,7 +31,7 @@ services:
       database:
         condition: service_healthy
     networks:
-      - sns_project
+      - sns-project
 
 networks:
-  sns_project:
+  sns-project:

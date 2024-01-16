@@ -40,24 +40,16 @@ public class SecurityConfig {
                 .and()
                 // 커스텀 필터 적용
                 .apply(new MyCustomDsl())
-                // 요청 처리
                 .and()
                 .authorizeRequests()
-                // 회원가입 경로, 이미지 경로
+                // 회원가입
                 .requestMatchers("/api/users", "/users/avatars/**", "/sns/photos/**").permitAll()
+                // 파일시스템 이미지
+                .requestMatchers("/users/avatars/**", "/sns/photos/**").permitAll()
+                // Swagger
+                .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated();
-
         return http.build();
-    }
-
-    // 특정 주소 무시
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        // 정적 리소스, Swagger 경로
-        return (web) -> web.ignoring().requestMatchers(
-                "/swagger-ui/**",
-                "/swagger-resources/**",
-                "/v3/api-docs/**");
     }
 
     // 빈 생성 시 스프링의 내부 동작으로 UserSecurityService와 PasswordEncoder가 자동으로 설정
@@ -67,6 +59,7 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    // 비밀번호 인코더
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -79,12 +72,11 @@ public class SecurityConfig {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, tokenProvider);
             JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter(authenticationManager, tokenProvider);
-            // 로그인 경로 수정
+            // 로그인 경로
             jwtAuthenticationFilter.setFilterProcessesUrl("/api/users/login");
             http
                     .addFilter(jwtAuthenticationFilter)
                     .addFilter(jwtAuthorizationFilter);
         }
     }
-
 }

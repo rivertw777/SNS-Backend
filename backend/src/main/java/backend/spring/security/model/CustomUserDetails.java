@@ -13,9 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
 @AllArgsConstructor
-public class CustomUserDetails implements UserDetails {
-
-    private Member member;
+public record CustomUserDetails(Member member) implements UserDetails {
 
     // 권환 반환
     @Override

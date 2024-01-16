@@ -91,5 +91,4 @@ public class Member {
     public boolean isFollowingUser(Long suggestionId) {
         return followingSet.stream().anyMatch(member -> member.getMemberId().equals(suggestionId));
     }
-
 }

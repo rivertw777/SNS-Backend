@@ -1,4 +1,4 @@
-package backend.spring.config.dev;
+package backend.spring.config.local;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -7,9 +7,9 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Profile("dev")
+@Profile("local")
 @Configuration
-public class WebConfigDev implements WebMvcConfigurer {
+public class WebConfigLocal implements WebMvcConfigurer {
 
     @Value("${react.url}")
     private String reactUrl;

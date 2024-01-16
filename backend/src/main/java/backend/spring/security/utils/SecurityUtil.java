@@ -19,7 +19,7 @@ public class SecurityUtil {
 
         // 인증 정보에서 회원 정보 가져오기
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        return customUserDetails.getMember().getMemberId();
+        return customUserDetails.member().getMemberId();
     }
 
 }

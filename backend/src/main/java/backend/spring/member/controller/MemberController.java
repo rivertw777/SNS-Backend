@@ -64,7 +64,6 @@ public class MemberController {
         return ResponseEntity.ok(SuggestionResponses);
     }
 
-
     // 회원 팔로우
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원 팔로우 성공"),
@@ -104,6 +103,5 @@ public class MemberController {
         List<Member> members = memberService.getAllUsers();
         return ResponseEntity.ok(members);
     }
-
 }
 

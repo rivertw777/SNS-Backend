@@ -40,13 +40,13 @@ public class MemberServiceImpl implements MemberService {
     // 회원 가입
     @Override
     public void registerUser(MemberSignupRequest signupParam) {
-        // 이미 존재하는 사용자 이름이라면 예외 발생
+        // 이름 중복 검증
         validateDuplicateName(signupParam.name());
 
         // 비밀번호 인코딩
         String encodedPassword = passwordEncoder.encode(signupParam.password());
 
-        // 일반 역할 부여
+        // 역할 부여
         List<Role> roles = new ArrayList<>();
         roles.add(Role.USER);
 
@@ -71,7 +71,7 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    // 아바타 url 생성
+    // 아바타 url 생성 (임시)
     private String generateAvatarUrl(Long userId) {
         String avatarUrl = accessUrl + userId + ".png";
         return avatarUrl;
@@ -86,7 +86,7 @@ public class MemberServiceImpl implements MemberService {
         // 모든 회원 반환
         List<Member> members = memberRepository.findAll();
 
-        // 필터링 거쳐서 추천 이용자 리스트 반환
+        // 필터링으로 추천 이용자 리스트 반환
         List<Member> suggestions = memberFilter.toSuggestions(members, member);
         return suggestions;
     }
@@ -119,7 +119,6 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
-
     // 모든 회원 조회
     @Override
     public List<Member> getAllUsers() {
@@ -139,5 +138,4 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_ID_NOT_FOUND.getMessage()));
         return member;
     }
-
 }

@@ -28,5 +28,4 @@ public class SwaggerConfig {
                 .components(new Components().addSecuritySchemes("bearerAuth", securityScheme)) // 보안 스킴을 Components에 추가
                 .security(Arrays.asList(securityRequirement)); // 보안 요구사항을 OpenAPI에 추가
     }
-
 }

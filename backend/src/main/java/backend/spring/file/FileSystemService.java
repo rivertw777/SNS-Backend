@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.env.Environment;
 
-@Profile("dev")
+@Profile("local")
 @RequiredArgsConstructor
 @Service
 public class FileSystemService {
