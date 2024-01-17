@@ -18,12 +18,11 @@ public class PhotoUploader {
     private final Environment environment;
 
     public String uploadPhoto(MultipartFile photo, String photoName) throws IOException {
-        if ("dev".equals(System.getProperty("spring.profiles.active"))) {
+        if ("local".equals(System.getProperty("spring.profiles.active"))) {
             FileSystemService fileSystemService = new FileSystemService(environment);
             return fileSystemService.uploadPhoto(photo, photoName);
         }
-        S3Service s3Service = new S3Service(new AmazonS3Client(), environment);
+        S3Service s3Service = new S3Service(new AmazonS3Client());
         return s3Service.uploadPhoto(photo, photoName);
     }
-
 }

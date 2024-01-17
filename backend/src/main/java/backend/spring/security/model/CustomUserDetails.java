@@ -5,14 +5,10 @@ import backend.spring.member.model.entity.Role;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Getter
-@AllArgsConstructor
 public record CustomUserDetails(Member member) implements UserDetails {
 
     // 권환 반환

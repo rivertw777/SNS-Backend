@@ -3,7 +3,7 @@ version: '3'
 services:
   database:
     container_name: mysql
-    image: mysql:latest
+    image: mysql
     environment:
       MYSQL_DATABASE: instagram
       MYSQL_ROOT_PASSWORD: 1234
@@ -30,6 +30,14 @@ services:
     depends_on:
       database:
         condition: service_healthy
+    networks:
+      - sns-project
+
+  frontend-app:
+    container_name: react
+    image: ec2-23-20-240-88.compute-1.amazonaws.com:5000/react
+    ports:
+      - "3000:3000"
     networks:
       - sns-project
 

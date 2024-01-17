@@ -7,11 +7,8 @@ WORKDIR /app
 # Copy the JAR file to the container
 COPY build/libs/*.jar app.jar
 
-ARG PROFILE
-ENV SPRING_PROFILES_ACTIVE=${PROFILE}
-
 # Expose the port
 EXPOSE 8080
 
 # Run the application
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-Dspring.profiles.active=prod", "-jar", "app.jar"]
