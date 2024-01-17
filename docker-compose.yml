@@ -20,7 +20,7 @@ services:
 
   backend-app:
     container_name: spring
-    image: spring
+    image: ec2-23-20-240-88.compute-1.amazonaws.com:5000/spring
     ports:
       - "8080:8080"
     environment:
