@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SuggestionResponseMapper {
+
     public static List<SuggestionResponse> toSuggestionResponses(List<Member> suggestions) {
         return suggestions.stream()
                 .map(suggestion -> SuggestionResponseMapper.toSuggestionResponse(suggestion))
@@ -21,4 +22,5 @@ public class SuggestionResponseMapper {
                 false
         );
     }
+
 }

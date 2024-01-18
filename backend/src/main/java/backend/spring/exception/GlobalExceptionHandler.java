@@ -45,4 +45,5 @@ public class GlobalExceptionHandler {
     public ResponseEntity<CustomErrorResponse> handlePostLikeExeption(PostLikeException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new CustomErrorResponse(e.getMessage()));
     }
+
 }

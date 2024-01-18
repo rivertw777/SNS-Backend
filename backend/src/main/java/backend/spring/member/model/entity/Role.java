@@ -1,6 +1,7 @@
 package backend.spring.member.model.entity;
 
 public enum Role {
+
     USER("ROLE_USER"),
     ADMIN("ROLE_ADMIN");
 
@@ -13,4 +14,5 @@ public enum Role {
     public String getRole() {
         return roleName;
     }
+
 }

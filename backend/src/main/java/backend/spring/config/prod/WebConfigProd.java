@@ -9,6 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Profile("prod")
 @Configuration
 public class WebConfigProd implements WebMvcConfigurer {
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         Dotenv dotenv = Dotenv.load();
@@ -21,4 +22,5 @@ public class WebConfigProd implements WebMvcConfigurer {
                 .exposedHeaders("Authorization")
                 .allowCredentials(true);
     }
+
 }

@@ -21,4 +21,5 @@ public abstract class BaseTimeEntity {
     @LastModifiedDate
     @Schema(description = "수정 날짜")
     private LocalDateTime modifiedAt;
+
 }

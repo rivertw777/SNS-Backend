@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 @Schema(description = "검색 결과 응답 DTO")
 public record PostSearchResult(Long postId, String location, String caption, LocalDateTime createdAt, Long memberId,
                                String memberName, String memberAvatarUrl) {
+
     @QueryProjection
     public PostSearchResult(Long postId, String location, String caption, LocalDateTime createdAt, Long memberId,
                             String memberName, String memberAvatarUrl) {
@@ -18,4 +19,5 @@ public record PostSearchResult(Long postId, String location, String caption, Loc
         this.memberName = memberName;
         this.memberAvatarUrl = memberAvatarUrl;
     }
+
 }

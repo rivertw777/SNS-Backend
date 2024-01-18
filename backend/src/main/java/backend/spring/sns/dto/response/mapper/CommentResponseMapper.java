@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CommentResponseMapper {
+
     public List<CommentResponse> toCommentResponses(List<Comment> comments) {
         return comments.stream()
                 .map(comment -> toPostResponse(comment))
@@ -22,4 +23,5 @@ public class CommentResponseMapper {
                 comment.getCreatedAt()
         );
     }
+
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PostResponseMapper {
+
     public List<PostResponse> toPostResponses( List<Post> posts,  Long memberId, SnsService snsService) {
         return posts.stream()
                 .map(post -> toPostResponse(post, memberId, snsService))
@@ -25,4 +26,5 @@ public class PostResponseMapper {
                 snsService.isPostLikedByUser(post.getPostId(), userId)
         );
     }
+
 }

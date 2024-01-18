@@ -103,5 +103,6 @@ public class MemberController {
         List<Member> members = memberService.getAllUsers();
         return ResponseEntity.ok(members);
     }
+
 }
 

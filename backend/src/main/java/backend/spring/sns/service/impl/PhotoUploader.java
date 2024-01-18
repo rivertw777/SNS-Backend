@@ -18,4 +18,5 @@ public class PhotoUploader {
         S3Service s3Service = new S3Service(new AmazonS3Client());
         return s3Service.uploadPhoto(photo, photoName);
     }
+
 }

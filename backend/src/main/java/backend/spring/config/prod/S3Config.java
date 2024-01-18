@@ -16,7 +16,6 @@ public class S3Config {
     @Bean
     public AmazonS3Client amazonS3Client() {
         Dotenv dotenv = Dotenv.load();
-
         String accessKey = dotenv.get("cloud.aws.credentials.access-key");
         String secretKey = dotenv.get("cloud.aws.credentials.secret-key");
         String region = dotenv.get("cloud.aws.region.static");
@@ -29,4 +28,5 @@ public class S3Config {
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .build();
     }
+
 }

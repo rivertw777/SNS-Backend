@@ -15,4 +15,5 @@ public enum MemberExceptionMessages {
     public String getMessage() {
         return message;
     }
+
 }

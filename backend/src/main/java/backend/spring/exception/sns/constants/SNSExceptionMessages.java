@@ -15,4 +15,5 @@ public enum SNSExceptionMessages {
     public String getMessage() {
         return message;
     }
+
 }

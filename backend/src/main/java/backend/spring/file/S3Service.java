@@ -29,4 +29,5 @@ public class S3Service {
         amazonS3.putObject(bucket, photoName, photo.getInputStream(), metadata);
         return amazonS3.getUrl(bucket, photoName).toString();
     }
+
 }
