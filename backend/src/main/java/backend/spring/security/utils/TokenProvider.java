@@ -2,6 +2,7 @@ package backend.spring.security.utils;
 
 import backend.spring.security.model.CustomUserDetails;
 import backend.spring.security.service.SecurityService;
+import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
@@ -21,8 +22,10 @@ public class TokenProvider {
     private final Key jwtSecretKey;
     private final long jwtExpirationInMs;
 
-    public TokenProvider(SecurityService securityService, @Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration}") long jwtExpirationInMs) {
+    public TokenProvider(SecurityService securityService, @Value("${jwt.expiration}") long jwtExpirationInMs) {
         this.securityService = securityService;
+        Dotenv dotenv = Dotenv.load();
+        String secretKey = dotenv.get("jwt.secret");
         this.jwtSecretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         this.jwtExpirationInMs = jwtExpirationInMs;
     }
