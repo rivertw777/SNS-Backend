@@ -8,6 +8,8 @@ import static backend.spring.exception.sns.constants.SNSExceptionMessages.POST_I
 import backend.spring.exception.member.MemberNotFoundException;
 import backend.spring.exception.sns.PostLikeException;
 import backend.spring.exception.sns.PostNotFoundException;
+import backend.spring.file.FileService;
+import backend.spring.file.FileServiceFactory;
 import backend.spring.sns.dto.request.CommentWriteRequest;
 import backend.spring.sns.dto.request.PostSearchCondition;
 import backend.spring.sns.dto.request.PostUpdateRequest;
@@ -23,14 +25,12 @@ import backend.spring.member.repository.MemberRepository;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @Service
-@RequiredArgsConstructor
 public class SnsServiceImpl implements SnsService {
 
     @Autowired
@@ -40,7 +40,15 @@ public class SnsServiceImpl implements SnsService {
     @Autowired
     private final MemberRepository memberRepository;
     @Autowired
-    private final PhotoUploader photoUploader;
+    private final FileService fileService;
+
+    public SnsServiceImpl(PostRepository postRepository, CommentRepository commentRepository,
+                          MemberRepository memberRepository){
+        this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
+        this.memberRepository = memberRepository;
+        this.fileService = FileServiceFactory.create(System.getProperty("spring.profiles.active"));
+    }
 
     // 게시물 등록
     @Override
@@ -50,7 +58,7 @@ public class SnsServiceImpl implements SnsService {
 
         // 사진 경로 반환
         String photoName = UUID.randomUUID() + "_" + uploadParam.photo().getOriginalFilename();
-        String photoUrl = photoUploader.uploadPhoto(uploadParam.photo(), photoName);
+        String photoUrl = fileService.uploadPhoto(uploadParam.photo(), photoName);
 
         // 게시물 저장
         Post post = Post.builder()
