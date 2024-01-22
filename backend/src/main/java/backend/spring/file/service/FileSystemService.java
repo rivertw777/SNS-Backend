@@ -1,4 +1,4 @@
-package backend.spring.file;
+package backend.spring.file.service;
 
 import java.io.File;
 import java.io.IOException;

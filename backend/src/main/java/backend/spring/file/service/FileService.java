@@ -1,4 +1,4 @@
-package backend.spring.file;
+package backend.spring.file.service;
 
 import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;

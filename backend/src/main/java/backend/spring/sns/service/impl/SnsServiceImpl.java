@@ -8,7 +8,7 @@ import static backend.spring.exception.sns.constants.SNSExceptionMessages.POST_I
 import backend.spring.exception.member.MemberNotFoundException;
 import backend.spring.exception.sns.PostLikeException;
 import backend.spring.exception.sns.PostNotFoundException;
-import backend.spring.file.FileService;
+import backend.spring.file.service.FileService;
 import backend.spring.file.FileServiceFactory;
 import backend.spring.sns.dto.request.CommentWriteRequest;
 import backend.spring.sns.dto.request.PostSearchCondition;

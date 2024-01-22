@@ -1,5 +1,8 @@
 package backend.spring.file;
 
+import backend.spring.file.service.S3Service;
+import backend.spring.file.service.FileService;
+import backend.spring.file.service.FileSystemService;
 import com.amazonaws.services.s3.AmazonS3Client;
 
 public class FileServiceFactory {
