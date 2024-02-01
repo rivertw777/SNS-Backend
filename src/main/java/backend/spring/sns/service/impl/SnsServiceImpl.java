@@ -14,7 +14,11 @@ import backend.spring.sns.dto.request.CommentWriteRequest;
 import backend.spring.sns.dto.request.PostSearchCondition;
 import backend.spring.sns.dto.request.PostUpdateRequest;
 import backend.spring.sns.dto.request.PostUploadRequest;
+import backend.spring.sns.dto.response.CommentResponse;
+import backend.spring.sns.dto.response.PostResponse;
 import backend.spring.sns.dto.response.PostSearchResult;
+import backend.spring.sns.dto.response.mapper.CommentResponseMapper;
+import backend.spring.sns.dto.response.mapper.PostResponseMapper;
 import backend.spring.sns.model.entity.Comment;
 import backend.spring.sns.repository.CommentRepository;
 import backend.spring.member.model.entity.Member;
@@ -41,13 +45,20 @@ public class SnsServiceImpl implements SnsService {
     private final MemberRepository memberRepository;
     @Autowired
     private final FileService fileService;
+    @Autowired
+    private final PostResponseMapper postResponseMapper;
+    @Autowired
+    private final CommentResponseMapper commentResponseMapper;
 
     public SnsServiceImpl(PostRepository postRepository, CommentRepository commentRepository,
-                          MemberRepository memberRepository){
+                          MemberRepository memberRepository, PostResponseMapper postResponseMapper,
+                          CommentResponseMapper commentResponseMapper){
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
         this.memberRepository = memberRepository;
         this.fileService = FileServiceFactory.create(System.getProperty("spring.profiles.active"));
+        this.postResponseMapper = postResponseMapper;
+        this.commentResponseMapper = commentResponseMapper;
     }
 
     // 게시물 등록
@@ -70,10 +81,15 @@ public class SnsServiceImpl implements SnsService {
         postRepository.save(post);
     }
 
-    // 모든 Post 조회
+    // 게시물 전체 조회
     @Override
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public List<PostResponse> getAllPosts(Long memberId) {
+        // 게시물 전체 조회
+        List<Post> posts = postRepository.findAll();
+
+        // 게시물 응답 DTO 변환
+        List<PostResponse> postResponses = postResponseMapper.toPostResponses(posts, memberId);
+        return postResponses;
     }
 
     // 게시물 댓글 작성
@@ -96,13 +112,16 @@ public class SnsServiceImpl implements SnsService {
 
     // 게시물 댓글 조회
     @Override
-    public List<Comment> getComments(Long postId) {
+    public List<CommentResponse> getComments(Long postId) {
         // 게시물 조회
         Post post = findPost(postId);
 
         // 게시물 댓글 조회
         List<Comment> comments = commentRepository.findByPostPostId(postId);
-        return comments;
+
+        // 댓글 응답 DTO 변환
+        List<CommentResponse> commentResponses = commentResponseMapper.toCommentResponses(comments);
+        return commentResponses;
     }
 
     // 게시물 좋아요
@@ -149,14 +168,6 @@ public class SnsServiceImpl implements SnsService {
         if (!post.isLikeUser(member.getMemberId())) {
             throw new PostLikeException(ALREADY_UNLIKE.getMessage());
         }
-    }
-
-    // 해당 회원이 게시물에 좋아요를 눌렀는지
-    @Override
-    public boolean isPostLikedByUser(Long postId, Long userId) {
-        // 게시물 조회
-        Post post = findPost(postId);
-        return post.isLikeUser(userId);
     }
 
     // 검색 조건으로 게시물 조회

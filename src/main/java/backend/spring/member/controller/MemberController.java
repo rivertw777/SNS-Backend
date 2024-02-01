@@ -3,7 +3,6 @@ package backend.spring.member.controller;
 import backend.spring.member.dto.request.MemberSignupRequest;
 import backend.spring.member.dto.request.SuggestionRequest;
 import backend.spring.member.dto.response.SuggestionResponse;
-import backend.spring.member.dto.response.mapper.SuggestionResponseMapper;
 import backend.spring.member.model.entity.Member;
 import backend.spring.member.service.MemberService;
 import backend.spring.security.utils.SecurityUtil;
@@ -31,8 +30,6 @@ public class MemberController {
     private final SecurityUtil securityUtil;
     @Autowired
     private final MemberService memberService;
-    @Autowired
-    private final SuggestionResponseMapper suggestionResponseMapper;
 
     // 회원 가입
     @ApiResponses(value = {
@@ -46,7 +43,7 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    // 추천 이용자 리스트 반환
+    // 추천 회원 리스트 반환
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "추천 회원 조회 성공"),
             @ApiResponse(responseCode = "404", description = "리소스 찾을 수 없음.")})
@@ -56,11 +53,8 @@ public class MemberController {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
-        // 추천 회원 반환
-        List<Member> suggestions = memberService.getSuggestions(memberId);
-
-        // 추천 회원 응답 DTO 변환
-        List<SuggestionResponse> SuggestionResponses = suggestionResponseMapper.toSuggestionResponses(suggestions);
+        // 추천 회원 응답 DTO 반환
+        List<SuggestionResponse> SuggestionResponses = memberService.getSuggestions(memberId);
         return ResponseEntity.ok(SuggestionResponses);
     }
 

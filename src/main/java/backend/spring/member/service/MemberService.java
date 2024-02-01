@@ -1,6 +1,7 @@
 package backend.spring.member.service;
 
 import backend.spring.member.dto.request.MemberSignupRequest;
+import backend.spring.member.dto.response.SuggestionResponse;
 import backend.spring.member.model.entity.Member;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,7 @@ public interface MemberService {
 
     void registerUser(MemberSignupRequest signupParam);
 
-    List<Member> getSuggestions(Long memberId);
+    List<SuggestionResponse> getSuggestions(Long memberId);
 
     void followMember(Long memberId, String suggestionName);
 

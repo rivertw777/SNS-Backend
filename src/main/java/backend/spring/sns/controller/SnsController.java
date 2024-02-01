@@ -3,12 +3,9 @@ package backend.spring.sns.controller;
 import backend.spring.sns.dto.request.PostSearchCondition;
 import backend.spring.sns.dto.response.CommentResponse;
 import backend.spring.sns.dto.response.PostSearchResult;
-import backend.spring.sns.dto.response.mapper.CommentResponseMapper;
-import backend.spring.sns.dto.response.mapper.PostResponseMapper;
 import backend.spring.sns.dto.response.PostResponse;
 import backend.spring.sns.dto.request.CommentWriteRequest;
 import backend.spring.sns.dto.request.PostUpdateRequest;
-import backend.spring.sns.model.entity.Comment;
 import backend.spring.sns.dto.request.PostUploadRequest;
 import backend.spring.sns.model.entity.Post;
 import backend.spring.sns.service.SnsService;
@@ -43,10 +40,6 @@ public class SnsController {
     private final SecurityUtil securityUtil;
     @Autowired
     private final SnsService snsService;
-    @Autowired
-    private final PostResponseMapper postResponseMapper;
-    @Autowired
-    private final CommentResponseMapper commentResponseMapper;
 
     // 게시물 업로드
     @ApiResponses(value = {
@@ -73,11 +66,8 @@ public class SnsController {
         // 로그인 중인 회원 id
         Long memberId = securityUtil.getCurrentMemberId();
 
-        // 모든 Post 조회
-        List<Post> posts = snsService.getAllPosts();
-
-        // 게시물 응답 DTO 변환
-        List<PostResponse> postResponses = postResponseMapper.toPostResponses( posts, memberId, snsService);
+        // 게시물 응답 DTO 반환
+        List<PostResponse> postResponses = snsService.getAllPosts(memberId);
         return ResponseEntity.ok(postResponses);
     }
 
@@ -106,11 +96,8 @@ public class SnsController {
     @GetMapping("/{postId}/comments")
     public ResponseEntity<List<CommentResponse>> getComments(
             @Parameter(name = "postId", required = true) @Valid @PathVariable Long postId) {
-        // 게시물 댓글 조회
-        List<Comment> comments = snsService.getComments(postId);
-
-        // 댓글 응답 DTO 변환
-        List<CommentResponse> commentResponses = commentResponseMapper.toCommentResponses(comments);
+        // 댓글 응답 DTO 반환
+        List<CommentResponse> commentResponses = snsService.getComments(postId);
         return ResponseEntity.ok(commentResponses);
     }
 

@@ -4,8 +4,9 @@ import backend.spring.sns.dto.request.CommentWriteRequest;
 import backend.spring.sns.dto.request.PostSearchCondition;
 import backend.spring.sns.dto.request.PostUpdateRequest;
 import backend.spring.sns.dto.request.PostUploadRequest;
+import backend.spring.sns.dto.response.CommentResponse;
+import backend.spring.sns.dto.response.PostResponse;
 import backend.spring.sns.dto.response.PostSearchResult;
-import backend.spring.sns.model.entity.Comment;
 import backend.spring.sns.model.entity.Post;
 import java.io.IOException;
 import java.util.List;
@@ -16,17 +17,15 @@ public interface SnsService {
 
     void registerPost(Long memberId, PostUploadRequest uploadParam) throws IOException;
 
-    List<Post> getAllPosts();
+    List<PostResponse> getAllPosts(Long memberId);
 
     void writeComment(Long memberId, Long postId, CommentWriteRequest wirteParam);
 
-    List<Comment> getComments(Long postId);
+    List<CommentResponse> getComments(Long postId);
 
     void likePost(Long memberId, Long postId);
 
     void unlikePost(Long memberId, Long postId);
-
-    boolean isPostLikedByUser(Long postId, Long userId);
 
     List<PostSearchResult> searchByConditions(PostSearchCondition conditionParam);
 

@@ -7,6 +7,8 @@ import static backend.spring.exception.member.constants.MemberExceptionMessages.
 import backend.spring.exception.member.DuplicateNameException;
 import backend.spring.exception.member.MemberNotFoundException;
 import backend.spring.member.dto.request.MemberSignupRequest;
+import backend.spring.member.dto.response.SuggestionResponse;
+import backend.spring.member.dto.response.mapper.SuggestionResponseMapper;
 import backend.spring.member.model.entity.Member;
 import backend.spring.member.model.entity.Role;
 import backend.spring.member.repository.MemberRepository;
@@ -33,6 +35,8 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
     @Autowired
     private final MemberFilter memberFilter;
+    @Autowired
+    private final SuggestionResponseMapper suggestionResponseMapper;
 
     @Value("${avatar.access.url}")
     private String accessUrl;
@@ -79,16 +83,19 @@ public class MemberServiceImpl implements MemberService {
 
     // 추천 회원 리스트 반환
     @Override
-    public List<Member> getSuggestions(Long memberId) {
+    public List<SuggestionResponse> getSuggestions(Long memberId) {
         // 로그인 중인 회원 조회
         Member member = findMember(memberId);
 
         // 모든 회원 반환
         List<Member> members = memberRepository.findAll();
 
-        // 필터링으로 추천 이용자 리스트 반환
+        // 필터링으로 추천 회원 리스트 반환
         List<Member> suggestions = memberFilter.toSuggestions(members, member);
-        return suggestions;
+
+        // 추천 회원 응답 DTO 변환
+        List<SuggestionResponse> SuggestionResponses = suggestionResponseMapper.toSuggestionResponses(suggestions);
+        return SuggestionResponses;
     }
 
     // 회원 팔로우

@@ -2,7 +2,6 @@ package backend.spring.sns.dto.response.mapper;
 
 import backend.spring.sns.dto.response.PostResponse;
 import backend.spring.sns.model.entity.Post;
-import backend.spring.sns.service.SnsService;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
@@ -10,20 +9,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class PostResponseMapper {
 
-    public List<PostResponse> toPostResponses( List<Post> posts,  Long memberId, SnsService snsService) {
+    public List<PostResponse> toPostResponses( List<Post> posts,  Long memberId) {
         return posts.stream()
-                .map(post -> toPostResponse(post, memberId, snsService))
+                .map(post -> toPostResponse(post, memberId))
                 .collect(Collectors.toList());
     }
 
-    public PostResponse toPostResponse(Post post, Long userId, SnsService snsService) {
+    public PostResponse toPostResponse(Post post, Long userId) {
         return new PostResponse(
                 post.getPostId(),
                 post.getAuthor(),
                 post.getPhotoUrl(),
                 post.getCaption(),
                 post.getLocation(),
-                snsService.isPostLikedByUser(post.getPostId(), userId)
+                post.isLikeUser(userId)
         );
     }
 
