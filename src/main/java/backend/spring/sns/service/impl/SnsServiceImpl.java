@@ -1,9 +1,9 @@
 package backend.spring.sns.service.impl;
 
 import static backend.spring.member.exception.constants.MemberExceptionMessages.MEMBER_ID_NOT_FOUND;
-import static backend.spring.sns.exception.constants.SNSExceptionMessages.ALREADY_LIKE;
-import static backend.spring.sns.exception.constants.SNSExceptionMessages.ALREADY_UNLIKE;
-import static backend.spring.sns.exception.constants.SNSExceptionMessages.POST_ID_NOT_FOUND;
+import static backend.spring.sns.exception.constants.SnsExceptionMessages.ALREADY_LIKE;
+import static backend.spring.sns.exception.constants.SnsExceptionMessages.ALREADY_UNLIKE;
+import static backend.spring.sns.exception.constants.SnsExceptionMessages.POST_ID_NOT_FOUND;
 
 import backend.spring.member.exception.MemberNotFoundException;
 import backend.spring.sns.exception.PostLikeException;

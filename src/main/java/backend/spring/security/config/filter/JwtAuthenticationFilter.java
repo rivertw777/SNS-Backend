@@ -1,7 +1,7 @@
 package backend.spring.security.config.filter;
 
 import backend.spring.member.dto.request.MemberLoginRequest;
-import backend.spring.security.dto.response.TokenResponse;
+import backend.spring.security.dto.TokenResponse;
 import backend.spring.security.model.CustomUserDetails;
 import backend.spring.security.utils.TokenProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;

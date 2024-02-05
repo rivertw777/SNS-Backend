@@ -1,4 +1,4 @@
-package backend.spring.security.dto.response;
+package backend.spring.security.dto;
 
 public record TokenResponse(String token) {
 
