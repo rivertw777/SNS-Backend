@@ -122,12 +122,6 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
-    // 모든 회원 조회
-    @Override
-    public List<Member> getAllUsers() {
-        return memberRepository.findAll();
-    }
-
     // 이름으로 찾아서 반환
     private Member findSuggestionMember(String suggestionMemberName){
         Member suggestionMember = memberRepository.findByName(suggestionMemberName)

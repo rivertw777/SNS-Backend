@@ -3,8 +3,6 @@ package backend.spring.member.model.entity;
 import backend.spring.member.model.Role;
 import backend.spring.sns.model.entity.Comment;
 import backend.spring.sns.model.entity.Post;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -59,11 +57,9 @@ public class Member {
     private List<Role> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("author")
     private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)

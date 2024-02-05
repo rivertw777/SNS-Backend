@@ -18,7 +18,8 @@ public class PostResponseMapper {
     public PostResponse toPostResponse(Post post, Long userId) {
         return new PostResponse(
                 post.getPostId(),
-                post.getAuthor(),
+                post.getAuthor().getName(),
+                post.getAuthor().getAvatarUrl(),
                 post.getPhotoUrl(),
                 post.getCaption(),
                 post.getLocation(),

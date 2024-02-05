@@ -2,7 +2,6 @@ package backend.spring.member.service;
 
 import backend.spring.member.dto.request.MemberSignupRequest;
 import backend.spring.member.dto.response.SuggestionResponse;
-import backend.spring.member.model.entity.Member;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +16,5 @@ public interface MemberService {
     void followMember(Long memberId, String suggestionName);
 
     void unfollowMember(Long memberId, String suggestionName);
-
-    List<Member> getAllUsers();
 
 }

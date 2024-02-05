@@ -18,7 +18,8 @@ public class CommentResponseMapper {
     public CommentResponse toPostResponse(Comment comment) {
         return new CommentResponse(
                 comment.getCommentId(),
-                comment.getAuthor(),
+                comment.getAuthor().getName(),
+                comment.getAuthor().getAvatarUrl(),
                 comment.getMessage(),
                 comment.getCreatedAt()
         );

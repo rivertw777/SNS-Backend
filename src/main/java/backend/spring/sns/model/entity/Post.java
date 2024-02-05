@@ -1,7 +1,6 @@
 package backend.spring.sns.model.entity;
 
 import backend.spring.member.model.entity.Member;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -57,7 +56,6 @@ public class Post extends BaseTimeEntity {
     private String location;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -66,7 +64,6 @@ public class Post extends BaseTimeEntity {
             joinColumns = @JoinColumn(name = "postId"),
             inverseJoinColumns = @JoinColumn(name = "userId")
     )
-    @JsonIgnore
     private Set<Member> likeUserSet = new HashSet<>();
 
     @Builder

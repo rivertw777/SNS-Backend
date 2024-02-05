@@ -3,7 +3,6 @@ package backend.spring.member.controller;
 import backend.spring.member.dto.request.MemberSignupRequest;
 import backend.spring.member.dto.request.SuggestionRequest;
 import backend.spring.member.dto.response.SuggestionResponse;
-import backend.spring.member.model.entity.Member;
 import backend.spring.member.service.MemberService;
 import backend.spring.security.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -86,16 +85,6 @@ public class MemberController {
         // 유저 언팔로우
         memberService.unfollowMember(memberId, memberParam.name());
         return ResponseEntity.ok().build();
-    }
-
-    // 회원 전체 조회
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "회원 전체 조회 성공")})
-    @Operation(summary = "회원 전체 조회")
-    @GetMapping("")
-    public ResponseEntity<List<Member>> getAllUsers() {
-        List<Member> members = memberService.getAllUsers();
-        return ResponseEntity.ok(members);
     }
 
 }
