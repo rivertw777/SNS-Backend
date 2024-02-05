@@ -1,8 +1,10 @@
 package backend.spring.member.model.entity;
 
+import backend.spring.member.model.Role;
 import backend.spring.sns.model.entity.Comment;
 import backend.spring.sns.model.entity.Post;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -28,7 +30,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Schema(description = "회원")
-@Builder
 @Getter
 @Setter
 @Entity
@@ -55,36 +56,29 @@ public class Member {
     private String avatarUrl;
 
     @Column(name = "roles")
-    @JsonIgnore
-    @Builder.Default
     private List<Role> roles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    @Builder.Default
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("author")
     private List<Post> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
-    @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "following_set",
             joinColumns = @JoinColumn(name = "follower_id"),
             inverseJoinColumns = @JoinColumn(name = "following_id")
     )
-    @Builder.Default
     private Set<Member> followingSet = new HashSet<>();
 
     @Builder
-    public Member(String name, String password, Role role) {
+    public Member(String name, String password, List<Role> roles) {
         this.name = name;
         this.password = password;
-        this.roles = new ArrayList<>();
-        this.roles.add(role);
+        this.roles = roles;
     }
 
     // 해당 유저를 팔로잉중인지

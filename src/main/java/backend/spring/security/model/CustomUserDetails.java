@@ -1,7 +1,7 @@
 package backend.spring.security.model;
 
 import backend.spring.member.model.entity.Member;
-import backend.spring.member.model.entity.Role;
+import backend.spring.member.model.Role;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;

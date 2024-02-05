@@ -56,11 +56,11 @@ public class Post extends BaseTimeEntity {
     @Schema(description = "위치")
     private String location;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "post_like_user",
             joinColumns = @JoinColumn(name = "postId"),

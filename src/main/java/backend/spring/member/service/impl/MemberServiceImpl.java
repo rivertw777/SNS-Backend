@@ -10,11 +10,11 @@ import backend.spring.member.dto.request.MemberSignupRequest;
 import backend.spring.member.dto.response.SuggestionResponse;
 import backend.spring.member.dto.response.mapper.SuggestionResponseMapper;
 import backend.spring.member.model.entity.Member;
-import backend.spring.member.model.entity.Role;
+import backend.spring.member.model.Role;
 import backend.spring.member.repository.MemberRepository;
 import backend.spring.member.service.MemberService;
 import backend.spring.member.service.filter.MemberFilter;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -50,15 +50,11 @@ public class MemberServiceImpl implements MemberService {
         // 비밀번호 인코딩
         String encodedPassword = passwordEncoder.encode(signupParam.password());
 
-        // 역할 부여
-        List<Role> roles = new ArrayList<>();
-        roles.add(Role.USER);
-
         // 회원 저장
         Member member = Member.builder()
                 .name(signupParam.name())
                 .password(encodedPassword)
-                .roles(roles)
+                .roles(Collections.singletonList(Role.USER))
                 .build();
         memberRepository.save(member);
 

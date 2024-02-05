@@ -1,7 +1,6 @@
 package backend.spring.sns.model.entity;
 
 import backend.spring.member.model.entity.Member;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 @Schema(description = "댓글")
 @Entity
 @Getter
@@ -30,11 +30,12 @@ public class Comment extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
+    @Schema(description = "작성자 id")
     private Member author;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    @JsonIgnore
+    @Schema(description = "게시물 id")
     private Post post;
 
     @Column(name = "message", length = 200)

@@ -1,4 +1,4 @@
-package backend.spring.member.model.entity;
+package backend.spring.member.model;
 
 public enum Role {
 
