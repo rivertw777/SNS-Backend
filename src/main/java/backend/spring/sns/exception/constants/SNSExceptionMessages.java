@@ -1,4 +1,4 @@
-package backend.spring.exception.sns.constants;
+package backend.spring.sns.exception.constants;
 
 public enum SNSExceptionMessages {
 

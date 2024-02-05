@@ -1,13 +1,13 @@
 package backend.spring.sns.service.impl;
 
-import static backend.spring.exception.member.constants.MemberExceptionMessages.MEMBER_ID_NOT_FOUND;
-import static backend.spring.exception.sns.constants.SNSExceptionMessages.ALREADY_LIKE;
-import static backend.spring.exception.sns.constants.SNSExceptionMessages.ALREADY_UNLIKE;
-import static backend.spring.exception.sns.constants.SNSExceptionMessages.POST_ID_NOT_FOUND;
+import static backend.spring.member.exception.constants.MemberExceptionMessages.MEMBER_ID_NOT_FOUND;
+import static backend.spring.sns.exception.constants.SNSExceptionMessages.ALREADY_LIKE;
+import static backend.spring.sns.exception.constants.SNSExceptionMessages.ALREADY_UNLIKE;
+import static backend.spring.sns.exception.constants.SNSExceptionMessages.POST_ID_NOT_FOUND;
 
-import backend.spring.exception.member.MemberNotFoundException;
-import backend.spring.exception.sns.PostLikeException;
-import backend.spring.exception.sns.PostNotFoundException;
+import backend.spring.member.exception.MemberNotFoundException;
+import backend.spring.sns.exception.PostLikeException;
+import backend.spring.sns.exception.PostNotFoundException;
 import backend.spring.file.service.FileService;
 import backend.spring.file.FileServiceFactory;
 import backend.spring.sns.dto.request.CommentWriteRequest;

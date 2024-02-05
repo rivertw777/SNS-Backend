@@ -1,4 +1,4 @@
-package backend.spring.exception.member;
+package backend.spring.member.exception;
 
 import lombok.experimental.StandardException;
 

@@ -1,4 +1,4 @@
-package backend.spring.exception.sns;
+package backend.spring.sns.exception;
 
 import lombok.experimental.StandardException;
 

@@ -1,10 +1,10 @@
 package backend.spring.exception;
 
 import backend.spring.exception.dto.response.CustomErrorResponse;
-import backend.spring.exception.member.DuplicateNameException;
-import backend.spring.exception.member.MemberNotFoundException;
-import backend.spring.exception.sns.PostLikeException;
-import backend.spring.exception.sns.PostNotFoundException;
+import backend.spring.member.exception.DuplicateNameException;
+import backend.spring.member.exception.MemberNotFoundException;
+import backend.spring.sns.exception.PostLikeException;
+import backend.spring.sns.exception.PostNotFoundException;
 import java.io.IOException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

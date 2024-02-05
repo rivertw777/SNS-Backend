@@ -1,4 +1,4 @@
-package backend.spring.exception.member.constants;
+package backend.spring.member.exception.constants;
 
 public enum MemberExceptionMessages {
 

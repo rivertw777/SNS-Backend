@@ -1,11 +1,11 @@
 package backend.spring.member.service.impl;
 
-import static backend.spring.exception.member.constants.MemberExceptionMessages.DUPLICATE_NAME;
-import static backend.spring.exception.member.constants.MemberExceptionMessages.MEMBER_ID_NOT_FOUND;
-import static backend.spring.exception.member.constants.MemberExceptionMessages.MEMBER_NAME_NOT_FOUND;
+import static backend.spring.member.exception.constants.MemberExceptionMessages.DUPLICATE_NAME;
+import static backend.spring.member.exception.constants.MemberExceptionMessages.MEMBER_ID_NOT_FOUND;
+import static backend.spring.member.exception.constants.MemberExceptionMessages.MEMBER_NAME_NOT_FOUND;
 
-import backend.spring.exception.member.DuplicateNameException;
-import backend.spring.exception.member.MemberNotFoundException;
+import backend.spring.member.exception.DuplicateNameException;
+import backend.spring.member.exception.MemberNotFoundException;
 import backend.spring.member.dto.request.MemberSignupRequest;
 import backend.spring.member.dto.response.SuggestionResponse;
 import backend.spring.member.dto.response.mapper.SuggestionResponseMapper;
