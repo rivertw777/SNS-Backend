@@ -28,7 +28,7 @@ public class Comment extends BaseTimeEntity {
     @Schema(description = "댓글 id")
     private Long commentId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     @Schema(description = "작성자 id")
     private Member author;

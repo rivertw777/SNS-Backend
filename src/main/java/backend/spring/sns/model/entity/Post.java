@@ -38,7 +38,7 @@ public class Post extends BaseTimeEntity {
     @Schema(description = "게시물 id")
     private Long postId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     @Schema(description = "작성자 id")
     private Member author;
@@ -55,10 +55,10 @@ public class Post extends BaseTimeEntity {
     @Schema(description = "위치")
     private String location;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(
             name = "post_like_user",
             joinColumns = @JoinColumn(name = "postId"),
