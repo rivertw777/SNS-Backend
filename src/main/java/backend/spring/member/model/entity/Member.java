@@ -76,9 +76,4 @@ public class Member {
         this.roles = roles;
     }
 
-    // 해당 유저를 팔로잉중인지
-    public boolean isFollowingUser(Long suggestionId) {
-        return followingSet.stream().anyMatch(member -> member.getMemberId().equals(suggestionId));
-    }
-
 }

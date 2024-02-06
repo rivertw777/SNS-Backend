@@ -13,7 +13,6 @@ import backend.spring.member.model.entity.Member;
 import backend.spring.member.model.Role;
 import backend.spring.member.repository.MemberRepository;
 import backend.spring.member.service.MemberService;
-import backend.spring.member.service.filter.MemberFilter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -33,8 +32,6 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     @Autowired
     private final PasswordEncoder passwordEncoder;
-    @Autowired
-    private final MemberFilter memberFilter;
     @Autowired
     private final SuggestionResponseMapper suggestionResponseMapper;
 
@@ -81,16 +78,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<SuggestionResponse> getSuggestions(Long memberId) {
         // 로그인 중인 회원 조회
-        Member member = findMember(memberId);
+        Member currentMember = findMember(memberId);
 
         // 모든 회원 반환
         List<Member> members = memberRepository.findAll();
 
-        // 필터링으로 추천 회원 리스트 반환
-        List<Member> suggestions = memberFilter.toSuggestions(members, member);
-
         // 추천 회원 응답 DTO 변환
-        List<SuggestionResponse> SuggestionResponses = suggestionResponseMapper.toSuggestionResponses(suggestions);
+        List<SuggestionResponse> SuggestionResponses = suggestionResponseMapper.toSuggestionResponses(members, currentMember);
         return SuggestionResponses;
     }
 
@@ -98,28 +92,28 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void followMember(Long memberId, String suggestionMemberName) {
         // 로그인 중인 회원 조회
-        Member member = findMember(memberId);
+        Member currentMember = findMember(memberId);
 
         //  추천 회원 조회
         Member suggestionMember = findSuggestionMember(suggestionMemberName);
 
         // 팔로잉 목록에 추가
-        member.getFollowingSet().add(suggestionMember);
-        memberRepository.save(member);
+        currentMember.getFollowingSet().add(suggestionMember);
+        memberRepository.save(currentMember);
     }
 
     // 회원 언팔로우
     @Override
     public void unfollowMember(Long memberId, String suggestionMemberName) {
         // 로그인 중인 회원 조회
-        Member member = findMember(memberId);
+        Member currentMember = findMember(memberId);
 
         //  추천 회원 조회
         Member suggestionMember = findSuggestionMember(suggestionMemberName);
 
         // 팔로잉 목록에서 제거
-        member.getFollowingSet().remove(suggestionMember);
-        memberRepository.save(member);
+        currentMember.getFollowingSet().remove(suggestionMember);
+        memberRepository.save(currentMember);
     }
 
     // 이름으로 찾아서 반환

@@ -65,7 +65,7 @@ public class SnsServiceImpl implements SnsService {
     @Override
     public void registerPost(Long memberId, PostUploadRequest uploadParam) throws IOException {
         // 로그인 중인 회원 조회
-        Member member = findMember(memberId);
+        Member currentMember = findMember(memberId);
 
         // 사진 경로 반환
         String photoName = UUID.randomUUID() + "_" + uploadParam.photo().getOriginalFilename();
@@ -73,7 +73,7 @@ public class SnsServiceImpl implements SnsService {
 
         // 게시물 저장
         Post post = Post.builder()
-                .author(member)
+                .author(currentMember)
                 .photoUrl(photoUrl)
                 .caption(uploadParam.caption())
                 .location(uploadParam.location())
@@ -96,14 +96,14 @@ public class SnsServiceImpl implements SnsService {
     @Override
     public void writeComment(Long memberId, Long postId, CommentWriteRequest wirteParam) {
         // 로그인 중인 회원 조회
-        Member member = findMember(memberId);
+        Member currentMember = findMember(memberId);
 
         // 게시물 조회
         Post post = findPost(postId);
 
         // 댓글 저장
         Comment comment = Comment.builder()
-                .author(member)
+                .author(currentMember)
                 .post(post)
                 .message(wirteParam.message())
                 .build();
@@ -128,16 +128,16 @@ public class SnsServiceImpl implements SnsService {
     @Override
     public void likePost(Long memberId, Long postId) {
         // 로그인 중인 회원 조회
-        Member member = findMember(memberId);
+        Member currentMember = findMember(memberId);
 
         // 게시물 조회
         Post post = findPost(postId);
 
         // 이미 좋아요한 경우
-        checkLike(member, post);
+        checkLike(currentMember, post);
 
         // 좋아요 목록에 추가
-        post.getLikeUserSet().add(member);
+        post.getLikeUserSet().add(currentMember);
     }
 
     // 좋아요 확인
@@ -151,16 +151,16 @@ public class SnsServiceImpl implements SnsService {
     @Override
     public void unlikePost(Long memberId, Long postId) {
         // 로그인 중인 회원 조회
-        Member member = findMember(memberId);
+        Member currentMember = findMember(memberId);
 
         // 게시물 조회
         Post post = findPost(postId);
 
         // 이미 좋아요 취소한 경우
-        checkUnlike(member, post);
+        checkUnlike(currentMember, post);
 
         // 좋아요 목록에서 삭제
-        post.getLikeUserSet().remove(member);
+        post.getLikeUserSet().remove(currentMember);
     }
 
     // 좋아요 취소 확인
