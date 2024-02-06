@@ -5,9 +5,7 @@ import backend.spring.sns.dto.response.CommentResponse;
 import backend.spring.sns.dto.response.PostSearchResult;
 import backend.spring.sns.dto.response.PostResponse;
 import backend.spring.sns.dto.request.CommentWriteRequest;
-import backend.spring.sns.dto.request.PostUpdateRequest;
 import backend.spring.sns.dto.request.PostUploadRequest;
-import backend.spring.sns.model.entity.Post;
 import backend.spring.sns.service.SnsService;
 import backend.spring.security.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -144,46 +141,6 @@ public class SnsController {
         // 검색 정보로 게시물 조회
         List<PostSearchResult> postSearchResults = snsService.searchByConditions(searchParam);
         return ResponseEntity.ok(postSearchResults);
-    }
-
-    // 게시물 단일 조회
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "게시글 단일 조회 성공"),
-            @ApiResponse(responseCode = "404", description = "리소스 찾을 수 없음.")})
-    @Operation(summary = "게시물 단일 조회")
-    @GetMapping("/{postId}")
-    public ResponseEntity<Post> getPostById(
-            @Parameter(name = "postId", required = true) @Valid @PathVariable Long postId) {
-        // 게시물 단일 조회
-        Post post = snsService.getPostById(postId);
-        return ResponseEntity.ok(post);
-    }
-
-    // 게시물 수정
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "게시글 수정 성공"),
-            @ApiResponse(responseCode = "404", description = "리소스 찾을 수 없음.")})
-    @Operation(summary = "게시물 수정")
-    @PutMapping("/{postId}")
-    public ResponseEntity<Void> modifyPost(
-            @Parameter(name = "postId", required = true) @Valid @PathVariable Long postId,
-            @Valid @RequestBody PostUpdateRequest updateParam) {
-        // 게시물 수정
-        snsService.modifyPost(postId, updateParam);
-        return ResponseEntity.ok().build();
-    }
-
-    // 게시물 삭제
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "게시글 삭제 성공"),
-            @ApiResponse(responseCode = "404", description = "리소스 찾을 수 없음.")})
-    @Operation(summary = "게시물 삭제")
-    @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> removePost(
-            @Parameter(name = "postId", required = true) @Valid @PathVariable Long postId) {
-        // 게시물 삭제
-        snsService.removePost(postId);
-        return ResponseEntity.ok().build();
     }
 
 }

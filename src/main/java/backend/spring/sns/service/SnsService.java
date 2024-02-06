@@ -2,12 +2,10 @@ package backend.spring.sns.service;
 
 import backend.spring.sns.dto.request.CommentWriteRequest;
 import backend.spring.sns.dto.request.PostSearchCondition;
-import backend.spring.sns.dto.request.PostUpdateRequest;
 import backend.spring.sns.dto.request.PostUploadRequest;
 import backend.spring.sns.dto.response.CommentResponse;
 import backend.spring.sns.dto.response.PostResponse;
 import backend.spring.sns.dto.response.PostSearchResult;
-import backend.spring.sns.model.entity.Post;
 import java.io.IOException;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -29,10 +27,5 @@ public interface SnsService {
 
     List<PostSearchResult> searchByConditions(PostSearchCondition conditionParam);
 
-    Post getPostById(Long postId);
-
-    void modifyPost(Long postId, PostUpdateRequest updateParam);
-
-    void removePost(Long postId);
 
 }

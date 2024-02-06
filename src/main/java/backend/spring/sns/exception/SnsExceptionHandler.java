@@ -24,10 +24,4 @@ public class SnsExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomErrorResponse(e.getMessage()));
     }
 
-    // 게시물 좋아요 예외
-    @ExceptionHandler(PostLikeException.class)
-    public ResponseEntity<CustomErrorResponse> handlePostLikeExeption(PostLikeException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new CustomErrorResponse(e.getMessage()));
-    }
-
 }

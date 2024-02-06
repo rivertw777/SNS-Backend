@@ -62,8 +62,8 @@ public class MemberServiceImpl implements MemberService {
 
     // 이름의 중복 검증
     private void validateDuplicateName(String username){
-        Optional<Member> findUser = memberRepository.findByName(username);
-        if (findUser.isPresent()) {
+        Optional<Member> findMember = memberRepository.findByName(username);
+        if (findMember.isPresent()) {
             throw new DuplicateNameException(DUPLICATE_NAME.getMessage());
         }
     }
@@ -125,9 +125,9 @@ public class MemberServiceImpl implements MemberService {
 
     // id로 찿아서 반환
     private Member findMember(Long memberId){
-        Member member = (Member) memberRepository.findByMemberId(memberId)
+        Member findMember = memberRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_ID_NOT_FOUND.getMessage()));
-        return member;
+        return findMember;
     }
 
 }

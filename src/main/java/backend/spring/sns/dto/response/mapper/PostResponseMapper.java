@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PostResponseMapper {
 
-    public List<PostResponse> toPostResponses( List<Post> posts,  Member currentMember) {
+    public List<PostResponse> toPostResponses(List<Post> posts,  Member currentMember) {
         return posts.stream()
                 .map(post -> toPostResponse(post, currentMember))
                 .collect(Collectors.toList());
@@ -29,6 +29,7 @@ public class PostResponseMapper {
         );
     }
 
+    // 좋아요 여부 확인
     private boolean isLikeMember(Post post, Member currentMember) {
         Set<Member> likeMemberSet = post.getLikeMemberSet();
         return likeMemberSet.stream()

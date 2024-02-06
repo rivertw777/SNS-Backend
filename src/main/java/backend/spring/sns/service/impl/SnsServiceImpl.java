@@ -9,7 +9,6 @@ import backend.spring.file.service.FileService;
 import backend.spring.file.FileServiceFactory;
 import backend.spring.sns.dto.request.CommentWriteRequest;
 import backend.spring.sns.dto.request.PostSearchCondition;
-import backend.spring.sns.dto.request.PostUpdateRequest;
 import backend.spring.sns.dto.request.PostUploadRequest;
 import backend.spring.sns.dto.response.CommentResponse;
 import backend.spring.sns.dto.response.PostResponse;
@@ -156,49 +155,18 @@ public class SnsServiceImpl implements SnsService {
         return postRepository.search(conditionParam);
     }
 
-    // 게시물 단일 조회
-    @Override
-    public Post getPostById(Long postId) {
-        // 게시물 조회
-        Post post = findPost(postId);
-        return post;
-    }
-
-    // 게시물 수정
-    @Override
-    public void modifyPost(Long postId, PostUpdateRequest updateParam) {
-        // 게시물 조회
-        Post post = findPost(postId);
-
-        // 게시물 수정
-        post.setPhotoUrl(updateParam.photoUrl());
-        post.setCaption(updateParam.caption());
-        post.setLocation(updateParam.location());
-        postRepository.save(post);
-    }
-
-    // 게시물 삭제
-    @Override
-    public void removePost(Long postId) {
-        // 게시물 조회
-        Post post = findPost(postId);
-
-        // 게시물 삭제
-        postRepository.deleteById(postId);
-    }
-
     // 게시물 반환
     private Post findPost(Long postId){
-        Post post = postRepository.findByPostId(postId)
+        Post findPost = postRepository.findByPostId(postId)
                 .orElseThrow(() -> new PostNotFoundException(POST_ID_NOT_FOUND.getMessage()));
-        return post;
+        return findPost;
     }
 
     // 회원 반환
     private Member findMember(Long memberId){
-        Member member = memberRepository.findByMemberId(memberId)
+        Member findMember = memberRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_ID_NOT_FOUND.getMessage()));
-        return member;
+        return findMember;
     }
 
 }
