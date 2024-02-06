@@ -60,11 +60,11 @@ public class Post extends BaseTimeEntity {
 
     @ManyToMany
     @JoinTable(
-            name = "post_like_user",
+            name = "post_like_member",
             joinColumns = @JoinColumn(name = "postId"),
             inverseJoinColumns = @JoinColumn(name = "userId")
     )
-    private Set<Member> likeUserSet = new HashSet<>();
+    private Set<Member> likeMemberSet = new HashSet<>();
 
     @Builder
     public Post(Member author, String photoUrl, String caption, String location) {
@@ -72,11 +72,6 @@ public class Post extends BaseTimeEntity {
         this.photoUrl = photoUrl;
         this.caption = caption;
         this.location = location;
-    }
-
-    public boolean isLikeUser(Long userId) {
-        return likeUserSet.stream()
-                .anyMatch(member -> member.getMemberId().equals(userId));
     }
 
 }

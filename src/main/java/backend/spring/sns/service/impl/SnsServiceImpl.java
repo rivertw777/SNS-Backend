@@ -1,12 +1,9 @@
 package backend.spring.sns.service.impl;
 
 import static backend.spring.member.exception.constants.MemberExceptionMessages.MEMBER_ID_NOT_FOUND;
-import static backend.spring.sns.exception.constants.SnsExceptionMessages.ALREADY_LIKE;
-import static backend.spring.sns.exception.constants.SnsExceptionMessages.ALREADY_UNLIKE;
 import static backend.spring.sns.exception.constants.SnsExceptionMessages.POST_ID_NOT_FOUND;
 
 import backend.spring.member.exception.MemberNotFoundException;
-import backend.spring.sns.exception.PostLikeException;
 import backend.spring.sns.exception.PostNotFoundException;
 import backend.spring.file.service.FileService;
 import backend.spring.file.FileServiceFactory;
@@ -84,11 +81,14 @@ public class SnsServiceImpl implements SnsService {
     // 게시물 전체 조회
     @Override
     public List<PostResponse> getAllPosts(Long memberId) {
+        // 로그인 중인 회원 조회
+        Member currentMember = findMember(memberId);
+
         // 게시물 전체 조회
         List<Post> posts = postRepository.findAll();
 
         // 게시물 응답 DTO 변환
-        List<PostResponse> postResponses = postResponseMapper.toPostResponses(posts, memberId);
+        List<PostResponse> postResponses = postResponseMapper.toPostResponses(posts, currentMember);
         return postResponses;
     }
 
@@ -133,18 +133,8 @@ public class SnsServiceImpl implements SnsService {
         // 게시물 조회
         Post post = findPost(postId);
 
-        // 이미 좋아요한 경우
-        checkLike(currentMember, post);
-
         // 좋아요 목록에 추가
-        post.getLikeUserSet().add(currentMember);
-    }
-
-    // 좋아요 확인
-    private void checkLike(Member member, Post post) {
-        if (post.isLikeUser(member.getMemberId())) {
-            throw new PostLikeException(ALREADY_LIKE.getMessage());
-        }
+        post.getLikeMemberSet().add(currentMember);
     }
 
     // 게시물 좋아요 취소
@@ -156,18 +146,8 @@ public class SnsServiceImpl implements SnsService {
         // 게시물 조회
         Post post = findPost(postId);
 
-        // 이미 좋아요 취소한 경우
-        checkUnlike(currentMember, post);
-
         // 좋아요 목록에서 삭제
-        post.getLikeUserSet().remove(currentMember);
-    }
-
-    // 좋아요 취소 확인
-    private void checkUnlike(Member member, Post post) {
-        if (!post.isLikeUser(member.getMemberId())) {
-            throw new PostLikeException(ALREADY_UNLIKE.getMessage());
-        }
+        post.getLikeMemberSet().remove(currentMember);
     }
 
     // 검색 조건으로 게시물 조회
